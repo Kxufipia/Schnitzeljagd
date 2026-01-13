@@ -1,0 +1,467 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --wow-gold: #8C1616;
+    /* Horde Red */
+    --wow-gold-dim: #4a0d0d;
+    --wow-blue: #0f0f0f;
+    /* Horde Black */
+    --wow-dark: #050505;
+    --wow-glass: rgba(20, 5, 5, 0.85);
+    --wow-border: rgba(140, 22, 22, 0.3);
+    --wow-border-hover: rgba(140, 22, 22, 0.6);
+    --text-main: #dcdcdc;
+    /* Iron Gray */
+    --text-muted: #888;
+}
+
+[data-theme="light"] {
+    --wow-gold: #e6b800;
+    /* Alliance Gold */
+    --wow-gold-dim: #b38f00;
+    --wow-blue: #002e5f;
+    /* Alliance Blue */
+    --wow-dark: #f0f4f8;
+    /* Light BG */
+    --wow-glass: rgba(255, 255, 255, 0.75);
+    --wow-border: rgba(0, 46, 95, 0.2);
+    --wow-border-hover: rgba(0, 46, 95, 0.5);
+    --text-main: #1a202c;
+    --text-muted: #4a5568;
+}
+
+[data-theme="light"] .hero-text h1 {
+    background: linear-gradient(to bottom, #002e5f, #005bb7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+[data-theme="light"] .btn-primary {
+    background: linear-gradient(135deg, #002e5f 0%, #005bb7 100%);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .star {
+    filter: invert(1) hue-rotate(180deg);
+    /* Adjust star colors conceptually or js needs update */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--wow-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.logo,
+.btn-primary {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+}
+
+/* Background Effects */
+.background-effects {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.1;
+    animation: pulse 8s infinite alternate;
+}
+
+.orb-1 {
+    top: 0;
+    left: 20%;
+    background: var(--wow-blue);
+}
+
+.orb-2 {
+    bottom: 0;
+    right: 20%;
+    background: #f59e0b;
+    animation-duration: 10s;
+}
+
+#campfire {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* Orbs are -1, this is 0 but still background-effects container is -1? No wait. */
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0.05;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 0.15;
+        transform: scale(1.1);
+    }
+}
+
+/* Layout */
+header {
+    padding: 1.5rem;
+    z-index: 10;
+}
+
+.nav-panel {
+    max-width: 80rem;
+    /* 7xl */
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#star-sky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4a0d0d;
+    cursor: crosshair;
+    transition: all 0.5s ease;
+    user-select: none;
+    line-height: 0.8;
+    pointer-events: auto;
+}
+
+.star:hover {
+    color: #ffaa00;
+    text-shadow: 0 0 10px #ffaa00, 0 0 20px #ff4500, 0 0 30px #8b0000;
+    transform: scale(2.0) rotate(90deg);
+    opacity: 1;
+    z-index: 10;
+}
+
+.star.active {
+    color: #8C1616;
+    text-shadow: 0 0 5px #ff4500;
+    animation: emberPulse 4s infinite alternate;
+}
+
+@keyframes emberPulse {
+    0% {
+        opacity: 0.6;
+        color: #4a0d0d;
+        text-shadow: none;
+    }
+
+    50% {
+        opacity: 1;
+        color: #ff4500;
+        text-shadow: 0 0 10px #ff4500;
+    }
+
+    100% {
+        opacity: 0.8;
+        color: #8C1616;
+        text-shadow: 0 0 5px #8C1616;
+    }
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 10;
+}
+
+.container {
+    width: 100%;
+    max-width: 32rem;
+    /* max-w-lg */
+    margin: 0 auto;
+    padding: 3rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Typography */
+.hero-text {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    /* Fallback */
+    background: linear-gradient(to bottom, white, #9ca3af);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.75rem;
+}
+
+.hero-text p {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.025em;
+}
+
+/* Components */
+.glass-panel {
+    background: var(--wow-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--wow-border);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.card {
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    border-color: var(--wow-border-hover);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.card-glow-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--wow-gold), transparent);
+    opacity: 0.5;
+}
+
+/* Form */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--wow-gold);
+    font-weight: 700;
+    padding-left: 0.25rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.wow-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: white;
+    font-size: 1.125rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.wow-input::placeholder {
+    color: #525252;
+}
+
+.wow-input:focus {
+    border-color: var(--wow-gold);
+    box-shadow: 0 0 0 2px rgba(198, 155, 109, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.input-glow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--wow-gold);
+    box-shadow: 0 0 10px var(--wow-gold);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wow-input:focus+.input-glow {
+    opacity: 1;
+}
+
+/* Button */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #a30000 0%, #6d0000 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(163, 0, 0, 0.5);
+    border-color: var(--wow-gold);
+}
+
+/* Status Pill */
+.status-pill {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.highlight-text {
+    color: var(--wow-gold);
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    z-index: 10;
+}
+
+/* Animations */
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-enter {
+    animation: fadeInSlideUp 0.6s ease-out forwards;
+}
+
+.delay-100 {
+    animation-delay: 100ms;
+}
+
+.delay-200 {
+    animation-delay: 200ms;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .hero-text h1 {
+        font-size: 4rem;
+    }
+
+    .card {
+        padding: 3rem;
+    }
+}

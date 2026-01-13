@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSB Schnitzeljagd 2.0 - Decoder</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .wow-textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: #ccc;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            color: var(--wow-gold);
+        }
+
+        .total-row {
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-effects">
+        <canvas id="campfire"></canvas>
+    </div>
+
+    <div id="theme-controls" class="glass-panel"
+        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
+        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
+            style="cursor: pointer;">Light</span>
+    </div>
+
+    <!-- Header Removed for Starry Sky -->
+
+    <main>
+        <div class="container animate-enter" style="max-width: 48rem;">
+            <h1>Ergebnis Decoder</h1>
+
+            <div class="glass-panel card">
+                <textarea id="input-code" class="wow-textarea"
+                    placeholder="Füge hier den Ergebnis-Code ein..."></textarea>
+                <button onclick="decodeInput()" class="btn-primary">Entschlüsseln</button>
+
+                <div id="output" class="hidden" style="margin-top: 2rem;">
+                    <h3>Spieler: <span id="player-name" class="highlight-text"></span></h3>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quiz</th>
+                                <th>Zeit (Sek)</th>
+                                <th>Punkte</th>
+                            </tr>
+                        </thead>
+                        <tbody id="score-table">
+                            <!-- Populated by JS -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td>GESAMT</td>
+                                <td id="total-time"></td>
+                                <td id="total-points" style="color: var(--wow-gold);"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="campfire.js"></script>
+    <script src="stars.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Inline decode logic to be standalone if needed, or stick to module
+        // We'll reimplement simple decode here to avoid dependency issues if file moved
+        function decodeInput() {
+            const input = document.getElementById('input-code').value.trim();
+            if (!input) return;
+
+            try {
+                const json = decodeURIComponent(atob(input));
+                const data = JSON.parse(json);
+                renderResult(data);
+            } catch (e) {
+                alert("Ungültiger Code!");
+                console.error(e);
+            }
+        }
+
+        function renderResult(data) {
+            document.getElementById('output').classList.remove('hidden');
+            document.getElementById('player-name').textContent = data.player;
+
+            const tbody = document.getElementById('score-table');
+            tbody.innerHTML = '';
+
+            let totalTime = 0;
+
+            if (data.scores) {
+                Object.entries(data.scores).forEach(([quizId, scoreData]) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${quizId}</td>
+                        <td>${Math.round(scoreData.time)}s</td>
+                        <td>${Math.round(scoreData.points)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                    totalTime += scoreData.time;
+                });
+            }
+
+            document.getElementById('total-time').textContent = Math.round(totalTime) + 's';
+            // Use totalScore from data if available, or calc? Data usually has it.
+            document.getElementById('total-points').textContent = data.totalScore;
+
+            // JSON Button Logic
+            const jsonBtn = document.createElement('button');
+            jsonBtn.className = 'btn-primary';
+            jsonBtn.style.marginTop = '1rem';
+            jsonBtn.style.fontSize = '0.8rem';
+            jsonBtn.textContent = 'JSON für Leaderboard kopieren';
+
+            // Avoid duplicates if re-rendering
+            const existingBtn = document.getElementById('json-export-btn');
+            if (existingBtn) existingBtn.remove();
+            jsonBtn.id = 'json-export-btn';
+
+            jsonBtn.onclick = () => {
+                const jsonObj = {
+                    name: data.player,
+                    score: data.totalScore,
+                    time: Math.round(totalTime), // Total time across all quizzes
+                    date: new Date().toISOString().split('T')[0]
+                };
+                const jsonStr = JSON.stringify(jsonObj, null, 4);
+                navigator.clipboard.writeText(jsonStr + ",");
+                jsonBtn.textContent = "Kopiert!";
+                setTimeout(() => jsonBtn.textContent = "JSON für Leaderboard kopieren", 2000);
+            };
+
+            document.getElementById('output').appendChild(jsonBtn);
+        }
+    </script>
+</body>
+
+</html>

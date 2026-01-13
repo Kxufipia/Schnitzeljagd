@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSB Schnitzeljagd 2.0 - Bestenliste</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: var(--text-main);
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leaderboard-table th {
+            color: var(--wow-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+        }
+
+        .rank-cell {
+            font-weight: bold;
+            color: var(--wow-gold);
+            width: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-effects">
+        <canvas id="campfire"></canvas>
+    </div>
+
+    <!-- Starry Sky -->
+    <script src="stars.js"></script>
+    <div id="theme-controls" class="glass-panel"
+        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
+        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
+            style="cursor: pointer;">Light</span>
+    </div>
+
+    <main>
+        <div class="container animate-enter" style="max-width: 48rem;">
+            <div class="glass-panel card">
+                <h1 style="text-align: center; color: var(--wow-gold); margin-bottom: 2rem;">Bestenliste</h1>
+
+                <div style="overflow-x: auto;">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Held</th>
+                                <th>Punkte</th>
+                                <th>Zeit (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- JS populates -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn-primary"
+                        onclick="window.location.href=window.appendThemeParam('index.html')">Zurück zum Start</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="campfire.js"></script>
+    <script src="stars.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // CONFIG STARTS HERE
+        // Paste your Published Google Sheet CSV Link here
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS2SC3tTr5j7wzM8k8oyMY8TrDQLtbjEfg4Kj2tb4rs7ASaLC0g8vAU6a2UnYoXGyFMLHbaSc40r6RN/pub?output=csv";
+        // CONFIG ENDS HERE
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tbody = document.getElementById('leaderboard-body');
+
+            // Check if URL is configured
+            if (SHEET_CSV_URL.includes("...")) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--horde-red);">Setup Required: Please add Google Sheet CSV URL in leaderboard.html</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Loading Highscores from the Cloud...</td></tr>`;
+
+            fetch(SHEET_CSV_URL)
+                .then(response => response.text())
+                .then(csvText => {
+                    const rows = csvText.split('\n');
+                    const entries = [];
+
+                    rows.forEach(row => {
+                        const code = row.trim();
+                        if (!code) return;
+
+                        // Try to decode
+                        // GameState.decode() expects data in URL param, so we simulate or use a direct helper?
+                        // GameState.decode() reads window.location.search. We need a direct decode method.
+                        // Let's manually double check GameState in a moment or patch it.
+                        // For now assuming we can base64 decode directly here or reuse logic.
+
+                        try {
+                            // Custom decode since GameState.decode expects URL params
+                            // State encoding: btoa(encodeURIComponent(JSON.stringify(state)))
+                            // Decoding: JSON.parse(decodeURIComponent(atob(data)))
+                            const json = decodeURIComponent(atob(code));
+                            const data = JSON.parse(json);
+
+                            if (data && data.player && data.totalScore) {
+                                entries.push({
+                                    name: data.player,
+                                    score: data.totalScore,
+                                    time: Object.values(data.scores).reduce((acc, s) => acc + (s.time || 0), 0) // Calculate total time
+                                });
+                            }
+                        } catch (e) {
+                            console.warn("Invalid code in sheet:", code);
+                        }
+                    });
+
+                    renderTable(entries);
+                })
+                .catch(err => {
+                    console.error(err);
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--horde-red);">Failed to load data.</td></tr>`;
+                });
+
+            function renderTable(data) {
+                // Sort: Score Descending, then Time Ascending
+                const sorted = data.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    return a.time - b.time;
+                });
+
+                tbody.innerHTML = "";
+
+                if (sorted.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No heroes found yet.</td></tr>`;
+                    return;
+                }
+
+                sorted.forEach((entry, index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="rank-cell">${index + 1}</td>
+                        <td>${entry.name}</td>
+                        <td style="color: #fff; font-weight: bold;">${Math.round(entry.score)}</td>
+                        <td style="color: var(--text-muted);">${Math.round(entry.time)}s</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

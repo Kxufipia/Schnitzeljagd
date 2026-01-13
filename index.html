@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSB Schnitzeljagd 2.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-effects">
+        <canvas id="campfire"></canvas>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div id="theme-controls" class="glass-panel"
+        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
+        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
+            style="cursor: pointer;">Light</span>
+    </div>
+
+    <!-- Header Removed for Starry Sky -->
+
+    <main>
+        <div class="container animate-enter">
+            <!-- Hero Text Removed -->
+
+            <!-- Login Form Section -->
+            <div id="login-section" class="glass-panel card delay-100 animate-enter">
+                <div class="card-glow-bar"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="charName">Charakter Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="charName" class="wow-input" placeholder="Name deines Helden" required
+                                autocomplete="off">
+                            <div class="input-glow"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span>Abenteuer Beginnen</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Greeting Section (Hidden by default) -->
+            <div id="logged-in-section" class="status-pill delay-200 hidden">
+                <span class="status-dot"></span>
+                <span>Eingeloggt als <span id="display-name" class="highlight-text"></span></span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div style="margin-bottom: 0.5rem;"></div>Lok'tar Ogar!</div>
+        <a href="leaderboard.html"
+            style="color: #6b7280; font-size: 0.8rem; text-decoration: none; border-bottom: 1px dashed #6b7280;">Bestenliste</a>
+    </footer>
+
+    <script src="campfire.js"></script>
+    <script src="stars.js"></script>
+    <!-- State Management -->
+    <script src="gamestate.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{
+  "players": [
+    {
+      "name": "Kxufipi",
+      "joinedAt": "2026-01-12T21:03:33.035Z"
+    }
+  ],
+  "answers": [
+    {
+      "playerName": "Kxufipi",
+      "questionId": "q1_class",
+      "answer": "Demon Hunter",
+      "timestamp": "2026-01-12T21:03:41.017Z"
+    },
+    {
+      "playerName": "Kxufipi",
+      "questionId": "q2_mankrik",
+      "answer": "She is safe at home",
+      "timestamp": "2026-01-12T21:03:47.973Z"
+    }
+  ]
+}

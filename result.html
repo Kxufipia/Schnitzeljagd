@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSB Schnitzeljagd 2.0 - Abschluss</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .result-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--wow-gold);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            word-break: break-all;
+            font-family: monospace;
+            color: var(--wow-gold);
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: -1rem;
+            right: 1rem;
+            background: #333;
+            border: 1px solid #666;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+
+        .copy-btn:hover {
+            background: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-effects">
+        <canvas id="campfire"></canvas>
+    </div>
+
+    <div id="theme-controls" class="glass-panel"
+        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
+        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
+            style="cursor: pointer;">Light</span>
+    </div>
+
+    <!-- Header Removed for Starry Sky -->
+
+    <main>
+        <div class="container animate-enter">
+            <div class="hero-text">
+                <h1>Quest Abgeschlossen!</h1>
+                <p>Du hast das Ende der Reise erreicht.</p>
+            </div>
+
+            <div class="glass-panel card">
+                <p style="text-align: center; color: #ccc; margin-bottom: 1rem;">
+                    Deine Heldentaten wurden aufgezeichnet. Kopiere den folgenden Code und sende ihn an den Questgeber
+                    (oder nutze den Decoder).
+                </p>
+
+                <div class="result-box">
+                    <button class="copy-btn" onclick="copyCode()">Kopieren</button>
+                    <span id="result-code">Lade...</span>
+                </div>
+
+                <!-- Decoder link hidden, manual access only -->
+            </div>
+        </div>
+    </main>
+
+    <script src="campfire.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Init
+        try {
+            const currentState = GameState.decode();
+            if (!currentState) throw new Error("No state found");
+
+            // document.getElementById('user-display').textContent = currentState.player;
+
+            // The encoding is technically already in the URL ?data=...
+            // But let's re-encode just to be sure we display exactly what we have
+            const code = GameState.encode(currentState);
+            document.getElementById('result-code').textContent = code;
+
+        } catch (e) {
+            console.error(e);
+            document.getElementById('result-code').textContent = "Fehler: Kein Ergebnis gefunden.";
+        }
+
+        function copyCode() {
+            const code = document.getElementById('result-code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = "Kopiert!";
+                setTimeout(() => btn.textContent = "Kopieren", 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

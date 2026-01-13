@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSB Schnitzeljagd 2.0 - Quest 4</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .option-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .option-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .option-btn:hover {
+            border-color: var(--wow-gold);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .option-btn.selected {
+            background: var(--wow-gold);
+            color: black;
+            border-color: var(--wow-gold);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <canvas id="campfire"></canvas>
+    </div>
+
+    <div id="theme-controls" class="glass-panel"
+        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
+        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
+            style="cursor: pointer;">Light</span>
+    </div>
+
+    <main>
+        <div class="container animate-enter" style="max-width: 54rem;">
+            <h1 style="margin-bottom: 1.5rem;">Quest 4</h1>
+
+            <div class="glass-panel card">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #ccc;">Placeholder Question for Quest 4?</h2>
+                
+                <div class="option-grid" id="options-container">
+                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
+                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
+                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
+                        <span>Zug Zug!</span>
+                    </button>
+                    <button id="skip-btn" class="btn-primary" style="flex: 1; border-color: #666; opacity: 0.8;" onclick="skipQuiz('quiz4')">
+                        <span>Ich bin OOM! (Skip)</span>
+                    </button>
+                </div>
+                <p id="error-msg" style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;"></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="campfire.js"></script>
+    <script src="stars.js"></script>
+    <script src="settings.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const QUIZ_ID = 'quiz4';
+        const CORRECT = 'B'; 
+        let selected = null;
+        let startTime = Date.now();
+        let currentState = null;
+
+        // Init State Check
+        try {
+            currentState = GameState.decode();
+            if (!currentState) throw new Error("No state");
+        } catch (e) {
+            console.error(e);
+            alert("Fehler: Spielstand nicht gefunden. ZurÃ¼ck zum Start.");
+            window.location.href = window.appendThemeParam('index.html');
+        }
+
+        function selectOption(btn, val) {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selected = val;
+            document.getElementById('error-msg').textContent = "";
+        }
+
+        function checkAnswer() {
+            if (!selected) {
+                 document.getElementById('error-msg').textContent = "Ich brauche ein Ziel!";
+                 return;
+            }
+            
+            if (selected === CORRECT) {
+                const timeTaken = (Date.now() - startTime) / 1000;
+                // Update State
+                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+                // Get Next URL
+                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+                // Ensure State is passed (getNextQuizUrl does this)
+                // Ensure Theme is passed
+                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+                
+                window.location.href = nextUrl;
+            } else {
+                 document.getElementById('error-msg').textContent = "Das ist leider falsch.";
+            }
+        }
+    </script>
+</body>
+</html>
