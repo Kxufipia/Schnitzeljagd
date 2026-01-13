@@ -92,27 +92,45 @@ const GameState = {
         const currentIdx = config.findIndex(q => q.id === currentQuizId);
         if (currentIdx === -1) return 'index.html';
 
-        // Look ahead for the first non-completed quiz
-        // Start checking from the next quiz in the list
+        // 1. Look ahead for the first non-completed quiz (Standard flow)
         for (let i = currentIdx + 1; i < config.length; i++) {
             const quiz = config[i];
+            if (quiz.id === 'result') continue; // Don't jump to result yet
 
-            // If we hit the result page, that's valid if we are at the end
-            if (quiz.id === 'result') {
-                return `${quiz.file}?data=${this.encode(currentState)}`;
-            }
-
-            // Check if this quiz is completed
             const scoreData = currentState.scores[quiz.id];
             const isCompleted = scoreData && scoreData.status === 'completed';
 
-            // If it's NOT completed (i.e. 'skipped' or unvisited), this is our next stop
             if (!isCompleted) {
                 return `${quiz.file}?data=${this.encode(currentState)}`;
             }
         }
 
-        // Fallback: If everything else is completed, go to result
+        // 2. Wrap around: Look from the start for any missed/skipped quizzes
+        for (let i = 0; i < currentIdx; i++) {
+            const quiz = config[i];
+            if (quiz.id === 'result') continue;
+
+            const scoreData = currentState.scores[quiz.id];
+            const isCompleted = scoreData && scoreData.status === 'completed';
+
+            if (!isCompleted) {
+                return `${quiz.file}?data=${this.encode(currentState)}`;
+            }
+        }
+
+        // 3. Check CURRENT quiz (Edge case: If I skipped the ONLY remaining quiz, stay here)
+        {
+            const scoreData = currentState.scores[currentQuizId];
+            const isCompleted = scoreData && scoreData.status === 'completed';
+
+            // If I am skipped (or somehow not completed), and valid, stay here.
+            if (!isCompleted) {
+                // We are the last open quest!
+                return `${window.QUIZ_CONFIG[currentIdx].file}?data=${this.encode(currentState)}`;
+            }
+        }
+
+        // 4. Only if ALL quizzes (including current) are completed, go to result
         return `result.html?data=${this.encode(currentState)}`;
     },
 
