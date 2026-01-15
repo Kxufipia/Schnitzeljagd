@@ -28,21 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
         star.style.animationDelay = Math.random() * 5 + 's';
         if (Math.random() > 0.6) star.classList.add('active');
 
-        // Interaction
-        star.onmouseover = () => {
-            star.style.color = '#ffaa00';
-            star.style.textShadow = '0 0 15px #ff4500';
-            star.style.transform = `scale(${scale * 1.5}) rotate(90deg)`;
-            star.style.opacity = '1';
-        };
+        // Interaction - Handled by CSS for dynamic colors now
+        // But we can keep the scale/rotate transform logic if we want, 
+        // OR just let CSS handle it all. CSS is better for theme.
+        // Let's remove this JS interaction block entirely.
 
-        // Reset on mouse out
-        star.onmouseout = () => {
-            star.style.color = '';
-            star.style.textShadow = '';
-            star.style.transform = '';
-            star.style.opacity = '';
-        };
+        // Reset isn't needed if we don't set it.
 
         sky.appendChild(star);
     }

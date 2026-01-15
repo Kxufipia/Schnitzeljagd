@@ -32,6 +32,79 @@
                 <div class="card-glow-bar"></div>
                 <form id="login-form">
                     <div class="form-group">
+                        <label>Wähle dein Schicksal</label>
+                        <input type="hidden" id="charClass" value="warrior">
+
+                        <!-- New Class Scroll Banner System -->
+                        <div class="class-scroll-container">
+                            <!-- Warriors -->
+                            <div class="class-banner selected" data-value="warrior" style="--banner-color: #C79C6E;">
+                                <img src="images/Warrior.png" alt="Warrior" class="class-banner-icon">
+                                <div class="class-banner-name">Warrior</div>
+                            </div>
+                            <!-- Paladin -->
+                            <div class="class-banner" data-value="paladin" style="--banner-color: #F58CBA;">
+                                <img src="images/Paladin.png" alt="Paladin" class="class-banner-icon">
+                                <div class="class-banner-name">Paladin</div>
+                            </div>
+                            <!-- Hunter -->
+                            <div class="class-banner" data-value="hunter" style="--banner-color: #ABD473;">
+                                <img src="images/Hunter.png" alt="Hunter" class="class-banner-icon">
+                                <div class="class-banner-name">Hunter</div>
+                            </div>
+                            <!-- Rogue -->
+                            <div class="class-banner" data-value="rogue" style="--banner-color: #FFF569;">
+                                <img src="images/Rogue.png" alt="Rogue" class="class-banner-icon">
+                                <div class="class-banner-name">Rogue</div>
+                            </div>
+                            <!-- Priest -->
+                            <div class="class-banner" data-value="priest" style="--banner-color: #FFFFFF;">
+                                <img src="images/Priest.png" alt="Priest" class="class-banner-icon">
+                                <div class="class-banner-name">Priest</div>
+                            </div>
+                            <!-- DK -->
+                            <div class="class-banner" data-value="deathknight" style="--banner-color: #C41F3B;">
+                                <img src="images/DeathKnight.png" alt="DK" class="class-banner-icon">
+                                <div class="class-banner-name">Death Knight</div>
+                            </div>
+                            <!-- Shaman -->
+                            <div class="class-banner" data-value="shaman" style="--banner-color: #0070DE;">
+                                <img src="images/Shaman.png" alt="Shaman" class="class-banner-icon">
+                                <div class="class-banner-name">Shaman</div>
+                            </div>
+                            <!-- Mage -->
+                            <div class="class-banner" data-value="mage" style="--banner-color: #40C7EB;">
+                                <img src="images/Mage.png" alt="Mage" class="class-banner-icon">
+                                <div class="class-banner-name">Mage</div>
+                            </div>
+                            <!-- Warlock -->
+                            <div class="class-banner" data-value="warlock" style="--banner-color: #8787ED;">
+                                <img src="images/Warlock.png" alt="Warlock" class="class-banner-icon">
+                                <div class="class-banner-name">Warlock</div>
+                            </div>
+                            <!-- Monk -->
+                            <div class="class-banner" data-value="monk" style="--banner-color: #00FF96;">
+                                <img src="images/Monk.png" alt="Monk" class="class-banner-icon">
+                                <div class="class-banner-name">Monk</div>
+                            </div>
+                            <!-- Druid -->
+                            <div class="class-banner" data-value="druid" style="--banner-color: #FF7D0A;">
+                                <img src="images/Druid.png" alt="Druid" class="class-banner-icon">
+                                <div class="class-banner-name">Druid</div>
+                            </div>
+                            <!-- DH -->
+                            <div class="class-banner" data-value="demonhunter" style="--banner-color: #A330C9;">
+                                <img src="images/DemonHunter.png" alt="DH" class="class-banner-icon">
+                                <div class="class-banner-name">Demon Hunter</div>
+                            </div>
+                            <!-- Evoker -->
+                            <div class="class-banner" data-value="evoker" style="--banner-color: #33937F;">
+                                <img src="images/Evoker.png" alt="Evoker" class="class-banner-icon">
+                                <div class="class-banner-name">Evoker</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1.5rem;">
                         <label for="charName">Charakter Name</label>
                         <div class="input-wrapper">
                             <input type="text" id="charName" class="wow-input" placeholder="Name deines Helden" required
@@ -45,11 +118,7 @@
                 </form>
             </div>
 
-            <!-- Greeting Section (Hidden by default) -->
-            <div id="logged-in-section" class="status-pill delay-200 hidden">
-                <span class="status-dot"></span>
-                <span>Eingeloggt als <span id="display-name" class="highlight-text"></span></span>
-            </div>
+            <!-- Greeting Section (Removed per request) -->
         </div>
     </main>
 
@@ -63,6 +132,9 @@
     <script src="stars.js"></script>
     <!-- State Management -->
     <script src="gamestate.js"></script>
+    <script src="sounds.js"></script>
+    <script src="toast.js"></script>
+    <script src="gamehud.js"></script>
     <script src="script.js"></script>
 </body>
 

@@ -99,11 +99,103 @@ document.addEventListener('DOMContentLoaded', () => {
     const loggedInSection = document.getElementById('logged-in-section');
     const displayName = document.getElementById('display-name');
 
-    // Check Local Storage (Only if elements exist)
+    // Class Colors Mapping (Standard WoW Colors)
+    const CLASS_COLORS = {
+        'warrior': '#C79C6E',
+        'paladin': '#F58CBA',
+        'hunter': '#ABD473',
+        'rogue': '#FFF569',
+        'priest': '#FFFFFF',
+        'deathknight': '#C41F3B',
+        'shaman': '#0070DE',
+        'mage': '#40C7EB',
+        'warlock': '#8787ED',
+        'monk': '#00FF96',
+        'druid': '#FF7D0A',
+        'demonhunter': '#A330C9',
+        'evoker': '#33937F'
+    };
+
+    function applyClassTheme(className) {
+        const color = CLASS_COLORS[className];
+        if (color) {
+            document.documentElement.style.setProperty('--current-theme-color', color);
+            // Also override gold if we mean to replace the "main" accent
+            document.documentElement.style.setProperty('--wow-gold', color);
+        }
+    }
+    window.applyClassTheme = applyClassTheme; // Expose for HUD
+
+    // Try to restore theme from State or Storage
+    if (typeof GameState !== 'undefined') {
+        try {
+            // Use the shared decoder which handles base64/URI encoding
+            const state = GameState.decode();
+            if (state && state.charClass) {
+                applyClassTheme(state.charClass);
+            }
+        } catch (e) {
+            console.log("Theme init restore failed", e);
+        }
+    }
+
+    // Fallback to local storage if state didn't have it (or parse failed)
+    if (!document.documentElement.style.getPropertyValue('--current-theme-color')) {
+        const savedClass = localStorage.getItem('wow_character_class');
+        if (savedClass) applyClassTheme(savedClass);
+    }
     const savedName = localStorage.getItem('wow_character_name');
     if (savedName && loggedInSection && input) {
         showLoggedInState(savedName);
         input.value = savedName; // Pre-fill
+    }
+
+    // Class Selection UI Logic (Run immediately)
+    // Updated for "Class Banners"
+    const classBanners = document.querySelectorAll('.class-banner');
+    const classInput = document.getElementById('charClass');
+    const submitBtn = form ? form.querySelector('button') : null;
+
+    if (classBanners.length > 0 && classInput) {
+        classBanners.forEach(banner => {
+            banner.addEventListener('click', () => {
+                // Remove selected from all
+                classBanners.forEach(b => b.classList.remove('selected'));
+                // Add to clicked
+                banner.classList.add('selected');
+
+                // Update hidden input
+                const val = banner.dataset.value;
+                classInput.value = val;
+
+                // Play sound
+                if (window.SoundManager) SoundManager.playClick();
+
+                // Dynamic Style Preview
+                // Read the inline variable --banner-color directly for accuracy
+                const color = banner.style.getPropertyValue('--banner-color').trim();
+
+                if (color) {
+                    // 1. Update CSS Variable for Global Theme
+                    document.documentElement.style.setProperty('--current-theme-color', color);
+                    document.documentElement.style.setProperty('--wow-gold', color);
+
+                    // 2. Button Glow
+                    if (submitBtn) {
+                        submitBtn.style.border = `2px solid ${color}`;
+                        submitBtn.style.boxShadow = `0 0 20px ${color}`;
+                        submitBtn.style.color = color;
+
+                        // Force a little pulse
+                        submitBtn.animate([
+                            { transform: 'scale(1)' },
+                            { transform: 'scale(1.05)' },
+                            { transform: 'scale(1)' }
+                        ], { duration: 200 });
+                    }
+                }
+            });
+        });
     }
 
     if (form) {
@@ -121,21 +213,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 localStorage.setItem('wow_character_name', name);
+
+                // Save class for theme persistence
+                if (classInput) {
+                    localStorage.setItem('wow_character_class', classInput.value);
+                }
+
                 showLoggedInState(name);
 
                 // New Game State Logic
                 if (typeof GameState !== 'undefined') {
-                    const encodedState = GameState.init(name);
+                    const charClass = classInput.value;
+                    const encodedState = GameState.init(name, charClass);
 
                     // Visual feedback on button
                     const btn = form.querySelector('button');
                     const originalText = btn.innerHTML;
                     btn.innerHTML = '<span>FÜR DIE HORDE!</span>';
-                    btn.style.borderColor = 'var(--wow-gold)';
+                    // btn.style.borderColor = 'var(--wow-gold)'; // Already colored by selection!
 
                     setTimeout(() => {
                         btn.innerHTML = originalText;
                         btn.style.borderColor = '';
+                        btn.style.boxShadow = '';
                         // Redirect with state and mode
                         let targetUrl = `quiz-1.html?data=${encodedState}`;
                         targetUrl = window.appendThemeParam(targetUrl);

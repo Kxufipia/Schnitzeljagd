@@ -10,79 +10,117 @@
         
         #sidebar-container {
             position: fixed;
-            top: 0;
-            left: 0; /* Always visible */
-            width: 280px;
-            height: 100vh;
-            background: rgba(10, 10, 15, 0.95);
-            border-right: 1px solid #333;
-            z-index: 99;
-            backdrop-filter: blur(10px);
-            padding-top: 2rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            overflow-y: auto;
+            top: 50%;
+            left: 1.5rem;
+            transform: translateY(-50%) scale(0.95);
+            width: 4rem; /* Compact width */
+            background: rgba(15, 15, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 0.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        #sidebar-container:hover {
+            width: 280px;
+            background: rgba(10, 10, 15, 0.85);
+            transform: translateY(-50%) scale(1);
+            align-items: stretch;
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
+            border-color: rgba(255, 255, 255, 0.15);
         }
         
-        /* Shift Main Content */
-        body {
-            padding-left: 300px; /* Make room for sidebar */
-            transition: padding-left 0.3s;
-        }
-        
-        /* Mobile adjust? Keep it simple for now as requested */
+        /* Mobile adjust */
         @media (max-width: 768px) {
             #sidebar-container {
-                width: 200px;
+                left: 0.5rem;
+                width: 3.5rem;
+                padding: 0.5rem;
             }
-            body {
-                padding-left: 210px;
+            #sidebar-container:hover {
+                width: 220px;
             }
         }
 
         .sidebar-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             padding: 0.75rem;
-            border-radius: 0.25rem;
+            border-radius: 1rem;
             text-decoration: none;
-            color: #888;
-            font-size: 0.9rem;
-            border: 1px solid transparent;
-            transition: all 0.2s;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            height: 3.5rem;
+        }
+
+        .sidebar-item span:first-child {
+            font-size: 1.5rem;
+            min-width: 2rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-item:hover span:first-child {
+            transform: scale(1.2);
         }
         
         /* Status Colors */
         .sidebar-item.locked {
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: not-allowed;
+            filter: grayscale(1);
         }
         
         .sidebar-item.completed {
-            border-color: #225522;
-            background: rgba(34, 85, 34, 0.2);
-            color: #8f8;
+            color: #4ade80; /* bright green */
+        }
+        
+        .sidebar-item.completed:hover {
+            background: rgba(34, 197, 94, 0.1);
+            color: #86efac;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
         }
         
         .sidebar-item.skipped {
-            border-color: #555522;
-            background: rgba(85, 85, 34, 0.2);
-            color: #ff8;
+            color: #facc15; /* yellow */
+        }
+        
+        .sidebar-item.skipped:hover {
+            background: rgba(234, 179, 8, 0.1);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
         }
         
         .sidebar-item.current {
-            border-color: var(--wow-gold);
-            background: rgba(198, 155, 109, 0.1);
-            color: white;
-            font-weight: bold;
+            background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), transparent);
+            color: #f87171; /* red-400 */
+            border-left: 3px solid #ef4444;
+            border-radius: 0 1rem 1rem 0;
+        }
+
+        .sidebar-item.current span:first-child {
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
         }
         
         .sidebar-item:hover:not(.locked) {
             background: rgba(255,255,255,0.05);
+            padding-left: 1rem;
         }
     `;
 
@@ -129,13 +167,14 @@
             // Is visited/unlocked?
             if (state.visited && state.visited.includes(quiz.id)) {
                 status = 'unlocked';
+                icon = '!'; // Quest Available
             }
 
             // Override if completed/skipped
             if (scoreData) {
                 if (scoreData.status === 'completed') {
                     status = 'completed';
-                    icon = '✅';
+                    icon = '✓';
                 } else if (scoreData.status === 'skipped') {
                     status = 'skipped';
                     icon = '⏭️';
@@ -145,7 +184,7 @@
             // Is Current?
             if (quiz.file === currentPath) {
                 status = 'current';
-                icon = '📍';
+                icon = '?'; // Active Quest
             }
 
             item.classList.add(status);

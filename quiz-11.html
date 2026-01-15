@@ -1,42 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSB Schnitzeljagd 2.0 - Quest 11</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .option-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .option-btn {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #444;
-            color: #ccc;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-        .option-btn:hover {
-            border-color: var(--wow-gold);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .option-btn.selected {
-            background: var(--wow-gold);
-            color: black;
-            border-color: var(--wow-gold);
-            font-weight: bold;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="background-effects">
@@ -66,7 +35,7 @@
                     <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
                         <span>Zug Zug!</span>
                     </button>
-                    <button id="skip-btn" class="btn-primary" style="flex: 1; border-color: #666; opacity: 0.8;" onclick="skipQuiz('quiz11')">
+                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz11')">
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
                 </div>
@@ -80,7 +49,7 @@
     <script src="settings.js"></script>
     <script src="gamestate.js"></script>
     <script src="sidebar.js"></script>
-    <script src="script.js"></script>
+    <script src="sounds.js"></script><script src="toast.js"></script><script src="gamehud.js"></script><script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz11';
         const CORRECT = 'B'; 
@@ -94,7 +63,7 @@
             if (!currentState) throw new Error("No state");
         } catch (e) {
             console.error(e);
-            alert("Fehler: Spielstand nicht gefunden. ZurÃ¼ck zum Start.");
+            alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
             window.location.href = window.appendThemeParam('index.html');
         }
 
@@ -129,3 +98,6 @@
     </script>
 </body>
 </html>
+
+
+

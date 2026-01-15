@@ -67,9 +67,12 @@ class Particle {
 
     draw() {
         ctx.beginPath();
-        const opacity = (this.life / this.maxLife) * this.alpha;
-        ctx.fillStyle = this.color + opacity + ')';
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--wow-gold').trim() || '#ff4500';
+
+        ctx.fillStyle = themeColor;
+        ctx.globalAlpha = (this.life / this.maxLife) * 0.6; // Fade out based on life
         ctx.fill();
     }
 }

@@ -1,7 +1,8 @@
 const GameState = {
-    init(playerName) {
+    init(playerName, charClass = 'warrior') {
         const state = {
             player: playerName,
+            charClass: charClass,
             startTime: Date.now(),
             scores: {}, // { quizId: { points: 100, time: 20, status: 'completed' | 'skipped' } }
             totalScore: 0,
@@ -92,6 +93,19 @@ const GameState = {
         const currentIdx = config.findIndex(q => q.id === currentQuizId);
         if (currentIdx === -1) return 'index.html';
 
+        // Determine last action for Toast
+        let toastParam = '';
+        const currentScore = currentState.scores[currentQuizId];
+        if (currentScore) {
+            if (currentScore.status === 'completed') toastParam = '&toast=completed';
+            else if (currentScore.status === 'skipped') toastParam = '&toast=skipped';
+        }
+
+        // Helper to append toast
+        const withToast = (url) => {
+            return toastParam ? (url + (url.includes('?') ? '&' : '?') + toastParam.substring(1)) : url;
+        };
+
         // 1. Look ahead for the first non-completed quiz (Standard flow)
         for (let i = currentIdx + 1; i < config.length; i++) {
             const quiz = config[i];
@@ -101,7 +115,7 @@ const GameState = {
             const isCompleted = scoreData && scoreData.status === 'completed';
 
             if (!isCompleted) {
-                return `${quiz.file}?data=${this.encode(currentState)}`;
+                return withToast(`${quiz.file}?data=${this.encode(currentState)}`);
             }
         }
 
@@ -114,7 +128,7 @@ const GameState = {
             const isCompleted = scoreData && scoreData.status === 'completed';
 
             if (!isCompleted) {
-                return `${quiz.file}?data=${this.encode(currentState)}`;
+                return withToast(`${quiz.file}?data=${this.encode(currentState)}`);
             }
         }
 
@@ -126,12 +140,13 @@ const GameState = {
             // If I am skipped (or somehow not completed), and valid, stay here.
             if (!isCompleted) {
                 // We are the last open quest!
-                return `${window.QUIZ_CONFIG[currentIdx].file}?data=${this.encode(currentState)}`;
+                // Don't toast if we stay on same page? Or maybe we do?
+                return withToast(`${window.QUIZ_CONFIG[currentIdx].file}?data=${this.encode(currentState)}`);
             }
         }
 
         // 4. Only if ALL quizzes (including current) are completed, go to result
-        return `result.html?data=${this.encode(currentState)}`;
+        return withToast(`result.html?data=${this.encode(currentState)}`);
     },
 
     _updateTotal(state) {

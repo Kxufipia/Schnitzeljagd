@@ -1,45 +1,267 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    --wow-gold: #8C1616;
-    /* Horde Red */
+    --wow-gold: #ffd700;
+    --wow-blue: #1e3a8a;
+    --horde-red: #8a1e1e;
+
+    /* Dynamic Theme Color (Default Gold) */
+    --current-theme-color: #ffd700;
+
     --wow-gold-dim: #4a0d0d;
-    --wow-blue: #0f0f0f;
-    /* Horde Black */
     --wow-dark: #050505;
     --wow-glass: rgba(20, 5, 5, 0.85);
-    --wow-border: rgba(140, 22, 22, 0.3);
-    --wow-border-hover: rgba(140, 22, 22, 0.6);
+
+    /* Use theme color for borders */
+    --wow-border: var(--current-theme-color);
+
     --text-main: #dcdcdc;
-    /* Iron Gray */
     --text-muted: #888;
 }
 
-[data-theme="light"] {
-    --wow-gold: #e6b800;
-    /* Alliance Gold */
-    --wow-gold-dim: #b38f00;
-    --wow-blue: #002e5f;
-    /* Alliance Blue */
-    --wow-dark: #f0f4f8;
-    /* Light BG */
-    --wow-glass: rgba(255, 255, 255, 0.75);
-    --wow-border: rgba(0, 46, 95, 0.2);
-    --wow-border-hover: rgba(0, 46, 95, 0.5);
-    --text-main: #1a202c;
-    --text-muted: #4a5568;
+/* ... existing light theme block ... */
+
+/* Update Glass Panel to respond to theme */
+.glass-panel {
+    background: rgba(20, 5, 5, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px 0 rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Dynamic Border on hover or specific class? Let's make the glow dependent */
 }
 
+/* Card Glow Bar */
+.card-glow-bar {
+    background: linear-gradient(90deg, transparent, var(--current-theme-color), transparent);
+}
+
+/* Labels */
+label {
+    color: var(--current-theme-color);
+}
+
+/* Inputs */
+.wow-input:focus {
+    border-color: var(--current-theme-color);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    /* Keep shadow subtle or color match? */
+}
+
+.input-glow {
+    background: var(--current-theme-color);
+    box-shadow: 0 0 10px var(--current-theme-color);
+}
+
+/* Button Primary - Use the theme color? 
+   No, primary button is "Abenteuer Beginnen" (Start Adventure). 
+   User wants theme to show "what to expect". 
+   Let's check script.js for submit button overrides.
+*/
+
+[data-theme="light"] {
+    --wow-gold: #8a6d00;
+    /* Much Darker Gold */
+    --wow-gold-dim: #b8860b;
+    --wow-blue: #003399;
+    --horde-red: #a30000;
+
+    /* Dynamic Theme Color */
+    --current-theme-color: var(--wow-gold);
+
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    /* Almost solid white */
+    --glass-border: rgba(0, 0, 0, 0.2);
+
+    --wow-dark: #f3f4f6;
+    /* Very light gray bg */
+    --wow-glass: rgba(255, 255, 255, 0.95);
+    --wow-border: rgba(0, 0, 0, 0.2);
+
+    --text-main: #050505;
+    /* Pitch Black */
+    --text-muted: #374151;
+    /* Dark Gray, high readability */
+}
+
+/* Fix Hero Text readability */
 [data-theme="light"] .hero-text h1 {
-    background: linear-gradient(to bottom, #002e5f, #005bb7);
+    background: linear-gradient(to bottom, #000000, #333333);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* High Contrast Inputs */
+[data-theme="light"] .wow-input {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .wow-input::placeholder {
+    color: #555;
+    /* Darker placeholder */
+}
+
+/* High Contrast Buttons */
+[data-theme="light"] .class-btn {
+    color: #222;
+    background: #fdfdfd;
+    border: 1px solid #bbb;
+    font-weight: 700;
+}
+
+[data-theme="light"] .class-btn:hover {
+    background: #fff;
+    border-color: #000;
+    color: #000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Glass Panels popping out more */
+[data-theme="light"] .glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+/* Light Mode Sidebars (Left & Right) */
+[data-theme="light"] .sidebar,
+[data-theme="light"] #game-hud {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    color: #111 !important;
+}
+
+[data-theme="light"] .sidebar {
+    /* Tinted Glass Base - No Gray */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+    border-color: var(--current-theme-color);
+    box-shadow: 0 0 30px var(--current-theme-color);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--current-theme-color);
+}
+
+[data-theme="light"] .sidebar-item {
+    /* Colorful Card Aesthetic - "Jewel-Lite" */
+    background: rgba(255, 255, 255, 0.95);
+    color: #444;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    /* Subtle border */
+    border-left: 4px solid var(--current-theme-color);
+    /* Color pop on left */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+[data-theme="light"] .sidebar-item:hover {
+    background: #fff;
+    transform: translateX(5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    /* Deeper shadow */
+    border-color: var(--current-theme-color);
+    /* Full color border on hover */
+}
+
+/* The Jewel - Current Item */
+[data-theme="light"] .sidebar-item.current {
+    /* Full vibrant color */
+    background: var(--current-theme-color);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 5px 20px var(--current-theme-color), 0 5px 10px rgba(0, 0, 0, 0.4);
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .sidebar-item.current span:first-child {
+    color: white;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+}
+
+/* Completed/Skipped in Light Mode */
+[data-theme="light"] .sidebar-item.completed span:first-child {
+    color: #15803d;
+    /* Darker Green for visibility on white */
+}
+
+[data-theme="light"] .sidebar-item.skipped span:first-child {
+    color: #ca8a04;
+    /* Darker Yellow for visibility on white */
+}
+
+
+/* Global Text Refinement for Light Mode - Keep as is */
+[data-theme="light"] body,
+[data-theme="light"] p,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] li,
+[data-theme="light"] span {
+    color: #050505;
+}
+
+/* ... (Skipped redundant text overrides) ... */
+
+/* Button Light Mode Upgrade - "Bunt" and Contrast */
 [data-theme="light"] .btn-primary {
-    background: linear-gradient(135deg, #002e5f 0%, #005bb7 100%);
-    border-color: rgba(0, 0, 0, 0.1);
+    color: white;
+    /* White text on colored button */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Remove the gray overrides and use THEME COLOR */
+[data-theme="light"] .btn-primary::before {
+    background: linear-gradient(135deg, var(--current-theme-color) 0%, var(--wow-gold-dim) 100%);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .btn-primary::after {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    opacity: 0.3;
+}
+
+[data-theme="light"] .btn-primary:hover::before {
+    background: linear-gradient(135deg, var(--wow-gold) 0%, var(--current-theme-color) 100%);
+    box-shadow: 0 0 25px var(--current-theme-color), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .btn-primary:hover::after {
+    opacity: 0.8;
+    /* Stronger hover */
+    filter: brightness(1.2);
+}
+
+/* Secondary/Skip Button Theming for Light Mode */
+[data-theme="light"] .btn-secondary,
+[data-theme="light"] .btn-outline,
+[data-theme="light"] .skip-btn {
+    /* Guessing class names safely */
+    background: transparent;
+    border: 2px solid var(--current-theme-color);
+    color: var(--current-theme-color);
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .btn-secondary:hover,
+[data-theme="light"] .btn-outline:hover,
+[data-theme="light"] .skip-btn:hover {
+    background: var(--current-theme-color);
+    color: white;
+    box-shadow: 0 0 15px var(--current-theme-color);
 }
 
 [data-theme="light"] .star {
@@ -62,6 +284,8 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     position: relative;
+    padding-left: 0;
+    /* Removing sidebar shift */
 }
 
 h1,
@@ -161,6 +385,8 @@ header {
     font-size: 2.5rem;
     font-weight: bold;
     color: #4a0d0d;
+    color: var(--wow-gold-dim);
+    /* Default */
     cursor: crosshair;
     transition: all 0.5s ease;
     user-select: none;
@@ -169,37 +395,171 @@ header {
 }
 
 .star:hover {
-    color: #ffaa00;
-    text-shadow: 0 0 10px #ffaa00, 0 0 20px #ff4500, 0 0 30px #8b0000;
+    color: var(--current-theme-color);
+    text-shadow: 0 0 10px var(--current-theme-color), 0 0 20px var(--horde-red);
     transform: scale(2.0) rotate(90deg);
     opacity: 1;
     z-index: 10;
 }
 
 .star.active {
-    color: #8C1616;
-    text-shadow: 0 0 5px #ff4500;
+    color: var(--current-theme-color);
+    /* Dynamic Theme Color */
+    text-shadow: 0 0 5px var(--horde-red);
     animation: emberPulse 4s infinite alternate;
 }
 
 @keyframes emberPulse {
     0% {
         opacity: 0.6;
-        color: #4a0d0d;
+        color: var(--wow-gold-dim);
         text-shadow: none;
     }
 
     50% {
         opacity: 1;
-        color: #ff4500;
-        text-shadow: 0 0 10px #ff4500;
+        color: var(--current-theme-color);
+        text-shadow: 0 0 10px var(--current-theme-color);
     }
 
     100% {
         opacity: 0.8;
-        color: #8C1616;
-        text-shadow: 0 0 5px #8C1616;
+        color: var(--current-theme-color);
+        text-shadow: 0 0 5px var(--current-theme-color);
     }
+}
+
+/* Class Banner Selection (New) */
+/* Class Banner Selection (New) */
+.class-scroll-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin: 0;
+    width: 100%;
+}
+
+.class-banner {
+    width: calc(25% - 0.5rem);
+    /* Force 4 per row with gap adjustment */
+    min-height: 125px;
+    /* Increased for bigger icons */
+    height: auto;
+    padding: 10px 0;
+
+    /* Use the inline variable --banner-color for the background */
+    background-color: var(--banner-color);
+    /* Darken it significantly with a gradient so it's not too neon, but "bunter" than black */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.85));
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    /* overflow: hidden;  <-- REMOVED to prevent clip */
+
+    /* More shadow as requested */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.class-banner:hover {
+    transform: translateY(-5px) scale(1.02);
+    /* Lighten the overlay on hover */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* Selected State */
+.class-banner.selected {
+    /* Make the color pop more */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+    border-color: #fff;
+    /* White border for sharp content focus */
+    box-shadow: 0 0 25px var(--banner-color), 0 10px 20px rgba(0, 0, 0, 0.5);
+    /* Glow with own color */
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+/* Inner styling for banner */
+.class-banner-icon {
+    width: 64px;
+    /* Big Icon! */
+    height: 64px;
+    margin-bottom: 0.5rem;
+    object-fit: contain;
+
+    /* White with shadow for contrast against colored bg */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: all 0.3s;
+}
+
+.class-banner.selected .class-banner-icon {
+    /* Slight glow effect on the image */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6));
+    transform: scale(1.15);
+}
+
+.class-banner-name {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    /* Slightly tighter for long names */
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+    /* Ensure centering for multiline */
+    text-align: center;
+    width: 100%;
+    padding: 0 4px;
+    line-height: 1.1;
+}
+
+.class-banner.selected .class-banner-name {
+    color: white;
+    font-weight: 800;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Light Mode Overrides for Banner */
+/* User requested colorful banners in Light Mode too, so we REMOVE the white background override. */
+/* We just adjust the shadow/border to fit the light theme better if needed, but the colorful card look should persist. */
+
+[data-theme="light"] .class-banner {
+    /* Keep the colorful background from default rules */
+    /* background: #fff;  <-- REMOVED */
+    border-color: rgba(0, 0, 0, 0.1);
+    /* Softer border */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    /* Slightly lighter shadow than dark mode */
+}
+
+/* Ensure text remains white on the colored card, even in light mode */
+[data-theme="light"] .class-banner .class-banner-name,
+[data-theme="light"] .class-banner .class-banner-icon {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .class-banner.selected {
+    /* background: #fff; <-- REMOVED */
+    border-color: #fff;
+    box-shadow: 0 0 20px var(--banner-color), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .class-banner.selected .class-banner-name {
+    color: #fff;
+    /* Revert to white */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 main {
@@ -214,10 +574,10 @@ main {
 
 .container {
     width: 100%;
-    max-width: 32rem;
-    /* max-w-lg */
+    /* Widen to user request ~66% */
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 3rem 0;
+    padding: 1rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -250,16 +610,15 @@ main {
 
 /* Components */
 .glass-panel {
-    background: var(--wow-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--wow-border);
+    background: rgba(20, 5, 5, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border-radius: 1rem;
-    transition: all 0.3s ease;
+        0 8px 32px 0 rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card {
@@ -270,8 +629,9 @@ main {
 }
 
 .card:hover {
-    border-color: var(--wow-border-hover);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
 }
 
 .card-glow-bar {
@@ -314,15 +674,16 @@ label {
 
 .wow-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid #333;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
     color: white;
     font-size: 1.125rem;
     font-family: inherit;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
 }
 
 .wow-input::placeholder {
@@ -354,26 +715,61 @@ label {
 }
 
 /* Button */
+/* Tech Button */
 .btn-primary {
     position: relative;
-    overflow: hidden;
-    padding: 0.75rem 2rem;
-    border-radius: 0.5rem;
+    padding: 1rem 3rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
-    background: linear-gradient(135deg, #a30000 0%, #6d0000 100%);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border: none;
     cursor: pointer;
+    overflow: visible;
     transition: all 0.3s ease;
-    width: 100%;
-    font-size: 1rem;
+    z-index: 1;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #8C1616 0%, #D90404 100%);
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    z-index: -1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, #ff4d4d, #8C1616);
+    z-index: -2;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    opacity: 0.3;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(163, 0, 0, 0.5);
-    border-color: var(--wow-gold);
+    transform: scale(1.05);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.btn-primary:hover::before {
+    background: linear-gradient(135deg, #b31d1d 0%, #ff1a1a 100%);
+    box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+}
+
+.btn-primary:hover::after {
+    opacity: 0.8;
+    background: #ffaa00;
+}
+
+.btn-primary span {
+    position: relative;
+    z-index: 2;
 }
 
 /* Status Pill */
@@ -410,58 +806,505 @@ label {
     }
 }
 
-.highlight-text {
-    color: var(--wow-gold);
+.btn-secondary {
+    position: relative;
+    padding: 1rem 2rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ccc;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    overflow: visible;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    z-index: -1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-secondary::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, #666, #333);
+    z-index: -2;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-secondary:hover::before {
+    background: linear-gradient(135deg, #404040 0%, #5a5a5a 100%);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover::after {
+    opacity: 1;
+    background: #999;
+}
+
+/* Sidebar Icon Colors */
+.sidebar-item.unlocked span:first-child {
+    color: #facc15;
+    /* Gold "!" */
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+    font-weight: bold;
+    font-family: serif;
+}
+
+.sidebar-item.current span:first-child {
+    color: #60a5fa;
+    /* Blue "?" */
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+    font-weight: bold;
+    font-family: serif;
+}
+
+.sidebar-item.completed {
+    color: #4ade80;
+    /* bright green */
+}
+
+.sidebar-item.completed:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: #86efac;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+
+.sidebar-item.skipped {
+    color: #facc15;
+    /* yellow */
+}
+
+.sidebar-item.skipped:hover {
+    background: rgba(234, 179, 8, 0.1);
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
+}
+
+.sidebar-item.locked span:first-child {
+    opacity: 0.5;
+}
+
+/* Option Grid */
+.option-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.option-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 1.25rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.option-btn.selected {
+    background: var(--wow-gold);
+    border-color: var(--wow-gold);
+    color: black;
+    box-shadow: 0 0 20px rgba(230, 184, 0, 0.4);
+    font-weight: bold;
+}
+
+/* Leaderboard Table */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+    margin-top: 1rem;
+    color: var(--text-main);
+}
+
+.leaderboard-table th {
+    padding: 1rem;
+    text-align: left;
+    color: var(--wow-gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.leaderboard-table td {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-table tr td:first-child {
+    border-radius: 0.5rem 0 0 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-table tr td:last-child {
+    border-radius: 0 0.5rem 0.5rem 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-table tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.rank-cell {
+    font-weight: bold;
+    color: var(--wow-gold);
+    width: 60px;
     font-family: 'Cinzel', serif;
 }
 
-.hidden {
-    display: none !important;
+/* Result Box */
+.result-box {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    word-break: break-all;
+    font-family: monospace;
+    color: #4ade80;
+    position: relative;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-footer {
-    text-align: center;
+/* Game HUD */
+#game-hud {
+    position: fixed;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    width: 220px;
     padding: 1.5rem;
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    z-index: 10;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: rgba(15, 15, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 1rem;
+    pointer-events: none;
+    /* Let clicks pass through if needed, but usually we want to click stats? stick to auto */
+    pointer-events: auto;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s ease;
 }
 
-/* Animations */
-@keyframes fadeInSlideUp {
+#game-hud:hover {
+    background: rgba(10, 10, 15, 0.85);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 1200px) {
+    #game-hud {
+        display: none;
+        /* Hide on smaller screens or move to bottom? Hide for now */
+    }
+}
+
+.hud-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hud-row.header {
+    margin-bottom: 0.5rem;
+}
+
+.hud-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 0.1em;
+}
+
+.hud-value {
+    font-weight: 700;
+    color: white;
+}
+
+.hud-value.name {
+    color: var(--wow-gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+}
+
+.hud-value.score {
+    color: #4ade80;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+.hud-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    width: 100%;
+}
+
+.hud-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.stat-val {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.stat-item.completed .stat-val {
+    color: #4ade80;
+}
+
+.stat-item.skipped .stat-val {
+    color: #facc15;
+}
+
+.stat-item.open .stat-val {
+    color: #ccc;
+}
+
+/* Class Colors */
+.class-color-warrior {
+    color: #C79C6E !important;
+}
+
+.class-color-paladin {
+    color: #F58CBA !important;
+}
+
+.class-color-hunter {
+    color: #ABD473 !important;
+}
+
+.class-color-rogue {
+    color: #FFF569 !important;
+}
+
+.class-color-priest {
+    color: #FFFFFF !important;
+}
+
+.class-color-shaman {
+    color: #0070DE !important;
+}
+
+.class-color-mage {
+    color: #40C7EB !important;
+}
+
+.class-color-warlock {
+    color: #8787ED !important;
+}
+
+.class-color-druid {
+    color: #FF7D0A !important;
+}
+
+.class-color-demonhunter {
+    color: #A330C9 !important;
+}
+
+.class-color-deathknight {
+    color: #C41F3B !important;
+}
+
+.class-color-monk {
+    color: #00FF96 !important;
+}
+
+.class-color-evoker {
+    color: #33937F !important;
+}
+
+/* Toast Notification (Achievement) */
+#toast-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.achievement-toast {
+    background: linear-gradient(to bottom, #2da7e5 0%, #003366 100%);
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: slideUpToast 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards,
+        fadeOutToast 0.5s ease-in 4s forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Achievement Gold Border Styling */
+.achievement-toast::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid #ffd700;
+    pointer-events: none;
+}
+
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+    background: #000;
+    border: 1px solid #777;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.achievement-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.achievement-title {
+    font-size: 0.75rem;
+    color: #ffd700;
+    text-transform: uppercase;
+}
+
+.achievement-desc {
+    font-size: 0.9rem;
+    color: white;
+    font-weight: bold;
+}
+
+@keyframes slideUpToast {
     from {
+        transform: translateY(100px);
         opacity: 0;
-        transform: translateY(20px);
     }
 
     to {
-        opacity: 1;
         transform: translateY(0);
+        opacity: 1;
     }
 }
 
-.animate-enter {
-    animation: fadeInSlideUp 0.6s ease-out forwards;
-}
-
-.delay-100 {
-    animation-delay: 100ms;
-}
-
-.delay-200 {
-    animation-delay: 200ms;
-}
-
-/* Responsive */
-@media (min-width: 768px) {
-    .hero-text h1 {
-        font-size: 4rem;
+@keyframes fadeOutToast {
+    from {
+        opacity: 1;
     }
 
-    .card {
-        padding: 3rem;
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
     }
 }
+
+/* Class Selection Grid */
+.class-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.class-btn {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #888;
+    /* Default dim */
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* When specific class is colored, override the dim color */
+.class-btn[class*="class-color-"] {
+    /* Use the class color for text, but dim it by default?
+       Actually user wants them "stylised classcolor".
+       Let's keep them colored/bright, but maybe border/bg changes on select */
+    color: inherit;
+    /* inherit from the class-color-... rule? No, specific rule wins */
+}
+
+/* We need to re-apply the specific colors because .class-btn might override?
+   No, !important in class-color-X usually handles it, but let's make sure hover/select pops */
+
+.class-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.class-btn.selected {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: currentColor;
+    /* Use the text color (class color) for border */
+    box-shadow: 0 0 10px currentColor;
+    /* Glow with class color */
+    color: currentColor !important;
+}
+
+/* Default non-selected look for class buttons with class-color rules:
+   We want them to show their color but maybe slightly muted until selected?
+   Or just show full color.
+   The class-color rules use !important, so they will be colored.
+   Let's just ensure .selected adds the glow.
+*/
