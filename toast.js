@@ -86,3 +86,48 @@
         checkToast();
     }
 })();
+
+// Global Error Toast (Exposed for Quizzes)
+window.showErrorToast = function (message) {
+    if (window.SoundManager) {
+        SoundManager.playError();
+    }
+
+    const container = document.createElement('div');
+    container.id = 'error-toast-container'; // Separate ID to avoid conflicts or reuse same?
+    // Let's reuse styling logic but separate container so it stacks on top
+    container.style.position = 'fixed';
+    container.style.top = '20%';
+    container.style.left = '50%';
+    container.style.transform = 'translate(-50%, -50%)';
+    container.style.zIndex = '2000';
+    container.style.cursor = 'pointer';
+
+    container.innerHTML = `
+        <div class="achievement-toast glass-panel error-toast">
+            <div class="achievement-icon" style="border-color: #ef4444; color: #ef4444;">❌</div>
+            <div class="achievement-text">
+                <span class="achievement-title" style="color: #ef4444;">Das ist leider falsch</span>
+                <span class="achievement-desc">${message || 'Versuche es noch einmal!'}</span>
+            </div>
+            <div class="achievement-glow" style="background: radial-gradient(circle, #ef4444 0%, transparent 70%);"></div>
+            <div style="font-size: 0.7rem; opacity: 0.7; margin-top:0.5rem;">(Klicken zum Schließen)</div>
+        </div>
+    `;
+
+    document.body.appendChild(container);
+
+    // Dismiss Logic
+    const close = () => {
+        if (container.parentNode) {
+            container.style.opacity = '0';
+            container.style.transform = 'translate(-50%, -60%)'; // Float up
+            setTimeout(() => container.remove(), 300);
+        }
+    };
+
+    container.onclick = close;
+
+    // Auto close after 10s
+    setTimeout(close, 10000);
+};

@@ -102,7 +102,10 @@
     <script src="settings.js"></script>
     <script src="gamestate.js"></script>
     <script src="sidebar.js"></script>
-    <script src="sounds.js"></script><script src="toast.js"></script><script src="gamehud.js"></script><script src="script.js"></script>
+    <script src="sounds.js"></script>
+    <script src="toast.js"></script>
+    <script src="gamehud.js"></script>
+    <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz1';
         // Answers: Warlords of Draenor, Warlords, Draenor
@@ -165,7 +168,7 @@
         confirmBtn.onclick = () => {
             const val = input.value.trim().toUpperCase();
             if (!val) {
-                errorMsg.textContent = "Ich brauche ein Ziel!";
+                showErrorToast("Ich brauche ein Ziel!"); // Use Error Toast
                 return;
             }
 
@@ -182,7 +185,7 @@
 
                 window.location.href = nextUrl;
             } else {
-                errorMsg.textContent = "Falsch! Suche weiter im Nebel...";
+                showErrorToast("Falsch! Suche weiter im Nebel..."); // Use Error Toast
                 input.value = "";
             }
         };
@@ -190,6 +193,3 @@
 </body>
 
 </html>
-
-
-

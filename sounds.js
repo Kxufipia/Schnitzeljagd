@@ -53,6 +53,28 @@ const SoundManager = {
         this.note(1046.50, now + 0.4); // C6
     },
 
+    playError() {
+        if (!this.ctx) this.init();
+        // Low downward slide
+        this.playTone(150, 'sawtooth', 0.4, 0.2); // Start Low
+        // Pitch bend down logic is in playTone? No, playTone is static.
+        // Let's make a custom error sound here
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3); // Slide down
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    },
+
     note(freq, time) {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();

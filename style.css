@@ -1347,6 +1347,49 @@ label {
     transform: scale(1.05);
 }
 
+/* Error Toast Specifics */
+.error-toast {
+    border-color: #ef4444 !important;
+    /* Force Red */
+    background: var(--wow-glass);
+    /* Ensure Glass */
+    flex-direction: column;
+    /* Stack for the "Click to close" hint */
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 3rem;
+    /* Different animation? Shake? */
+    animation: shakeToast 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+.error-toast .achievement-text {
+    align-items: center;
+}
+
+@keyframes shakeToast {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
 /* Default non-selected look for class buttons with class-color rules:
    We want them to show their color but maybe slightly muted until selected?
    Or just show full color.

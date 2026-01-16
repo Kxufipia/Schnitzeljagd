@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSB Schnitzeljagd 2.0 - Quest 2</title>
     <link rel="stylesheet" href="style.css">
-    
+
 </head>
+
 <body>
     <div class="background-effects">
         <canvas id="campfire"></canvas>
@@ -24,13 +26,13 @@
 
             <div class="glass-panel card">
                 <h2 style="text-align: center; margin-bottom: 2rem; color: #ccc;">Placeholder Question for Quest 2?</h2>
-                
+
                 <div class="option-grid" id="options-container">
                     <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
                     <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
                     <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
                 </div>
-                
+
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
                     <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
                         <span>Zug Zug!</span>
@@ -39,7 +41,9 @@
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
                 </div>
-                <p id="error-msg" style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;"></p>
+                <p id="error-msg"
+                    style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
+                </p>
             </div>
         </div>
     </main>
@@ -49,10 +53,13 @@
     <script src="settings.js"></script>
     <script src="gamestate.js"></script>
     <script src="sidebar.js"></script>
-    <script src="sounds.js"></script><script src="toast.js"></script><script src="gamehud.js"></script><script src="script.js"></script>
+    <script src="sounds.js"></script>
+    <script src="toast.js"></script>
+    <script src="gamehud.js"></script>
+    <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz2';
-        const CORRECT = 'B'; 
+        const CORRECT = 'B';
         let selected = null;
         let startTime = Date.now();
         let currentState = null;
@@ -76,10 +83,10 @@
 
         function checkAnswer() {
             if (!selected) {
-                 document.getElementById('error-msg').textContent = "Ich brauche ein Ziel!";
-                 return;
+                showErrorToast("Ich brauche ein Ziel!");
+                return;
             }
-            
+
             if (selected === CORRECT) {
                 const timeTaken = (Date.now() - startTime) / 1000;
                 // Update State
@@ -89,15 +96,13 @@
                 // Ensure State is passed (getNextQuizUrl does this)
                 // Ensure Theme is passed
                 if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-                
+
                 window.location.href = nextUrl;
             } else {
-                 document.getElementById('error-msg').textContent = "Das ist leider falsch.";
+                showErrorToast("Das ist leider falsch.");
             }
         }
     </script>
 </body>
+
 </html>
-
-
-
