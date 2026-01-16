@@ -91,15 +91,6 @@ const SoundManager = {
     }
 };
 
-// Global Listeners for Buttons
-document.addEventListener('mouseover', (e) => {
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.option-btn')) {
-        SoundManager.playHover();
-    }
-});
-
-document.addEventListener('click', (e) => {
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.option-btn')) {
-        SoundManager.playClick();
-    }
-});
+// Global Listeners for Buttons - REMOVED per user request
+// document.addEventListener('mouseover', ...);
+// document.addEventListener('click', ...);
