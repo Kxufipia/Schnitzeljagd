@@ -98,7 +98,7 @@ const GameState = {
         const currentScore = currentState.scores[currentQuizId];
         if (currentScore) {
             if (currentScore.status === 'completed') toastParam = '&toast=completed';
-            else if (currentScore.status === 'skipped') toastParam = '&toast=skipped';
+            // Skipped quests do not trigger toasts
         }
 
         // Helper to append toast

@@ -4,31 +4,36 @@
     --wow-gold: #ffd700;
     --wow-blue: #1e3a8a;
     --horde-red: #8a1e1e;
+    /* Keep for legacy but minimize use */
 
     /* Dynamic Theme Color (Default Gold) */
     --current-theme-color: #ffd700;
 
     --wow-gold-dim: #4a0d0d;
-    --wow-dark: #050505;
-    --wow-glass: rgba(20, 5, 5, 0.85);
+    /* Modern Dark Mode: Deep Anthracite (No Pure Black) */
+    --wow-dark: #121212;
+    /* Neutral Dark Glass */
+    --wow-glass: rgba(22, 22, 24, 0.85);
 
     /* Use theme color for borders */
     --wow-border: var(--current-theme-color);
 
-    --text-main: #dcdcdc;
-    --text-muted: #888;
+    /* Soft White Text (No Pure White) */
+    --text-main: #F5F5F7;
+    --text-muted: #A1A1AA;
 }
 
 /* ... existing light theme block ... */
 
 /* Update Glass Panel to respond to theme */
 .glass-panel {
-    background: rgba(20, 5, 5, 0.6);
+    background: rgba(22, 22, 24, 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Neutral border */
     box-shadow:
-        0 8px 32px 0 rgba(0, 0, 0, 0.3),
+        0 8px 32px 0 rgba(0, 0, 0, 0.4),
         inset 0 0 0 1px rgba(255, 255, 255, 0.05);
     border-radius: 1.5rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -58,15 +63,9 @@ label {
     box-shadow: 0 0 10px var(--current-theme-color);
 }
 
-/* Button Primary - Use the theme color? 
-   No, primary button is "Abenteuer Beginnen" (Start Adventure). 
-   User wants theme to show "what to expect". 
-   Let's check script.js for submit button overrides.
-*/
-
 [data-theme="light"] {
     --wow-gold: #8a6d00;
-    /* Much Darker Gold */
+    /* Much Darker Gold for Light Mode */
     --wow-gold-dim: #b8860b;
     --wow-blue: #003399;
     --horde-red: #a30000;
@@ -74,19 +73,20 @@ label {
     /* Dynamic Theme Color */
     --current-theme-color: var(--wow-gold);
 
-    --glass-bg: rgba(255, 255, 255, 0.9);
-    /* Almost solid white */
-    --glass-border: rgba(0, 0, 0, 0.2);
+    --glass-bg: rgba(240, 242, 245, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.1);
 
-    --wow-dark: #f3f4f6;
-    /* Very light gray bg */
-    --wow-glass: rgba(255, 255, 255, 0.95);
-    --wow-border: rgba(0, 0, 0, 0.2);
+    /* Modern Light Mode: Matte Gray-White (Less Blinding) */
+    --wow-dark: #E4E6EB;
 
-    --text-main: #050505;
-    /* Pitch Black */
-    --text-muted: #374151;
-    /* Dark Gray, high readability */
+    /* Matte Glass - Not Pure White */
+    --wow-glass: rgba(245, 245, 247, 0.95);
+    --wow-border: rgba(0, 0, 0, 0.15);
+
+    /* Deep Anthracite Text */
+    --text-main: #18181B;
+    /* Neutral Dark Gray - Darkened for better contrast */
+    --text-muted: #3F3F46;
 }
 
 /* Fix Hero Text readability */
@@ -95,13 +95,19 @@ label {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-shadow: none;
+}
+
+[data-theme="light"] .hero-text p {
+    color: var(--text-main);
+    /* Force Main Dark Text instead of Gray */
+    font-weight: 500;
 }
 
 /* High Contrast Inputs */
 [data-theme="light"] .wow-input {
     background: #ffffff;
-    color: #000000;
+    color: #18181B;
     border: 1px solid #ccc;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -128,76 +134,96 @@ label {
 
 /* Glass Panels popping out more */
 [data-theme="light"] .glass-panel {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--wow-glass);
     box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
+        0 4px 15px -3px rgba(0, 0, 0, 0.05);
+    /* Class Color Border as requested */
+    border: 1px solid var(--current-theme-color);
+    color: var(--text-main);
+}
+
+/* Force Text Readability inside Glass Panel for Light Mode */
+[data-theme="light"] .glass-panel h1,
+[data-theme="light"] .glass-panel h2,
+[data-theme="light"] .glass-panel h3,
+[data-theme="light"] .glass-panel p,
+[data-theme="light"] .glass-panel span,
+[data-theme="light"] .glass-panel label {
+    color: var(--text-main);
+}
+
+[data-theme="light"] .glass-panel label {
+    color: var(--current-theme-color);
+    /* Labels keep accent color but must be readable */
+    font-weight: 800;
+    /* Extra bold for contrast */
+}
+
+/* Ensure placeholder contrast */
+[data-theme="light"] .wow-input::placeholder {
+    color: rgba(0, 0, 0, 0.5);
 }
 
 /* Light Mode Sidebars (Left & Right) */
+/* Light Mode Sidebars (Left & Right) */
 [data-theme="light"] .sidebar,
 [data-theme="light"] #game-hud {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid #ccc !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    color: #111 !important;
-}
-
-[data-theme="light"] .sidebar {
-    /* Tinted Glass Base - No Gray */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
-    border-color: var(--current-theme-color);
-    box-shadow: 0 0 30px var(--current-theme-color);
+    background: var(--wow-glass) !important;
+    /* Clean Off-White Glass */
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    /* Neutral Border */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    color: var(--text-main) !important;
     backdrop-filter: blur(20px);
-    border-right: 1px solid var(--current-theme-color);
 }
 
 [data-theme="light"] .sidebar-item {
-    /* Colorful Card Aesthetic - "Jewel-Lite" */
-    background: rgba(255, 255, 255, 0.95);
-    color: #444;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    /* Subtle border */
-    border-left: 4px solid var(--current-theme-color);
-    /* Color pop on left */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-weight: 600;
+    /* Neutral Item */
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+    /* Neutral marker */
+    box-shadow: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 [data-theme="light"] .sidebar-item:hover {
-    background: #fff;
-    transform: translateX(5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-    /* Deeper shadow */
-    border-color: var(--current-theme-color);
-    /* Full color border on hover */
+    background: white;
+    transform: translateX(3px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
+    border-left-color: var(--current-theme-color);
+    /* Color marker on hover */
+    color: var(--text-main);
 }
 
-/* The Jewel - Current Item */
+/* Current Item - Distinct but Clean */
 [data-theme="light"] .sidebar-item.current {
-    /* Full vibrant color */
-    background: var(--current-theme-color);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 5px 20px var(--current-theme-color), 0 5px 10px rgba(0, 0, 0, 0.4);
-    color: white !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    background: white;
+    border: 1px solid var(--current-theme-color);
+    border-left-width: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    color: var(--text-main) !important;
+    /* Dark text for readability */
 }
 
 [data-theme="light"] .sidebar-item.current span:first-child {
-    color: white;
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+    color: var(--current-theme-color);
+    /* Icon takes color */
+    filter: none;
 }
 
-/* Completed/Skipped in Light Mode */
+/* Completed/Skipped in Light Mode - Functional Colors */
 [data-theme="light"] .sidebar-item.completed span:first-child {
-    color: #15803d;
-    /* Darker Green for visibility on white */
+    color: #166534;
+    /* Dark Green */
 }
 
 [data-theme="light"] .sidebar-item.skipped span:first-child {
     color: #ca8a04;
-    /* Darker Yellow for visibility on white */
+    /* Dark Gold */
 }
 
 
@@ -215,33 +241,86 @@ label {
 /* ... (Skipped redundant text overrides) ... */
 
 /* Button Light Mode Upgrade - "Bunt" and Contrast */
-[data-theme="light"] .btn-primary {
-    color: white;
-    /* White text on colored button */
+/* Button Primary - Glass Core (Transparent Default) */
+.btn-primary {
+    background: rgba(255, 255, 255, 0.05);
+    /* Glass Base */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Neutral Border */
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 1rem 3rem;
+    cursor: pointer;
+    position: relative;
+    letter-spacing: 0.1em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 4px;
+    overflow: hidden;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    /* Neutral Shadow */
 }
 
-/* Remove the gray overrides and use THEME COLOR */
-[data-theme="light"] .btn-primary::before {
-    background: linear-gradient(135deg, var(--current-theme-color) 0%, var(--wow-gold-dim) 100%);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+/* Button Primary - Glass Core */
+.btn-primary {
+    background: rgba(255, 255, 255, 0.05);
+    /* Glass Base */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Neutral Border */
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 1rem 3rem;
+    cursor: pointer;
+    position: relative;
+    letter-spacing: 0.1em;
+    transition: all 0.2s ease;
+    /* Faster transition */
+    border-radius: 4px;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] .btn-primary::after {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
-    opacity: 0.3;
+.btn-primary::before,
+.btn-primary::after {
+    display: none;
+    /* No pseudo-elements */
 }
 
-[data-theme="light"] .btn-primary:hover::before {
-    background: linear-gradient(135deg, var(--wow-gold) 0%, var(--current-theme-color) 100%);
-    box-shadow: 0 0 25px var(--current-theme-color), 0 5px 15px rgba(0, 0, 0, 0.3);
+/* Hover State: Simple Glow Only */
+.btn-primary:hover {
+    border-color: var(--current-theme-color);
+    box-shadow: 0 0 20px var(--current-theme-color);
+    /* Static Glow */
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    /* Slight brighten */
+    transform: none;
+    /* No movement */
 }
 
-[data-theme="light"] .btn-primary:hover::after {
-    opacity: 0.8;
-    /* Stronger hover */
-    filter: brightness(1.2);
+.btn-primary:active {
+    transform: translateY(1px);
+    /* Micro-interaction for feedback */
+    box-shadow: 0 0 10px var(--current-theme-color);
+}
+
+/* Light Mode Overrides for Primary Button */
+[data-theme="light"] .btn-primary {
+    background: rgba(255, 255, 255, 0.5);
+    /* Lighter glass */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-main);
+    text-shadow: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: white;
+    border-color: var(--current-theme-color);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1), 0 0 10px var(--current-theme-color);
 }
 
 /* Secondary/Skip Button Theming for Light Mode */
@@ -716,95 +795,7 @@ label {
 
 /* Button */
 /* Tech Button */
-.btn-primary {
-    position: relative;
-    padding: 1rem 3rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: white;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    overflow: visible;
-    transition: all 0.3s ease;
-    z-index: 1;
-}
-
-.btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #8C1616 0%, #D90404 100%);
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    z-index: -1;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: linear-gradient(135deg, #ff4d4d, #8C1616);
-    z-index: -2;
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    opacity: 0.3;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.btn-primary:hover::before {
-    background: linear-gradient(135deg, #b31d1d 0%, #ff1a1a 100%);
-    box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
-}
-
-.btn-primary:hover::after {
-    opacity: 0.8;
-    background: #ffaa00;
-}
-
-.btn-primary span {
-    position: relative;
-    z-index: 2;
-}
-
-/* Status Pill */
-.status-pill {
-    margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #22c55e;
-    border-radius: 50%;
-    animation: blink 2s infinite;
-}
-
-@keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
-}
+/* [Legacy Tech Button Block Fully Removed] */
 
 .btn-secondary {
     position: relative;
@@ -812,51 +803,26 @@ label {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #ccc;
+    color: var(--text-muted);
+    /* Neutral */
     background: transparent;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle Border */
     cursor: pointer;
     overflow: visible;
     transition: all 0.3s ease;
     z-index: 1;
-}
-
-.btn-secondary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    z-index: -1;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.btn-secondary::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    background: linear-gradient(135deg, #666, #333);
-    z-index: -2;
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    opacity: 0.5;
-    transition: all 0.3s ease;
+    border-radius: 4px;
 }
 
 .btn-secondary:hover {
     color: white;
-    transform: scale(1.05);
+    border-color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
 }
 
-.btn-secondary:hover::before {
-    background: linear-gradient(135deg, #404040 0%, #5a5a5a 100%);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-.btn-secondary:hover::after {
-    opacity: 1;
-    background: #999;
-}
+/* Option Grid */
 
 /* Sidebar Icon Colors */
 .sidebar-item.unlocked span:first-child {
@@ -911,8 +877,9 @@ label {
 
 .option-btn {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ccc;
+    /* Dark Mode Default */
+    border: 1px solid var(--wow-border);
+    color: var(--text-muted);
     padding: 1.25rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -924,18 +891,34 @@ label {
 }
 
 .option-btn:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--current-theme-color);
     background: rgba(255, 255, 255, 0.1);
     transform: translateX(5px);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    color: var(--text-main);
 }
 
 .option-btn.selected {
-    background: var(--wow-gold);
-    border-color: var(--wow-gold);
-    color: black;
-    box-shadow: 0 0 20px rgba(230, 184, 0, 0.4);
+    background: var(--current-theme-color);
+    border-color: var(--current-theme-color);
+    color: var(--text-on-theme, white);
+    /* Ensure contrast */
+    box-shadow: 0 0 20px var(--current-theme-color);
     font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Light Mode Overrides for Options */
+[data-theme="light"] .option-btn {
+    background: white;
+    border-color: rgba(0, 0, 0, 0.15);
+    color: var(--text-main);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .option-btn:hover {
+    background: #f0f0f0;
+    border-color: var(--current-theme-color);
 }
 
 /* Leaderboard Table */
@@ -1167,6 +1150,7 @@ label {
 }
 
 /* Toast Notification (Achievement) */
+/* Toast Notification (Achievement) */
 #toast-container {
     position: fixed;
     bottom: 2rem;
@@ -1174,42 +1158,98 @@ label {
     transform: translateX(-50%);
     z-index: 1000;
     pointer-events: none;
+    width: auto;
+    max-width: 90vw;
 }
 
 .achievement-toast {
-    background: linear-gradient(to bottom, #2da7e5 0%, #003366 100%);
-    border: 2px solid #aaa;
-    border-radius: 4px;
-    width: 300px;
+    /* Glass Panel Base */
+    background: var(--wow-glass);
+    border: 1px solid var(--current-theme-color);
+    border-radius: 12px;
+    padding: 1rem 2rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
-    animation: slideUpToast 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards,
+    gap: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+
+    /* Animation */
+    animation: slideUpToast 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
         fadeOutToast 0.5s ease-in 4s forwards;
+
     position: relative;
     overflow: hidden;
-}
-
-/* Achievement Gold Border Styling */
-.achievement-toast::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border: 1px solid #ffd700;
-    pointer-events: none;
+    color: var(--text-main);
 }
 
 .achievement-icon {
-    width: 40px;
-    height: 40px;
-    background: #000;
-    border: 1px solid #777;
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+    animation: bounceIcon 1s ease infinite alternate;
+}
+
+@keyframes bounceIcon {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-5px);
+    }
+}
+
+.achievement-text {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.achievement-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--current-theme-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.achievement-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Glow Effect behind */
+.achievement-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--current-theme-color) 0%, transparent 70%);
+    opacity: 0.1;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes slideUpToast {
+    0% {
+        opacity: 0;
+        transform: translateY(100px) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeOutToast {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
 }
 
 .achievement-text {
@@ -1262,44 +1302,49 @@ label {
 }
 
 .class-btn {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
+    /* Neutral Base */
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
     cursor: pointer;
-    color: #888;
-    /* Default dim */
+    color: var(--text-muted);
     transition: all 0.2s ease;
     border-radius: 4px;
     text-transform: uppercase;
     font-weight: bold;
 }
 
-/* When specific class is colored, override the dim color */
+/* When specific class is available, Color the text/border */
 .class-btn[class*="class-color-"] {
-    /* Use the class color for text, but dim it by default?
-       Actually user wants them "stylised classcolor".
-       Let's keep them colored/bright, but maybe border/bg changes on select */
-    color: inherit;
-    /* inherit from the class-color-... rule? No, specific rule wins */
+    background: rgba(0, 0, 0, 0.3);
+    /* Slightly darker to let text pop */
+    border-color: currentColor;
+    /* Border takes class color */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
-/* We need to re-apply the specific colors because .class-btn might override?
-   No, !important in class-color-X usually handles it, but let's make sure hover/select pops */
-
+/* Class Button Refined - Glow/Outline Focus */
 .class-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px currentColor;
+    /* Add colored glow on hover */
+    color: white !important;
 }
 
 .class-btn.selected {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.6);
+    /* Keep dark background for contrast */
     border-color: currentColor;
-    /* Use the text color (class color) for border */
-    box-shadow: 0 0 10px currentColor;
-    /* Glow with class color */
     color: currentColor !important;
+    /* Text matches class color */
+    box-shadow: 0 0 15px currentColor, inset 0 0 10px rgba(0, 0, 0, 0.5);
+    /* Strong outer and inner glow */
+    text-shadow: 0 0 5px currentColor;
+    /* Glowing text */
+    font-weight: 800;
+    transform: scale(1.05);
 }
 
 /* Default non-selected look for class buttons with class-color rules:

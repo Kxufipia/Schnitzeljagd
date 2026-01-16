@@ -16,6 +16,30 @@
         }
     }
 
+    const WOW_QUOTES = [
+        "Lok'tar Ogar!",
+        "For the Alliance!",
+        "Work Work!",
+        "Zug Zug!",
+        "Time is money, friend!",
+        "Elune guide you.",
+        "Victory or Death!",
+        "May your blades never dull.",
+        "The Elements guide me.",
+        "Did someone say Thunderfury?",
+        "For Azeroth!",
+        "Strength and Honor.",
+        "You are not prepared!",
+        "Anu belore dela'na.",
+        "Walk with the Earth Mother.",
+        "Dark Lady watch over you.",
+        "Stay away from the Voodoo!",
+        "Leeeeeeeroy Jenkins!",
+        "More work?",
+        "Frostmourne hungers.",
+        "Job's done!"
+    ];
+
     function showAchievement(id) {
         // Play Sound
         if (window.SoundManager) {
@@ -25,34 +49,34 @@
         const container = document.createElement('div');
         container.id = 'toast-container';
 
-        // Title lookup could be in config, for now generic or dynamic
-        let title = "Quest Completed";
-        let sub = "You are one step closer...";
+        // Content
+        let title = "Quest Complete";
+        let sub = "";
 
-        // Simple Lookup
         if (id === 'completed') {
-            title = "Quest Complete!";
-            sub = "Victory for the Horde!";
-        } else if (id === 'skipped') {
-            title = "Tactical Retreat";
-            sub = "There is no shame in survival.";
+            // Random Quote
+            sub = WOW_QUOTES[Math.floor(Math.random() * WOW_QUOTES.length)];
+        } else {
+            // Fallback for other potential toasts
+            sub = "Well done!";
         }
 
         container.innerHTML = `
-            <div class="achievement-toast">
+            <div class="achievement-toast glass-panel">
                 <div class="achievement-icon">🏆</div>
                 <div class="achievement-text">
                     <span class="achievement-title">${title}</span>
                     <span class="achievement-desc">${sub}</span>
                 </div>
+                <div class="achievement-glow"></div>
             </div>
         `;
 
         document.body.appendChild(container);
 
-        // Auto remove handled by CSS animation fade out, but clean DOM later
+        // Remove after animation (5s to be safe)
         setTimeout(() => {
-            container.remove();
+            if (container.parentNode) container.remove();
         }, 5000);
     }
 

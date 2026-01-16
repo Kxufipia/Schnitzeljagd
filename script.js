@@ -117,11 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function applyClassTheme(className) {
-        const color = CLASS_COLORS[className];
+        const color = CLASS_COLORS[className] || '#ffd700'; // Default to gold
         if (color) {
             document.documentElement.style.setProperty('--current-theme-color', color);
             // Also override gold if we mean to replace the "main" accent
             document.documentElement.style.setProperty('--wow-gold', color);
+
+            // AUTO CONTRAST CALCULATION
+            const hex = color.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+
+            // YIQ Brightness formula
+            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            const contrastColor = (yiq >= 150) ? '#000000' : '#FFFFFF';
+
+            document.documentElement.style.setProperty('--text-on-theme', contrastColor);
         }
     }
     window.applyClassTheme = applyClassTheme; // Expose for HUD

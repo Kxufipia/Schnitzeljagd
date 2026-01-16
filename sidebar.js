@@ -14,8 +14,12 @@
             left: 1.5rem;
             transform: translateY(-50%) scale(0.95);
             width: 4rem; /* Compact width */
-            background: rgba(15, 15, 20, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Use Global Variables for Theming */
+            background: var(--wow-glass);
+            border: 1px solid var(--wow-border);
+            color: var(--text-main);
+            
             border-radius: 1.5rem;
             z-index: 100;
             backdrop-filter: blur(20px);
@@ -31,11 +35,14 @@
 
         #sidebar-container:hover {
             width: 280px;
-            background: rgba(10, 10, 15, 0.85);
+            /* On hover, keep glass variable, maybe slight opacity shift if strictly needed, 
+               but essentially standardizing. */
+            background: var(--wow-glass);
+            
             transform: translateY(-50%) scale(1);
             align-items: stretch;
             box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--wow-border);
         }
         
         /* Mobile adjust */
@@ -57,13 +64,17 @@
             padding: 0.75rem;
             border-radius: 1rem;
             text-decoration: none;
-            color: rgba(255,255,255,0.5);
+            
+            /* Variable Colors */
+            color: var(--text-muted);
+            
             font-size: 0.95rem;
             white-space: nowrap;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             height: 3.5rem;
+            border: 1px solid transparent; /* Prepare for hover border */
         }
 
         .sidebar-item span:first-child {
@@ -82,23 +93,26 @@
         
         /* Status Colors */
         .sidebar-item.locked {
-            opacity: 0.3;
+            opacity: 0.5;
             cursor: not-allowed;
             filter: grayscale(1);
         }
         
         .sidebar-item.completed {
-            color: #4ade80; /* bright green */
+            /* Keep functional green but ensure readability? 
+               Maybe use variable if we defined it, otherwise hardcoded is okay for status. 
+               But let's stick to accessible green. */
+            color: #22c55e;
         }
         
         .sidebar-item.completed:hover {
             background: rgba(34, 197, 94, 0.1);
-            color: #86efac;
+            color: #15803d; 
             box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
         }
         
         .sidebar-item.skipped {
-            color: #facc15; /* yellow */
+            color: #d97706; /* Darker amber for contrast */
         }
         
         .sidebar-item.skipped:hover {
@@ -106,21 +120,27 @@
             box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
         }
         
+        /* Current Item - Theme Color */
         .sidebar-item.current {
-            background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), transparent);
-            color: #f87171; /* red-400 */
-            border-left: 3px solid #ef4444;
-            border-radius: 0 1rem 1rem 0;
+            background: linear-gradient(90deg, var(--current-theme-color), transparent); /* Wait, heavy gradient. */
+            /* User wants Neutral Core. Let's make it Outline style or very subtle. */
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--current-theme-color);
+            color: var(--text-main);
+            border-left: 4px solid var(--current-theme-color);
+            border-radius: 4px;
         }
 
         .sidebar-item.current span:first-child {
-            color: #ef4444;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+            color: var(--current-theme-color);
+            text-shadow: 0 0 10px var(--current-theme-color);
         }
         
         .sidebar-item:hover:not(.locked) {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.1);
             padding-left: 1rem;
+            border-color: var(--wow-border);
+            color: var(--text-main);
         }
     `;
 
