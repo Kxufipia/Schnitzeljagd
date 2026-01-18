@@ -51,11 +51,34 @@
             if (openCount < 0) openCount = 0;
         }
 
-        // Create Container
-        const hud = document.createElement('div');
-        hud.id = HUD_ID;
-        hud.className = 'glass-panel animate-enter';
+        // Calculate Level Data
+        const lvlData = GameState.getLevelData(totalScore);
 
+        // Calculate Max Score dynamically
+        let maxPossibleScore = 0;
+        if (config.length) {
+            maxPossibleScore = config.reduce((sum, q) => {
+                if (q.id === 'result') return sum;
+                return sum + (q.maxPoints || 1000);
+            }, 0);
+        }
+
+        // Prevent Divide by Zero
+        if (maxPossibleScore === 0) maxPossibleScore = 15000; // Fallback estimate
+
+        const xpPercent = Math.min(100, Math.max(0, (totalScore / maxPossibleScore) * 100));
+
+        // Create or Hydrate Container
+        let hud = document.getElementById(HUD_ID);
+
+        if (!hud) {
+            hud = document.createElement('div');
+            hud.id = HUD_ID;
+            hud.className = 'glass-panel';
+            document.body.appendChild(hud);
+        }
+
+        // Always update content (Hydration)
         hud.innerHTML = `
             <div class="hud-row header">
                 <span class="hud-label">Held</span>
@@ -63,10 +86,21 @@
             </div>
             
             <div class="hud-divider"></div>
+
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
+                <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Stufe ${lvlData.level}</span>
+                <span class="hud-subtext" style="font-size: 0.75rem;">${lvlData.percent.toFixed(0)}%</span>
+            </div>
             
-            <div class="hud-row">
-                <span class="hud-label">Punkte</span>
-                <span class="hud-value score">${totalScore}</span>
+            <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+                <div class="xp-bar">
+                    <div class="xp-fill" style="width: ${lvlData.percent}%"></div>
+                    <div class="xp-text">${lvlData.label}</div>
+                </div>
+            </div>
+
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <span class="hud-muted" style="font-size: 0.8rem; font-weight: 400;">Total: ${totalScore} Pkt.</span>
             </div>
 
             <div class="hud-divider"></div>
@@ -86,14 +120,9 @@
                 </div>
             </div>
         `;
-
-        document.body.appendChild(hud);
     }
 
-    // Wait for DOM
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initHUD);
-    } else {
-        initHUD();
-    }
+    // Run immediately (Script is at bottom of body, so body exists)
+    // This ensures HUD is present for View Transitions snapshots
+    initHUD();
 })();

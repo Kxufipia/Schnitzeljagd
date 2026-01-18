@@ -165,5 +165,55 @@ const GameState = {
                 state.visited.push(nextId);
             }
         }
+    },
+
+    // Leveling Logic (18,500 total possible roughly)
+    // 0 -> Lvl 1
+    // 500 -> Lvl 2
+    // 1500 -> Lvl 3 (Gap 1000)
+    // 3000 -> Lvl 4 (Gap 1500)
+    // 5000 -> Lvl 5 (Gap 2000)
+    // 7500 -> Lvl 6 (Gap 2500)
+    // 10500 -> Lvl 7 (Gap 3000)
+    // 14000 -> Lvl 8 (Gap 3500)
+    // 18000 -> Lvl 9 (Gap 4000) - Basic Max
+    // 25000 -> Lvl 10 (Titan)
+    getLevelData(points) {
+        const thresholds = [0, 500, 1500, 3000, 5000, 7500, 10500, 14000, 18000, 25000];
+
+        // Find current level
+        let level = 1;
+        for (let i = 0; i < thresholds.length; i++) {
+            if (points >= thresholds[i]) {
+                level = i + 1;
+            } else {
+                break;
+            }
+        }
+
+        // Cap at Max Level
+        if (level >= thresholds.length) {
+            return {
+                level: thresholds.length,
+                current: points,
+                max: points, // Full bar
+                percent: 100,
+                label: 'MAX'
+            };
+        }
+
+        const startXP = thresholds[level - 1]; // XP at start of this level
+        const nextXP = thresholds[level];     // XP needed for next level
+        const range = nextXP - startXP;
+        const currentXP = points - startXP;
+        const percent = Math.min(100, Math.max(0, (currentXP / range) * 100));
+
+        return {
+            level: level,
+            current: currentXP,
+            max: range,
+            percent: percent,
+            label: `${currentXP} / ${range} XP`
+        };
     }
 };

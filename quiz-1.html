@@ -62,17 +62,32 @@
     <!-- Header Removed for Starry Sky -->
 
     <main>
-        <div class="container animate-enter" style="max-width: 54rem;">
-            <h1 style="margin-bottom: 1.5rem;">Ein Blick durch den Nebel</h1>
+        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
+            <h1 style="margin-bottom: 0.5rem;">Ein Blick durch den Nebel</h1>
 
-            <div class="glass-panel card">
-                <div class="puzzle-container">
+            <div class="glass-panel card" style="padding-bottom: 1rem;">
+                <style>
+                    #error-msg:empty {
+                        display: none;
+                        margin: 0;
+                        height: 0;
+                    }
+                </style>
+                <div class="puzzle-container" style="margin-bottom: 1rem;">
                     <img id="reveal-img" src="images/Puzzle-LoginScreen.jpg" alt="Quest Bild" class="puzzle-image">
                 </div>
 
                 <div class="input-section">
-                    <div class="form-group">
-                        <label for="puzz-answer">Zu welchem Addon gehoert dieser LoginScreen?</label>
+                    <!-- Quest Giver: Thrall -->
+                    <div class="quest-giver-wrapper" style="margin-bottom: 0;">
+                        <div class="quest-bubble" style="margin-bottom: 0; padding: 1.25rem;">
+                            <div class="quest-speaker-name">Thrall</div>
+                            <label for="puzz-answer" style="display:block;">Zu welchem Addon gehoert dieser
+                                LoginScreen?</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
                         <div class="input-wrapper">
                             <input type="text" id="puzz-answer" class="wow-input" placeholder="Addon Name..."
                                 autocomplete="off">
@@ -80,7 +95,7 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 0;">
                         <button id="confirm-btn" class="btn-primary" style="flex: 2;">
                             <span>Zug Zug!</span>
                         </button>
@@ -96,6 +111,41 @@
             </div>
         </div>
     </main>
+
+    <!-- Background Character -->
+    <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
+
+    <!-- Static HUD Skeleton (Prevents View Transition Blink) -->
+    <div id="game-hud" class="glass-panel"
+        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+        <div class="hud-row header">
+            <span class="hud-label">Held</span>
+            <span class="hud-value name">...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+                ...</span>
+            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+        </div>
+        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+            <div class="xp-bar">
+                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-text">...</div>
+            </div>
+        </div>
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-stats-grid">
+            <div class="stat-item completed"><span class="stat-label">Erledigt</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
+        </div>
+    </div>
 
     <script src="campfire.js"></script>
     <script src="stars.js"></script>

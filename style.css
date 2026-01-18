@@ -1096,6 +1096,59 @@ label {
     color: #ccc;
 }
 
+/* XP Bar Styles for HUD */
+.xp-container {
+    width: 100%;
+    margin: 0.5rem 0;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.xp-bar {
+    height: 14px;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+}
+
+.xp-fill {
+    height: 100%;
+    background: linear-gradient(180deg, #a855f7 0%, #7e22ce 50%, #581c87 100%);
+    /* Purple "Rested" XP */
+    width: 0%;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    position: relative;
+}
+
+/* Light shimmer on the bar */
+.xp-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.xp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.65rem;
+    color: #fff;
+    text-shadow: 0 1px 2px #000;
+    font-weight: 700;
+    z-index: 2;
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.5px;
+}
+
 /* Class Colors */
 .class-color-warrior {
     color: #C79C6E !important;
@@ -1390,9 +1443,226 @@ label {
     }
 }
 
+/* --- Quest Giver (Jaina/Thrall) Layout --- */
+.quest-giver-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    /* Align to right */
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quest-portrait {
+    position: fixed;
+    bottom: -5vh;
+    right: 5vw;
+    /* Moved right to overlap HUD */
+    height: 85vh;
+    /* Massive Size */
+    width: auto;
+    z-index: 0;
+    /* Above stars/campfire, below panels */
+    pointer-events: none;
+    /* Click through */
+    filter: drop-shadow(-20px 0 50px rgba(0, 0, 0, 0.5));
+    transition: transform 0.5s ease-out;
+    opacity: 1;
+
+    /* Optional: Mask to blend feet/side */
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+/* Hover effect on portrait - subtle parallax? */
+.quest-portrait:hover {
+    transform: scale(1.02) translateX(-10px);
+}
+
+.quest-bubble {
+    background: var(--wow-glass);
+    /* Reusing glass var */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem 1.5rem 0 1.5rem;
+    /* Point to right-bottom */
+    padding: 1.5rem;
+    position: relative;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    /* Ensure on top of image */
+    max-width: 600px;
+    /* Limit width */
+    margin-left: auto;
+    /* Push to right? No, let wrapper handle it */
+}
+
+.quest-bubble H2,
+.quest-bubble label {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    text-align: left;
+    /* Text aligns naturally */
+}
+
+/* Name tag for the speaker? */
+.quest-speaker-name {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: var(--current-theme-color);
+    color: #000;
+    padding: 0.2rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
 /* Default non-selected look for class buttons with class-color rules:
    We want them to show their color but maybe slightly muted until selected?
    Or just show full color.
    The class-color rules use !important, so they will be colored.
    Let's just ensure .selected adds the glow.
 */
+
+/* Global Vertical Rhythm Optimization */
+#error-msg:empty {
+    display: none;
+    margin: 0;
+    height: 0;
+}
+
+.quest-giver-wrapper {
+    margin-bottom: 0.25rem !important;
+}
+
+.quest-bubble {
+    margin-bottom: 0 !important;
+    padding: 1.25rem !important;
+}
+
+.container h1 {
+    margin-bottom: 0.5rem !important;
+}
+
+/* Ensure cards don't have excessive bottom padding if content is tight */
+.glass-panel.card {
+    padding-bottom: 1rem !important;
+}
+
+
+.input-section {
+    gap: 0.5rem !important;
+}
+
+/* --- GAME HUD STYLES --- */
+#game-hud {
+    position: fixed;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    width: 250px;
+    padding: 1rem;
+    z-index: 100;
+    /* Default Dark Mode Look (inherited from .glass-panel) */
+}
+
+/* Text Helpers */
+.hud-accent {
+    color: white;
+}
+
+.hud-subtext {
+    color: #888;
+}
+
+.hud-muted {
+    color: #666;
+}
+
+/* Light Mode Overrides for HUD */
+[data-theme="light"] #game-hud {
+    background: rgba(255, 255, 255, 0.95);
+    /* Opaque white/gray for contrast */
+    border: 1px solid #ccc;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    color: #333;
+    /* Dark Text */
+}
+
+[data-theme="light"] .hud-accent {
+    color: #111;
+    /* Very dark/black */
+}
+
+[data-theme="light"] .hud-subtext {
+    color: #555;
+    /* Medium dark */
+}
+
+[data-theme="light"] .hud-muted {
+    color: #777;
+    /* Softer dark */
+}
+
+[data-theme="light"] .hud-label {
+    color: #444;
+}
+
+
+/* --- VIEW TRANSITIONS (Soft Page Swaps) --- */
+@view-transition {
+    navigation: auto;
+}
+
+/* Treat the character as a persistent entity that changes appearance */
+.quest-portrait {
+    view-transition-name: hero-portrait;
+}
+
+/* Treat the content card as a persistent morphing box */
+.glass-panel.card {
+    view-transition-name: main-card;
+}
+
+
+/* Title drifts */
+h1 {
+    view-transition-name: main-title;
+}
+
+/* --- PERSISTENT UI ELEMENTS --- */
+/* These elements exist on all pages. Giving them a unique name prevents them from fading out/in. */
+/* Instead, the browser keeps them visible if they match. */
+
+#game-hud {
+    view-transition-name: persistent-hud;
+    z-index: 9999 !important;
+    /* Ensure on top of transition layer */
+}
+
+#sidebar-container {
+    view-transition-name: persistent-sidebar;
+    z-index: 9999 !important;
+}
+
+#theme-controls {
+    view-transition-name: persistent-controls;
+    z-index: 9999 !important;
+}
+
+/* Custom Animation for the Portrait Swap (Optional Cross-Fade focus) */
+::view-transition-old(hero-portrait),
+::view-transition-new(hero-portrait) {
+    /* If we want a smoother cross-fade than default */
+    animation-duration: 0.6s;
+}

@@ -12,8 +12,8 @@
             position: fixed;
             top: 50%;
             left: 1.5rem;
-            transform: translateY(-50%) scale(0.95);
-            width: 4rem; /* Compact width */
+            transform: translateY(-50%);
+            width: 250px; /* Always expanded */
             
             /* Use Global Variables for Theming */
             background: var(--wow-glass);
@@ -31,16 +31,15 @@
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
             overflow: hidden;
+            overflow-y: auto; /* Allow scroll if list is long */
+            max-height: 80vh;
         }
 
+        /* No Hover Expansion needed anymore */
         #sidebar-container:hover {
-            width: 280px;
-            /* On hover, keep glass variable, maybe slight opacity shift if strictly needed, 
-               but essentially standardizing. */
-            background: var(--wow-glass);
-            
-            transform: translateY(-50%) scale(1);
-            align-items: stretch;
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
+            border-color: var(--wow-border);
+        }
             box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
             border-color: var(--wow-border);
         }

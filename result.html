@@ -57,6 +57,38 @@
         </div>
     </main>
 
+    <!-- Static HUD Skeleton -->
+    <div id="game-hud" class="glass-panel"
+        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+        <div class="hud-row header">
+            <span class="hud-label">Held</span>
+            <span class="hud-value name">...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+                ...</span>
+            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+        </div>
+        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+            <div class="xp-bar">
+                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-text">...</div>
+            </div>
+        </div>
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-stats-grid">
+            <div class="stat-item completed"><span class="stat-label">Erledigt</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
+        </div>
+    </div>
+
     <script src="campfire.js"></script>
     <script src="gamestate.js"></script>
     <script src="sounds.js"></script>
