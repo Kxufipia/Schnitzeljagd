@@ -227,7 +227,9 @@
 
                 const front = document.createElement('div');
                 front.classList.add('memory-card-front');
-                front.style.backgroundImage = `url('images/Memory/${img}')`;
+                // Build robust URL with correct encoding for spaces/special chars
+                const encodedImg = encodeURIComponent(img).replace(/'/g, "%27");
+                front.style.backgroundImage = `url('images/Memory/${encodedImg}')`;
 
                 const back = document.createElement('div');
                 back.classList.add('memory-card-back');
