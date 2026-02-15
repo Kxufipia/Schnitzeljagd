@@ -216,6 +216,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = input.value.trim();
 
             if (name) {
+                // MAINTENANCE MODE CHECK
+                // Target Date: 08.03.2026 20:00
+                const targetDate = new Date("2026-03-08T20:00:00");
+                const now = new Date();
+
+                if (name !== 'Warchas1985' && now < targetDate) {
+                    // Show Countdown
+                    const loginSection = document.getElementById('login-section');
+                    const maintenanceSection = document.getElementById('maintenance-section');
+
+                    if (loginSection && maintenanceSection) {
+                        loginSection.style.display = 'none';
+                        maintenanceSection.style.display = 'block';
+
+                        // Start Timer
+                        setInterval(() => {
+                            const current = new Date();
+                            const diff = targetDate - current;
+
+                            if (diff <= 0) {
+                                location.reload(); // Refresh when time is up
+                                return;
+                            }
+
+                            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                            const minutes = Math.floor((diff / 1000 / 60) % 60);
+                            const seconds = Math.floor((diff / 1000) % 60);
+
+                            document.getElementById('d').innerText = days < 10 ? '0' + days : days;
+                            document.getElementById('h').innerText = hours < 10 ? '0' + hours : hours;
+                            document.getElementById('m').innerText = minutes < 10 ? '0' + minutes : minutes;
+                            document.getElementById('s').innerText = seconds < 10 ? '0' + seconds : seconds;
+                        }, 1000);
+                    }
+                    return; // Stop here, don't login
+                }
+
                 // Secret Access
                 if (name.toLowerCase() === 'warchas') {
                     let target = 'decoder.html';
