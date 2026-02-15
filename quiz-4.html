@@ -21,41 +21,65 @@
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 4</h1>
+        <div class="container animate-enter" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
+            <h1 style="margin-bottom: 1.5rem;">Quest 4: Der geheime Ort</h1>
 
             <div class="glass-panel card">
-                <!-- Quest Giver: Jaina -->
-                <div class="quest-giver-wrapper">
-                    <div class="quest-bubble">
-                        <div class="quest-speaker-name">Jaina</div>
-                        <h2>Placeholder Question for Quest 4?</h2>
+                <p style="margin-bottom: 1.5rem; text-align: center;">
+                    Sucht Kuxu an diesem Ort. Die Bilder offenbaren sich langsam...
+                </p>
+
+                <!-- Reveal Gallery -->
+                <div class="reveal-gallery">
+                    <div class="reveal-item" id="reveal-1">
+                        <div class="reveal-img-container">
+                            <!-- Placeholder 1 -->
+                            <div class="placeholder-box">Bild 1</div>
+                        </div>
+                        <div class="reveal-timer">Sofort</div>
+                    </div>
+
+                    <div class="reveal-item blurry" id="reveal-2">
+                        <div class="reveal-img-container">
+                            <!-- Placeholder 2 -->
+                            <div class="placeholder-box">Bild 2</div>
+                        </div>
+                        <div class="reveal-timer" id="timer-2">00:30</div>
+                    </div>
+
+                    <div class="reveal-item blurry" id="reveal-3">
+                        <div class="reveal-img-container">
+                            <!-- Placeholder 3 -->
+                            <div class="placeholder-box">Bild 3</div>
+                        </div>
+                        <div class="reveal-timer" id="timer-3">01:00</div>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <!-- Input Section (Same as Quiz 3 was) -->
+                <div class="input-group"
+                    style="margin-top: 2.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                    <label for="code-input" style="display: block; margin-bottom: 0.5rem; color: var(--wow-gold);">Was
+                        ist das Codewort?</label>
+                    <input type="text" id="code-input" class="glass-input" placeholder="Algari-..." autocomplete="off">
                 </div>
 
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
                     <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
-                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz4')">
-                        <span>Ich bin OOM! (Skip)</span>
+                        <span>Überprüfen</span>
                     </button>
                 </div>
+                <!-- Error msg -->
                 <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
+                    style="color: var(--horde-red); font-size: 0.9rem; min-height: 1.5rem; text-align: center; margin-top: 1rem;">
                 </p>
+
             </div>
         </div>
     </main>
 
-    <!-- Background Character -->
-    <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
+    <!-- Background Character (Optional, reusing Jaina or Paladin or none) -->
+    <!-- <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina"> -->
 
     <!-- Static HUD Skeleton -->
     <div id="game-hud" class="glass-panel"
@@ -89,6 +113,89 @@
         </div>
     </div>
 
+    <!-- Styles -->
+    <style>
+        .reveal-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .reveal-item {
+            position: relative;
+            border: 2px solid var(--wow-border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16/9;
+            transition: filter 0.5s ease;
+        }
+
+        /* Initial blurred state for hidden images (using filter for visual effect or just opaque overlay) */
+        .reveal-item.blurry .reveal-img-container {
+            filter: blur(20px) grayscale(100%);
+            opacity: 0.3;
+        }
+
+        /* Container for img or placeholder */
+        .reveal-img-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .placeholder-box {
+            color: #555;
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+        }
+
+        /* Loading Overlay/Timer for locked items */
+        .reveal-timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--wow-gold);
+            text-shadow: 0 2px 4px black;
+            z-index: 10;
+        }
+
+        .reveal-item:not(.blurry) .reveal-timer {
+            display: none;
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            width: 80%;
+            max-width: 300px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--wow-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+
     <script src="campfire.js"></script>
     <script src="stars.js"></script>
     <script src="settings.js"></script>
@@ -100,8 +207,7 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz4';
-        const CORRECT = 'B';
-        let selected = null;
+        const SECRET_CODE = 'Algari-Angler2024';
         let startTime = Date.now();
         let currentState = null;
 
@@ -115,34 +221,83 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        // Image Reveal Logic
+        function startRevealTimers() {
+            // Image 2: 30s
+            startTimer(30, document.getElementById('timer-2'), () => {
+                const el = document.getElementById('reveal-2');
+                el.classList.remove('blurry');
+                if (window.SoundManager) SoundManager.playClick(); // Sound effect
+            });
+
+            // Image 3: 60s
+            startTimer(60, document.getElementById('timer-3'), () => {
+                const el = document.getElementById('reveal-3');
+                el.classList.remove('blurry');
+                if (window.SoundManager) SoundManager.playClick();
+            });
         }
 
+        function startTimer(duration, display, callback) {
+            let timer = duration;
+            const interval = setInterval(function () {
+                let minutes = parseInt(timer / 60, 10);
+                let seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    callback();
+                }
+            }, 1000);
+        }
+
+        // Start immediately
+        startRevealTimers();
+
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const input = document.getElementById('code-input');
+            const userCode = input.value.trim();
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!userCode) {
+                errorMsg.textContent = "Bitte gib das Codewort ein.";
                 return;
             }
 
-            if (selected === CORRECT) {
+            if (userCode.toLowerCase() === SECRET_CODE.toLowerCase()) {
                 const timeTaken = (Date.now() - startTime) / 1000;
                 // Update State
                 const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
                 // Get Next URL
                 let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
                 if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
 
-                window.location.href = nextUrl;
+                if (window.SoundManager) SoundManager.playLevelUp();
+
+                errorMsg.style.color = 'var(--wow-gold)';
+                errorMsg.textContent = "Korrekt! Weiter geht's...";
+                setTimeout(() => {
+                    window.location.href = nextUrl;
+                }, 1000);
             } else {
-                showErrorToast("Das ist leider falsch.");
+                errorMsg.style.color = 'var(--horde-red)';
+                errorMsg.textContent = "Das ist nicht das richtige Wort.";
+                input.value = '';
+                input.focus();
+                if (window.SoundManager) SoundManager.playError();
             }
         }
+
+        document.getElementById('code-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
     </script>
 </body>
 

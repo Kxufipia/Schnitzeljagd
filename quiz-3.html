@@ -31,36 +31,25 @@
                         <div class="quest-speaker-name">Ritter der Silbernen Hand</div>
                         <p style="font-style: italic; margin-bottom: 1rem;">"Hört her, Abenteurer! Die
                             Expeditionsvorräte gehen zur Neige und der Koch der Silbernen Hand verlangt nach frischer
-                            Ware aus den Gewässern von Khaz Algar.</p>
+                            Ware.</p>
                         <p style="margin-bottom: 1rem;">Beweist euer Geschick an der Angel und beschafft <strong>5
-                                Fische</strong> aus der aktuellen Expansion (The War Within). Sucht anschließend den
-                            Händler <strong>Kuxu</strong> in der Hauptstadt auf und bietet ihm den Fang zum Handel an.
+                                Fische</strong> aus der aktuellen Expansion (Midnight). Sucht anschließend den Händler
+                            <strong>Kuxu</strong> an seinem geheimen Ort auf und bietet ihm den Fang zum Handel an.
                         </p>
-                        <p style="font-weight: bold;">Nur wer ihm die Beute präsentiert, wird das geheime Codewort
-                            erhalten, um die nächste Stufe der Schnitzeljagd freizuschalten!"</p>
+                        <p style="font-weight: bold;">Ich werde euch nun Bilder zeigen, die euch zu ihm führen. Merkt
+                            sie euch gut!"</p>
                     </div>
                 </div>
 
-                <div class="input-group" style="margin-top: 2rem; text-align: center;">
-                    <label for="code-input"
-                        style="display: block; margin-bottom: 0.5rem; color: var(--wow-gold);">Codewort
-                        eingeben:</label>
-                    <input type="text" id="code-input" class="glass-input" placeholder="Das geheime Wort..."
-                        autocomplete="off">
-                </div>
-
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
-                        <span>Erfüllen</span>
+                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="finishQuiz()">
+                        <span>Auf die Suche! (Weiter)</span>
                     </button>
                     <!-- Skip removed/optional based on strictness. Keeping generic skip if needed, but usually codes are mandatory. -->
                     <!-- <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz3')">
                         <span>Überspringen</span>
                     </button> -->
                 </div>
-                <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.9rem; min-height: 1.5rem; text-align: center; margin-top: 1rem;">
-                </p>
             </div>
         </div>
     </main>
@@ -132,7 +121,6 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz3';
-        const SECRET_CODE = 'Algari-Angler2024';
         let startTime = Date.now();
         let currentState = null;
 
@@ -146,47 +134,16 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function checkAnswer() {
-            const input = document.getElementById('code-input');
-            const userCode = input.value.trim();
-            const errorMsg = document.getElementById('error-msg');
+        function finishQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            // Update State - simple completion for reading
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            // Get Next URL
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
 
-            if (!userCode) {
-                errorMsg.textContent = "Bitte gib das Codewort ein.";
-                return;
-            }
-
-            if (userCode.toLowerCase() === SECRET_CODE.toLowerCase()) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-
-                if (window.SoundManager) SoundManager.playLevelUp();
-
-                // Show success feedback briefly before redirecting (optional)
-                errorMsg.style.color = 'var(--wow-gold)';
-                errorMsg.textContent = "Korrekt! Der Weg öffnet sich...";
-                setTimeout(() => {
-                    window.location.href = nextUrl;
-                }, 1000);
-            } else {
-                errorMsg.style.color = 'var(--horde-red)';
-                errorMsg.textContent = "Das ist nicht das richtige Wort. Versuche es erneut.";
-                input.value = '';
-                input.focus();
-                if (window.SoundManager) SoundManager.playError(); // Assuming exists
-            }
+            window.location.href = nextUrl;
         }
-
-        // Allow Enter key
-        document.getElementById('code-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkAnswer();
-            }
-        });
     </script>
 </body>
 
