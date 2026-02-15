@@ -132,8 +132,8 @@
             background-color: #222;
             color: white;
             transform: rotateY(180deg);
-            background-size: cover;
-            background-position: center;
+            /* background-size: cover; removed */
+            /* background-position: center; removed */
         }
 
         .memory-card-back {
@@ -227,9 +227,26 @@
 
                 const front = document.createElement('div');
                 front.classList.add('memory-card-front');
-                // Build robust URL with correct encoding for spaces/special chars
+
+                // Use IMG tag for better control and error handling
+                const imgResult = document.createElement('img');
+                // Manually encode only spaces to be safe, or use encodeURI if path allows
+                // encodeURIComponent encodes / which we don't want if full path.
+                // Here we only have filename. 
                 const encodedImg = encodeURIComponent(img).replace(/'/g, "%27");
-                front.style.backgroundImage = `url('images/Memory/${encodedImg}')`;
+                imgResult.src = `images/Memory/${encodedImg}`;
+                imgResult.style.width = '100%';
+                imgResult.style.height = '100%';
+                imgResult.style.objectFit = 'cover';
+                imgResult.style.borderRadius = '8px';
+
+                // Debugging: If error, show red background
+                imgResult.onerror = function () {
+                    this.parentElement.style.backgroundColor = 'red';
+                    console.error("Failed to load image:", this.src);
+                };
+
+                front.appendChild(imgResult);
 
                 const back = document.createElement('div');
                 back.classList.add('memory-card-back');
