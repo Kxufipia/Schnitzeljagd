@@ -22,40 +22,30 @@
 
     <main>
         <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 2</h1>
+            <h1 style="margin-bottom: 1.5rem;">Quest 2: Das Gedächtnis der Ahnen</h1>
 
-            <div class="glass-panel card">
-                <!-- Quest Giver: Jaina -->
-                <div class="quest-giver-wrapper">
-                    <div class="quest-bubble">
-                        <div class="quest-speaker-name">Jaina</div>
-                        <h2>Welche Klasse startet nicht in Deathknell?</h2>
-                    </div>
+            <div class="glass-panel card" style="text-align: center;">
+                <p style="margin-bottom: 1rem; color: #ccc;">Finde alle Paare, um den Weg freizumachen.</p>
+
+                <div id="memory-board"
+                    style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; perspective: 1000px; margin-bottom: 1rem;">
+                    <!-- Cards injected by JS -->
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
-                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz2')">
-                        <span>Ich bin OOM! (Skip)</span>
+                <div id="victory-message" style="display: none; margin-top: 2rem;">
+                    <h2 style="color: var(--wow-gold);">Das Wissen ist dein!</h2>
+                    <button id="next-btn" class="btn-primary" onclick="finishQuiz()">
+                        <span>Weiter zur nächsten Prüfung</span>
                     </button>
                 </div>
-                <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
-                </p>
             </div>
         </div>
     </main>
 
-    <!-- Background Character -->
-    <img src="images/Jaina.png" class="quest-portrait" alt="Jaina">
+    <!-- Preload Card Back -->
+    <div style="display: none;">
+        <!-- Using a default card back, maybe the Jaina image or a generic WOW logo if available, otherwise CSS styled -->
+    </div>
 
     <!-- Static HUD Skeleton -->
     <div id="game-hud" class="glass-panel"
@@ -89,6 +79,80 @@
         </div>
     </div>
 
+    <style>
+        .memory-card {
+            background-color: transparent;
+            width: 100%;
+            aspect-ratio: 2/3;
+            /* Standard card ratio */
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .memory-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.solved {
+            visibility: hidden;
+            pointer-events: none;
+            transition: visibility 0s 0.5s;
+            /* Wait for flip back if any */
+        }
+
+        /* Fade out animation for solved cards */
+        .memory-card.dissolve .memory-card-inner {
+            opacity: 0;
+            transform: scale(1.5);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .memory-card-front,
+        .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--wow-border);
+        }
+
+        .memory-card-front {
+            background-color: #222;
+            color: white;
+            transform: rotateY(180deg);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .memory-card-back {
+            background: linear-gradient(135deg, #444 0%, #111 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Placeholder pattern */
+            background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 10px, transparent 10px, transparent 20px);
+        }
+
+        .memory-card-back::after {
+            content: "?";
+            font-size: 2rem;
+            color: var(--wow-gold);
+            font-weight: bold;
+        }
+    </style>
+
     <script src="campfire.js"></script>
     <script src="stars.js"></script>
     <script src="settings.js"></script>
@@ -100,10 +164,35 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz2';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        // Image List from user folder
+        const IMAGES = [
+            "Deathknight - Arthas.jpg",
+            "Demonhunter - Illidan.jpg",
+            "Druid - Malfurion.jpg",
+            "Evoker - Emberthal.jpg",
+            "Hunter - Sylvanas.jpg",
+            "Mage - Khadgar.jpg",
+            "Monk - Chen.jpg",
+            "Paladin - Tirion.jpg",
+            "Priest - Velen.jpg",
+            "Rogue - Garona.jpg",
+            "Shaman - Thrall.jpg",
+            "Warlock - Guldan.jpg",
+            "Warrior - Garrosh.jpg"
+        ];
+
+        // Settings
+        const PAIRS_NEEDED = 6; // 12 cards total grid (4x3) or 8 pairs (4x4)? 
+        // 4x4 = 16 cards = 8 pairs. 13 images available. Randomly select 8.
+
+        let cards = [];
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let pairsFound = 0;
 
         // Init State Check
         try {
@@ -115,34 +204,117 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        function initGame() {
+            const board = document.getElementById('memory-board');
+
+            // random selection of images
+            let selectedImages = [...IMAGES].sort(() => 0.5 - Math.random()).slice(0, 8); // 8 pairs
+
+            // duplicate
+            let deck = [...selectedImages, ...selectedImages];
+
+            // shuffle
+            deck.sort(() => 0.5 - Math.random());
+
+            // render
+            deck.forEach(img => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.name = img;
+
+                const inner = document.createElement('div');
+                inner.classList.add('memory-card-inner');
+
+                const front = document.createElement('div');
+                front.classList.add('memory-card-front');
+                front.style.backgroundImage = `url('images/Memory/${img}')`;
+
+                const back = document.createElement('div');
+                back.classList.add('memory-card-back');
+
+                inner.appendChild(front);
+                inner.appendChild(back);
+                card.appendChild(inner);
+
+                card.addEventListener('click', flipCard);
+                board.appendChild(card);
+            });
         }
 
-        function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flipped');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
                 return;
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-
-                window.location.href = nextUrl;
-            } else {
-                showErrorToast("Das ist leider falsch.");
-            }
+            secondCard = this;
+            checkForMatch();
         }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            lockBoard = true;
+            // Delay for visual effect
+            setTimeout(() => {
+                firstCard.classList.add('dissolve');
+                secondCard.classList.add('dissolve');
+
+                // After dissolve anim, hide them
+                setTimeout(() => {
+                    firstCard.style.visibility = 'hidden';
+                    secondCard.style.visibility = 'hidden';
+                    resetBoard();
+
+                    pairsFound++;
+                    if (pairsFound === 8) {
+                        gameWon();
+                    }
+                }, 500);
+            }, 1000);
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1500);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function gameWon() {
+            document.getElementById('victory-message').style.display = 'block';
+            if (window.SoundManager) SoundManager.playLevelUp(); // Assuming this exists or generic success
+        }
+
+        function finishQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            // Update State
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            // Get Next URL (likely quiz-3.html)
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+
+            window.location.href = nextUrl;
+        }
+
+        initGame();
     </script>
 </body>
 
