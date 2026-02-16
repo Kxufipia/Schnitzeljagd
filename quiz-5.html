@@ -21,7 +21,7 @@
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
+        <div class="container" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
             <h1 style="margin-bottom: 1.5rem;">Quest 5: Blingtrons Schaltkreis</h1>
 
             <div class="glass-panel card">
@@ -39,9 +39,10 @@
                 </div>
 
                 <!-- Game Canvas Container -->
+                <!-- DEBUG: Red background to see if container exists -->
                 <div id="circuit-container"
-                    style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.5); border: 2px solid var(--wow-border); border-radius: 8px; margin-top: 1rem; overflow: hidden; touch-action: none;">
-                    <canvas id="circuit-canvas"></canvas>
+                    style="position: relative; width: 100%; height: 500px; background: rgba(50, 0, 0, 0.5); border: 2px solid var(--wow-border); border-radius: 8px; margin-top: 1rem; overflow: hidden; touch-action: none;">
+                    <canvas id="circuit-canvas" style="display: block; width: 100%; height: 100%;"></canvas>
                     <div id="win-overlay"
                         style="display: none; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
                         <h2
