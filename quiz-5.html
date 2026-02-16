@@ -107,15 +107,6 @@
         const ctx = canvas.getContext('2d');
         const container = document.getElementById('circuit-container');
 
-        // Define a simpler planar graph (Solved State relative positions) - House + X inside? 
-        // Let's use 7 nodes.
-        // Solved layout (roughly):
-        // 0: Center
-        // 1-6: Hexagon around it.
-        // Edges: 0-1, 0-2, ... 0-6. Plus 1-2, 2-3, 3-4, 4-5, 5-6, 6-1.
-        // That's a Wheel Graph W6. It's planar.
-        // Total Nodes: 7. Total Edges: 12.
-
         const NODE_RADIUS = 15;
         const SNAP_DIST = 30; // Min distance between nodes to avoid stacking too close
 
@@ -135,8 +126,20 @@
         } catch (e) { console.error(e); }
 
         function resizeCanvas() {
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
+            // Force layout reflow
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width || 800;
+            canvas.height = rect.height || 600;
+
+            // Re-bound nodes if they are outside
+            if (nodes.length > 0) {
+                const padding = 20;
+                nodes.forEach(n => {
+                    n.x = Math.max(padding, Math.min(canvas.width - padding, n.x));
+                    n.y = Math.max(padding, Math.min(canvas.height - padding, n.y));
+                });
+            }
+
             if (!isSolved) draw();
         }
         window.addEventListener('resize', resizeCanvas);
@@ -145,6 +148,9 @@
             isSolved = false;
             document.getElementById('win-overlay').style.display = 'none';
             document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch</span>';
+
+            // Ensure we have size
+            resizeCanvas();
 
             // Randomize nodes within padding
             const padding = 50;
@@ -155,8 +161,8 @@
             for (let i = 0; i < 7; i++) {
                 nodes.push({
                     id: i,
-                    x: padding + Math.random() * w,
-                    y: padding + Math.random() * h
+                    x: padding + Math.random() * Math.max(100, w),
+                    y: padding + Math.random() * Math.max(100, h)
                 });
             }
             draw();
@@ -184,13 +190,13 @@
                 const n = nodes[i];
                 const dx = pos.x - n.x;
                 const dy = pos.y - n.y;
-                if (dx * dx + dy * dy <= (NODE_RADIUS + 10) ** 2) { // Generous hit area
+                if (dx * dx + dy * dy <= (NODE_RADIUS + 10) ** 2) {
                     draggedNode = n;
                     break;
                 }
             }
             if (draggedNode) {
-                evt.preventDefault(); // Stop scroll on touch
+                evt.preventDefault();
                 document.addEventListener('mousemove', onMove);
                 document.addEventListener('mouseup', onUp);
                 document.addEventListener('touchmove', onMove, { passive: false });
@@ -217,19 +223,15 @@
             document.removeEventListener('touchmove', onMove);
             document.removeEventListener('touchend', onUp);
 
-            // Check win condition on release (or continuously? continuously is better for feedback)
             checkWin();
         }
 
         // --- Mathematical Helpers ---
-        // Top-shelf line intersection algorithm
         function ccw(A, B, C) {
             return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
         }
 
         function intersect(A, B, C, D) {
-            // Check if line segments AB and CD intersect
-            // They share a node? Then no "crossing" for game purposes.
             if (A.id === C.id || A.id === D.id || B.id === C.id || B.id === D.id) return false;
             return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
         }
@@ -239,18 +241,13 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw Edges
-            // First identify which edges cross
-            const badEdges = new Set(); // Store indices of edges that cross someone
-
-            // Very naive O(E^2) check, E=12 so it's tiny (144 checks).
+            const badEdges = new Set();
             for (let i = 0; i < edges.length; i++) {
                 const u1 = nodes[edges[i][0]];
                 const v1 = nodes[edges[i][1]];
-
                 for (let j = i + 1; j < edges.length; j++) {
                     const u2 = nodes[edges[j][0]];
                     const v2 = nodes[edges[j][1]];
-
                     if (intersect(u1, v1, u2, v2)) {
                         badEdges.add(i);
                         badEdges.add(j);
@@ -268,16 +265,16 @@
                 ctx.moveTo(n1.x, n1.y);
                 ctx.lineTo(n2.x, n2.y);
                 if (badEdges.has(i)) {
-                    ctx.strokeStyle = '#ff3333'; // Red
+                    ctx.strokeStyle = '#ff3333';
                     ctx.shadowColor = '#ff3333';
                     ctx.shadowBlur = 10;
                 } else {
-                    ctx.strokeStyle = '#33ccff'; // Blue
+                    ctx.strokeStyle = '#33ccff';
                     ctx.shadowColor = '#33ccff';
                     ctx.shadowBlur = 5;
                 }
                 ctx.stroke();
-                ctx.shadowBlur = 0; // Reset
+                ctx.shadowBlur = 0;
             }
 
             // Draw Nodes
@@ -288,20 +285,17 @@
                 ctx.fillStyle = '#222';
                 ctx.fill();
                 ctx.lineWidth = 2;
-                ctx.strokeStyle = '#ffcc00'; // Gold
+                ctx.strokeStyle = '#ffcc00';
                 ctx.stroke();
 
-                // Inner Glow/Tech detail
                 ctx.beginPath();
                 ctx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
                 ctx.fillStyle = '#00ffcc';
                 ctx.fill();
             }
 
-            // Check win continuously to update status text
-            if (badEdges.size === 0 && !draggedNode && startTime > 0) { // Only trigger win on stable state (not dragging)
-                // Handled in checkWin or separate logic.
-                // Let's just update text here.
+            // Update Status
+            if (badEdges.size === 0 && !draggedNode && startTime > 0) {
                 document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--wow-green);">Stabil</span>';
             } else {
                 document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch (' + (badEdges.size) + ' Fehler)</span>';
@@ -309,7 +303,6 @@
         }
 
         function checkWin() {
-            // Re-calc intersections
             let crossCount = 0;
             for (let i = 0; i < edges.length; i++) {
                 for (let j = i + 1; j < edges.length; j++) {
@@ -324,8 +317,8 @@
             if (crossCount === 0) {
                 isSolved = true;
                 if (window.SoundManager) SoundManager.playLevelUp();
-                document.getElementById('win-overlay').style.display = 'flex'; // Show win UI
-                draw(); // Draw one last time to show blue lines
+                document.getElementById('win-overlay').style.display = 'flex';
+                draw();
             }
         }
 
@@ -337,11 +330,21 @@
             window.location.href = nextUrl;
         }
 
-        // Start
-        setTimeout(() => {
-            resizeCanvas();
-            initGame();
-        }, 100);
+        // Initialize with a few retries to ensure layout is ready
+        function attemptInit(attemptsLeft) {
+            const rect = container.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                initGame();
+            } else if (attemptsLeft > 0) {
+                setTimeout(() => attemptInit(attemptsLeft - 1), 100);
+            } else {
+                // Fallback force init
+                initGame();
+            }
+        }
+
+        attemptInit(5);
+
 
     </script>
 </body>
