@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSB Schnitzeljagd 2.0 - Quest 5</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -14,6 +13,7 @@
         <canvas id="campfire"></canvas>
     </div>
 
+    <!-- Theme Control -->
     <div id="theme-controls" class="glass-panel"
         style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
         <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
@@ -21,41 +21,51 @@
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 5</h1>
+        <div class="container animate-enter" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
+            <h1 style="margin-bottom: 1.5rem;">Quest 5: Blingtrons Schaltkreis</h1>
 
             <div class="glass-panel card">
-                <!-- Quest Giver: Thrall -->
+                <!-- Instruction / Narrative -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
-                        <div class="quest-speaker-name">Thrall</div>
-                        <h2>Placeholder Question for Quest 5?</h2>
+                        <div class="quest-speaker-name">Blingtron 5000</div>
+                        <p style="font-style: italic; margin-bottom: 0.5rem;">"BZZZT... Systemfehler! Schaltkreise
+                            verheddert! Logikprozess unterbrochen!"</p>
+                        <p>Entwirre die Leitungen! Ziehe die Knotenpunkte so, dass sich <strong>keine Linien
+                                überschneiden</strong>.</p>
+                        <p style="font-size: 0.85rem; color: var(--wow-blue);">Blaue Linien = Stabil | Rote Linien =
+                            Kurzschluss</p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <!-- Game Canvas Container -->
+                <div id="circuit-container"
+                    style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.5); border: 2px solid var(--wow-border); border-radius: 8px; margin-top: 1rem; overflow: hidden; touch-action: none;">
+                    <canvas id="circuit-canvas"></canvas>
+                    <div id="win-overlay"
+                        style="display: none; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
+                        <h2
+                            style="color: var(--wow-gold); font-size: 2rem; margin-bottom: 1rem; text-shadow: 0 0 10px gold;">
+                            System repariert!</h2>
+                        <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
+                    </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
-                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz5')">
-                        <span>Ich bin OOM! (Skip)</span>
-                    </button>
+                <!-- Footer / Status -->
+                <div
+                    style="display: flex; gap: 1rem; justify-content: space-between; margin-top: 1rem; align-items: center;">
+                    <span id="status-text" style="font-size: 0.9rem; color: #aaa;">Status: <span
+                            style="color: var(--horde-red);">Kritisch</span></span>
+                    <button id="reset-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;"
+                        onclick="initGame()">Reset</button>
                 </div>
-                <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
-                </p>
             </div>
         </div>
     </main>
 
-    <!-- Background Character -->
-    <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
+    <!-- Character Image -->
+    <img src="images/Blingtron.png" class="quest-portrait animate-enter" alt="Blingtron"
+        onerror="this.src='images/Paladin.png'">
 
     <!-- Static HUD Skeleton -->
     <div id="game-hud" class="glass-panel"
@@ -76,17 +86,6 @@
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="hud-stats-grid">
-            <div class="stat-item completed"><span class="stat-label">Erledigt</span><span class="stat-val">...</span>
-            </div>
-            <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
-            </div>
-            <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
-        </div>
     </div>
 
     <script src="campfire.js"></script>
@@ -100,49 +99,250 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz5';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        // --- Game Logic ---
+        const canvas = document.getElementById('circuit-canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('circuit-container');
+
+        // Define a simpler planar graph (Solved State relative positions) - House + X inside? 
+        // Let's use 7 nodes.
+        // Solved layout (roughly):
+        // 0: Center
+        // 1-6: Hexagon around it.
+        // Edges: 0-1, 0-2, ... 0-6. Plus 1-2, 2-3, 3-4, 4-5, 5-6, 6-1.
+        // That's a Wheel Graph W6. It's planar.
+        // Total Nodes: 7. Total Edges: 12.
+
+        const NODE_RADIUS = 15;
+        const SNAP_DIST = 30; // Min distance between nodes to avoid stacking too close
+
+        let nodes = [];
+        let edges = [
+            [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], // Spokes
+            [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]  // Rim
+        ];
+
+        let draggedNode = null;
+        let isSolved = false;
 
         // Init State Check
         try {
             currentState = GameState.decode();
-            if (!currentState) throw new Error("No state");
-        } catch (e) {
-            console.error(e);
-            alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
-            window.location.href = window.appendThemeParam('index.html');
+            if (!currentState) { /* handle error simply */ }
+        } catch (e) { console.error(e); }
+
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            if (!isSolved) draw();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function initGame() {
+            isSolved = false;
+            document.getElementById('win-overlay').style.display = 'none';
+            document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch</span>';
+
+            // Randomize nodes within padding
+            const padding = 50;
+            const w = canvas.width - padding * 2;
+            const h = canvas.height - padding * 2;
+
+            nodes = [];
+            for (let i = 0; i < 7; i++) {
+                nodes.push({
+                    id: i,
+                    x: padding + Math.random() * w,
+                    y: padding + Math.random() * h
+                });
+            }
+            draw();
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        // --- Interaction ---
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
         }
 
-        function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
-                return;
+        canvas.addEventListener('mousedown', onDown);
+        canvas.addEventListener('touchstart', onDown, { passive: false });
+
+        function onDown(evt) {
+            if (isSolved) return;
+            const pos = getMousePos(evt);
+            // Find clicked node
+            for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                const dx = pos.x - n.x;
+                const dy = pos.y - n.y;
+                if (dx * dx + dy * dy <= (NODE_RADIUS + 10) ** 2) { // Generous hit area
+                    draggedNode = n;
+                    break;
+                }
+            }
+            if (draggedNode) {
+                evt.preventDefault(); // Stop scroll on touch
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+                document.addEventListener('touchmove', onMove, { passive: false });
+                document.addEventListener('touchend', onUp);
+            }
+        }
+
+        function onMove(evt) {
+            if (!draggedNode) return;
+            evt.preventDefault();
+            const pos = getMousePos(evt);
+
+            // Constrain to canvas
+            draggedNode.x = Math.max(NODE_RADIUS, Math.min(canvas.width - NODE_RADIUS, pos.x));
+            draggedNode.y = Math.max(NODE_RADIUS, Math.min(canvas.height - NODE_RADIUS, pos.y));
+
+            draw();
+        }
+
+        function onUp(evt) {
+            draggedNode = null;
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onUp);
+
+            // Check win condition on release (or continuously? continuously is better for feedback)
+            checkWin();
+        }
+
+        // --- Mathematical Helpers ---
+        // Top-shelf line intersection algorithm
+        function ccw(A, B, C) {
+            return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+        }
+
+        function intersect(A, B, C, D) {
+            // Check if line segments AB and CD intersect
+            // They share a node? Then no "crossing" for game purposes.
+            if (A.id === C.id || A.id === D.id || B.id === C.id || B.id === D.id) return false;
+            return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
+        }
+
+        // --- Rendering ---
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Edges
+            // First identify which edges cross
+            const badEdges = new Set(); // Store indices of edges that cross someone
+
+            // Very naive O(E^2) check, E=12 so it's tiny (144 checks).
+            for (let i = 0; i < edges.length; i++) {
+                const u1 = nodes[edges[i][0]];
+                const v1 = nodes[edges[i][1]];
+
+                for (let j = i + 1; j < edges.length; j++) {
+                    const u2 = nodes[edges[j][0]];
+                    const v2 = nodes[edges[j][1]];
+
+                    if (intersect(u1, v1, u2, v2)) {
+                        badEdges.add(i);
+                        badEdges.add(j);
+                    }
+                }
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            // Draw lines
+            ctx.lineWidth = 3;
+            for (let i = 0; i < edges.length; i++) {
+                const n1 = nodes[edges[i][0]];
+                const n2 = nodes[edges[i][1]];
 
-                window.location.href = nextUrl;
+                ctx.beginPath();
+                ctx.moveTo(n1.x, n1.y);
+                ctx.lineTo(n2.x, n2.y);
+                if (badEdges.has(i)) {
+                    ctx.strokeStyle = '#ff3333'; // Red
+                    ctx.shadowColor = '#ff3333';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.strokeStyle = '#33ccff'; // Blue
+                    ctx.shadowColor = '#33ccff';
+                    ctx.shadowBlur = 5;
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0; // Reset
+            }
+
+            // Draw Nodes
+            for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, NODE_RADIUS, 0, 2 * Math.PI);
+                ctx.fillStyle = '#222';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffcc00'; // Gold
+                ctx.stroke();
+
+                // Inner Glow/Tech detail
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
+                ctx.fillStyle = '#00ffcc';
+                ctx.fill();
+            }
+
+            // Check win continuously to update status text
+            if (badEdges.size === 0 && !draggedNode && startTime > 0) { // Only trigger win on stable state (not dragging)
+                // Handled in checkWin or separate logic.
+                // Let's just update text here.
+                document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--wow-green);">Stabil</span>';
             } else {
-                showErrorToast("Das ist leider falsch.");
+                document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch (' + (badEdges.size) + ' Fehler)</span>';
             }
         }
+
+        function checkWin() {
+            // Re-calc intersections
+            let crossCount = 0;
+            for (let i = 0; i < edges.length; i++) {
+                for (let j = i + 1; j < edges.length; j++) {
+                    const u1 = nodes[edges[i][0]];
+                    const v1 = nodes[edges[i][1]];
+                    const u2 = nodes[edges[j][0]];
+                    const v2 = nodes[edges[j][1]];
+                    if (intersect(u1, v1, u2, v2)) crossCount++;
+                }
+            }
+
+            if (crossCount === 0) {
+                isSolved = true;
+                if (window.SoundManager) SoundManager.playLevelUp();
+                document.getElementById('win-overlay').style.display = 'flex'; // Show win UI
+                draw(); // Draw one last time to show blue lines
+            }
+        }
+
+        function finishQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
+        }
+
+        // Start
+        setTimeout(() => {
+            resizeCanvas();
+            initGame();
+        }, 100);
+
     </script>
 </body>
 
