@@ -249,6 +249,7 @@
 
         function drawCircuit() {
             if (!circuitCtx) { console.error("No Context!"); return; }
+            if (nodes.length === 0) return; // Prevent crash during init before nodes exist
 
             // Fill background to verify canvas is rendering
             // circuitCtx.fillStyle = 'rgba(20, 20, 30, 0.8)';
