@@ -104,12 +104,13 @@
         let currentState = null;
 
         // --- Game Logic ---
-        const canvas = document.getElementById('circuit-canvas');
-        const ctx = canvas.getContext('2d');
-        const container = document.getElementById('circuit-container');
+        // Renaming variables to avoid global scope collisions (e.g. with campfire.js)
+        const circuitCanvas = document.getElementById('circuit-canvas');
+        const circuitCtx = circuitCanvas.getContext('2d');
+        const circuitContainer = document.getElementById('circuit-container');
 
         // Debug
-        console.log("Quiz 5 Script Loaded. Canvas:", canvas);
+        console.log("Quiz 5 Script Loaded. Canvas:", circuitCanvas);
 
         const NODE_RADIUS = 15;
         // const SNAP_DIST = 30; // Unused 
@@ -128,31 +129,31 @@
             currentState = GameState.decode();
         } catch (e) { console.error("State Error:", e); }
 
-        function resizeCanvas() {
-            const rect = container.getBoundingClientRect();
+        function resizeCircuitCanvas() {
+            const rect = circuitContainer.getBoundingClientRect();
             console.log("Resizing Canvas. Container Rect:", rect);
 
             // Set internal resolution
-            canvas.width = rect.width;
-            canvas.height = rect.height;
+            circuitCanvas.width = rect.width;
+            circuitCanvas.height = rect.height;
 
-            if (canvas.width === 0 || canvas.height === 0) {
+            if (circuitCanvas.width === 0 || circuitCanvas.height === 0) {
                 console.warn("Canvas has 0 size. Defaulting to 800x600");
-                canvas.width = 800;
-                canvas.height = 600;
+                circuitCanvas.width = 800;
+                circuitCanvas.height = 600;
             }
 
             // Reposition nodes if they exist to keep them on screen
             if (nodes.length > 0) {
                 const padding = 20;
                 nodes.forEach(n => {
-                    n.x = Math.max(padding, Math.min(canvas.width - padding, n.x));
-                    n.y = Math.max(padding, Math.min(canvas.height - padding, n.y));
+                    n.x = Math.max(padding, Math.min(circuitCanvas.width - padding, n.x));
+                    n.y = Math.max(padding, Math.min(circuitCanvas.height - padding, n.y));
                 });
             }
-            draw();
+            drawCircuit();
         }
-        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('resize', resizeCircuitCanvas);
 
         function initGame() {
             console.log("Initializing Game...");
@@ -161,11 +162,11 @@
             document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch</span>';
 
             // Ensure we have size
-            resizeCanvas();
+            resizeCircuitCanvas();
 
             const padding = 50;
-            const w = canvas.width - padding * 2;
-            const h = canvas.height - padding * 2;
+            const w = circuitCanvas.width - padding * 2;
+            const h = circuitCanvas.height - padding * 2;
 
             nodes = [];
             // Create 7 nodes at random positions
@@ -177,11 +178,11 @@
                 });
             }
             console.log("Nodes created:", nodes.length);
-            draw();
+            drawCircuit();
         }
 
         function getMousePos(evt) {
-            const rect = canvas.getBoundingClientRect();
+            const rect = circuitCanvas.getBoundingClientRect();
             const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
             const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
             return {
@@ -217,13 +218,15 @@
             if (!draggedNode) return;
             evt.preventDefault();
             const pos = getMousePos(evt);
-            draggedNode.x = Math.max(NODE_RADIUS, Math.min(canvas.width - NODE_RADIUS, pos.x));
-            draggedNode.y = Math.max(NODE_RADIUS, Math.min(canvas.height - NODE_RADIUS, pos.y));
-            draw();
+            circuitCanvas.style.cursor = 'grabbing';
+            draggedNode.x = Math.max(NODE_RADIUS, Math.min(circuitCanvas.width - NODE_RADIUS, pos.x));
+            draggedNode.y = Math.max(NODE_RADIUS, Math.min(circuitCanvas.height - NODE_RADIUS, pos.y));
+            drawCircuit();
         }
 
         function onUp(evt) {
             draggedNode = null;
+            circuitCanvas.style.cursor = 'grab';
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onUp);
             document.removeEventListener('touchmove', onMove);
@@ -231,8 +234,9 @@
             checkWin();
         }
 
-        canvas.addEventListener('mousedown', onDown);
-        canvas.addEventListener('touchstart', onDown, { passive: false });
+        circuitCanvas.addEventListener('mousedown', onDown);
+        circuitCanvas.addEventListener('touchstart', onDown, { passive: false });
+        circuitCanvas.style.cursor = 'grab';
 
         function ccw(A, B, C) {
             return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
@@ -243,12 +247,13 @@
             return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
         }
 
-        function draw() {
-            if (!ctx) { console.error("No Context!"); return; }
+        function drawCircuit() {
+            if (!circuitCtx) { console.error("No Context!"); return; }
 
             // Fill background to verify canvas is rendering
-            ctx.fillStyle = 'rgba(20, 20, 30, 0.8)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // circuitCtx.fillStyle = 'rgba(20, 20, 30, 0.8)';
+            // circuitCtx.fillRect(0, 0, circuitCanvas.width, circuitCanvas.height);
+            circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height);
 
             // Draw Edges
             const badEdges = new Set();
@@ -265,33 +270,33 @@
                 }
             }
 
-            ctx.lineWidth = 3;
+            circuitCtx.lineWidth = 3;
             for (let i = 0; i < edges.length; i++) {
                 const n1 = nodes[edges[i][0]];
                 const n2 = nodes[edges[i][1]];
 
-                ctx.beginPath();
-                ctx.moveTo(n1.x, n1.y);
-                ctx.lineTo(n2.x, n2.y);
-                ctx.strokeStyle = badEdges.has(i) ? '#ff3333' : '#33ccff';
-                ctx.stroke();
+                circuitCtx.beginPath();
+                circuitCtx.moveTo(n1.x, n1.y);
+                circuitCtx.lineTo(n2.x, n2.y);
+                circuitCtx.strokeStyle = badEdges.has(i) ? '#ff3333' : '#33ccff';
+                circuitCtx.stroke();
             }
 
             // Draw Nodes
             for (let i = 0; i < nodes.length; i++) {
                 const n = nodes[i];
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, NODE_RADIUS, 0, 2 * Math.PI);
-                ctx.fillStyle = '#222';
-                ctx.fill();
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#ffcc00';
-                ctx.stroke();
+                circuitCtx.beginPath();
+                circuitCtx.arc(n.x, n.y, NODE_RADIUS, 0, 2 * Math.PI);
+                circuitCtx.fillStyle = '#222';
+                circuitCtx.fill();
+                circuitCtx.lineWidth = 2;
+                circuitCtx.strokeStyle = '#ffcc00';
+                circuitCtx.stroke();
 
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
-                ctx.fillStyle = '#00ffcc';
-                ctx.fill();
+                circuitCtx.beginPath();
+                circuitCtx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
+                circuitCtx.fillStyle = '#00ffcc';
+                circuitCtx.fill();
             }
 
             if (badEdges.size === 0 && !draggedNode && startTime > 0) {
@@ -317,7 +322,7 @@
                 isSolved = true;
                 if (window.SoundManager) SoundManager.playLevelUp();
                 document.getElementById('win-overlay').style.display = 'flex';
-                draw();
+                drawCircuit();
             }
         }
 
