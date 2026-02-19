@@ -39,7 +39,7 @@
                     <div class="gallery-item locked" id="img2-container">
                         <div class="lock-overlay">
                             <span class="lock-icon">🔒</span>
-                            <span class="timer-text" id="timer2">00:30</span>
+                            <span class="timer-text" id="timer2">00:45</span>
                         </div>
                         <img src="images/Quiz4/image2.jpg" alt="Hinweis 2" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
@@ -48,7 +48,7 @@
                     <div class="gallery-item locked" id="img3-container">
                         <div class="lock-overlay">
                             <span class="lock-icon">🔒</span>
-                            <span class="timer-text" id="timer3">01:00</span>
+                            <span class="timer-text" id="timer3">01:30</span>
                         </div>
                         <img src="images/Quiz4/image3.png" alt="Hinweis 3" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
@@ -224,17 +224,27 @@
 
         // Image Reveal Logic
         function startRevealTimers() {
-            // Image 2: 30s
-            startTimer(30, document.getElementById('timer-2'), () => {
-                const el = document.getElementById('reveal-2');
-                el.classList.remove('blurry');
-                if (window.SoundManager) SoundManager.playClick(); // Sound effect
+            // Image 2: 45s
+            startTimer(45, document.getElementById('timer2'), () => {
+                const container = document.getElementById('img2-container');
+                container.classList.remove('locked');
+                container.classList.add('visible');
+                // Remove lock overlay
+                const overlay = container.querySelector('.lock-overlay');
+                if (overlay) overlay.remove();
+
+                if (window.SoundManager) SoundManager.playClick();
             });
 
-            // Image 3: 60s
-            startTimer(60, document.getElementById('timer-3'), () => {
-                const el = document.getElementById('reveal-3');
-                el.classList.remove('blurry');
+            // Image 3: 90s
+            startTimer(90, document.getElementById('timer3'), () => {
+                const container = document.getElementById('img3-container');
+                container.classList.remove('locked');
+                container.classList.add('visible');
+                // Remove lock overlay
+                const overlay = container.querySelector('.lock-overlay');
+                if (overlay) overlay.remove();
+
                 if (window.SoundManager) SoundManager.playClick();
             });
         }
@@ -248,7 +258,7 @@
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                display.textContent = minutes + ":" + seconds;
+                if (display) display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
                     clearInterval(interval);
