@@ -19,298 +19,296 @@
     </div>
 
     <main>
-        <main>
-            <div class="container quiz-container">
-                <h1 class="header-margin-bottom">Quest 12: Das Ley-Labyrinth</h1>
+        <div class="container quiz-container quiz-container-center">
+            <h1 class="header-margin-bottom">Quest 12: Das Ley-Labyrinth</h1>
 
-                <div class="glass-panel card">
-                    <!-- Quest Giver: Jaina -->
-                    <div class="quest-giver-wrapper">
-                        <div class="quest-bubble">
-                            <div class="quest-speaker-name">Jaina</div>
-                            <p class="quest-italic">"Die magischen Ströme sind hier chaotisch.
-                                Ein Labyrinth aus reiner Arkaner Energie versperrt uns den Weg."</p>
-                            <p class="quest-instruction">Führe den <strong>Energie-Funken</strong> (Blau) sicher zum
-                                <strong>Ausgang</strong> (Rot).
-                                Hüte dich davor, die Wände zu berühren!
-                            </p>
-                            <p class="quest-caption-sub text-wow-blue">Steuerung: Pfeiltasten (PC)
-                                oder Buttons
-                                (Mobile)</p>
-                        </div>
-                    </div>
-
-                    <!-- Game Canvas Container -->
-                    <div id="maze-container" class="game-container-frame maze-container">
-                        <canvas id="maze-canvas" class="game-canvas"></canvas>
-
-                        <div id="win-overlay" class="game-overlay overlay-win">
-                            <h2 class="overlay-title">Weg gefunden!</h2>
-                            <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
-                        </div>
-                    </div>
-
-                    <!-- Mobile Controls -->
-                    <!-- Mobile Controls -->
-                    <div class="d-pad d-pad-row">
-                        <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(0, -1)"
-                            ontouchstart="movePlayer(0, -1)">▲</button>
-                    </div>
-                    <div class="d-pad d-pad-row bottom">
-                        <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(-1, 0)"
-                            ontouchstart="movePlayer(-1, 0)">◄</button>
-                        <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(0, 1)"
-                            ontouchstart="movePlayer(0, 1)">▼</button>
-                        <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(1, 0)"
-                            ontouchstart="movePlayer(1, 0)">►</button>
-                    </div>
-
-                    <!-- Footer / Status -->
-                    <!-- Footer / Status -->
-                    <div class="status-bar">
-                        <span id="status-text" class="status-label">Status: <span
-                                class="status-searching">Suchend...</span></span>
-                        <button id="reset-btn" class="btn-secondary btn-small" onclick="initGame()">Reset Map</button>
-                        <button id="skip-btn" class="btn-secondary btn-small" onclick="skipQuiz('quiz12')">Skip
-                            ⏩</button>
+            <div class="glass-panel card">
+                <!-- Quest Giver: Jaina -->
+                <div class="quest-giver-wrapper">
+                    <div class="quest-bubble">
+                        <div class="quest-speaker-name">Jaina</div>
+                        <p class="quest-italic">"Die magischen Ströme sind hier chaotisch.
+                            Ein Labyrinth aus reiner Arkaner Energie versperrt uns den Weg."</p>
+                        <p class="quest-instruction">Führe den <strong>Energie-Funken</strong> (Blau) sicher zum
+                            <strong>Ausgang</strong> (Rot).
+                            Hüte dich davor, die Wände zu berühren!
+                        </p>
+                        <p class="quest-caption-sub text-wow-blue">Steuerung: Pfeiltasten (PC)
+                            oder Buttons
+                            (Mobile)</p>
                     </div>
                 </div>
-            </div>
-        </main>
 
-        <!-- Character Image -->
-        <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
+                <!-- Game Canvas Container -->
+                <div id="maze-container" class="game-container-frame maze-container">
+                    <canvas id="maze-canvas" class="game-canvas"></canvas>
 
-        <!-- Static HUD Skeleton -->
-        <div id="game-hud" class="glass-panel hud-static">
-            <div class="hud-row header">
-                <span class="hud-label">Held</span>
-                <span class="hud-value name">...</span>
-            </div>
-            <div class="hud-divider"></div>
-            <div class="hud-row-spread">
-                <span class="hud-accent hud-accent-text">Stufe
-                    ...</span>
-                <span class="hud-subtext hud-subtext-small">...%</span>
-            </div>
-            <div class="xp-container hud-xp-container-tight">
-                <div class="xp-bar">
-                    <div class="xp-fill"></div>
-                    <div class="xp-text">...</div>
+                    <div id="win-overlay" class="game-overlay overlay-win">
+                        <h2 class="overlay-title">Weg gefunden!</h2>
+                        <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
+                    </div>
                 </div>
-            </div>
-            <div class="hud-total-row">
-                <span class="hud-muted hud-text-muted">Total: ...</span>
-            </div>
-            <div class="hud-divider"></div>
-            <div class="hud-stats-grid">
-                <div class="stat-item completed"><span class="stat-label">Erledigt</span><span
-                        class="stat-val">...</span>
+
+                <!-- Mobile Controls -->
+                <!-- Mobile Controls -->
+                <div class="d-pad d-pad-row">
+                    <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(0, -1)"
+                        ontouchstart="movePlayer(0, -1)">▲</button>
                 </div>
-                <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
+                <div class="d-pad d-pad-row bottom">
+                    <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(-1, 0)"
+                        ontouchstart="movePlayer(-1, 0)">◄</button>
+                    <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(0, 1)"
+                        ontouchstart="movePlayer(0, 1)">▼</button>
+                    <button class="btn-secondary d-pad-btn" onmousedown="movePlayer(1, 0)"
+                        ontouchstart="movePlayer(1, 0)">►</button>
                 </div>
-                <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
+
+                <!-- Footer / Status -->
+                <!-- Footer / Status -->
+                <div class="status-bar">
+                    <span id="status-text" class="status-label">Status: <span
+                            class="status-searching">Suchend...</span></span>
+                    <button id="reset-btn" class="btn-secondary btn-small" onclick="initGame()">Reset Map</button>
+                    <button id="skip-btn" class="btn-secondary btn-small" onclick="skipQuiz('quiz12')">Skip
+                        ⏩</button>
+                </div>
             </div>
         </div>
+    </main>
 
-        <script src="campfire.js"></script>
-        <script src="stars.js"></script>
-        <script src="settings.js"></script>
-        <script src="gamestate.js"></script>
-        <script src="sidebar.js"></script>
-        <script src="sounds.js"></script>
-        <script src="toast.js"></script>
-        <script src="gamehud.js"></script>
-        <script src="script.js"></script>
-        <script>
-            const QUIZ_ID = 'quiz12';
-            let startTime = Date.now();
-            let currentState = null;
+    <!-- Character Image -->
+    <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
 
-            const mazeCanvas = document.getElementById('maze-canvas');
-            const mazeCtx = mazeCanvas.getContext('2d');
-            const overlay = document.getElementById('win-overlay');
+    <!-- Static HUD Skeleton -->
+    <div id="game-hud" class="glass-panel hud-static">
+        <div class="hud-row header">
+            <span class="hud-label">Held</span>
+            <span class="hud-value name">...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
+                ...</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
+        </div>
+        <div class="xp-container hud-xp-container-tight">
+            <div class="xp-bar">
+                <div class="xp-fill"></div>
+                <div class="xp-text">...</div>
+            </div>
+        </div>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-stats-grid">
+            <div class="stat-item completed"><span class="stat-label">Erledigt</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
+            </div>
+            <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
+        </div>
+    </div>
 
-            const COLS = 21; // Must be odd for Recursive Backtracker
-            const ROWS = 21;
-            let CELL_SIZE = 20;
+    <script src="campfire.js"></script>
+    <script src="stars.js"></script>
+    <script src="settings.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="sounds.js"></script>
+    <script src="toast.js"></script>
+    <script src="gamehud.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const QUIZ_ID = 'quiz12';
+        let startTime = Date.now();
+        let currentState = null;
 
-            let maze = []; // 2D array: 1 = Wall, 0 = Path
-            let player = { x: 1, y: 1 };
-            let goal = { x: COLS - 2, y: ROWS - 2 };
-            let isSolved = false;
+        const mazeCanvas = document.getElementById('maze-canvas');
+        const mazeCtx = mazeCanvas.getContext('2d');
+        const overlay = document.getElementById('win-overlay');
 
-            // Init State Check
-            try {
-                currentState = GameState.decode();
-            } catch (e) { console.error("State Error:", e); }
+        const COLS = 21; // Must be odd for Recursive Backtracker
+        const ROWS = 21;
+        let CELL_SIZE = 20;
 
-            function initGame() {
-                startTime = Date.now();
-                isSolved = false;
-                overlay.style.display = 'none';
-                player = { x: 1, y: 1 };
+        let maze = []; // 2D array: 1 = Wall, 0 = Path
+        let player = { x: 1, y: 1 };
+        let goal = { x: COLS - 2, y: ROWS - 2 };
+        let isSolved = false;
 
-                // Resize canvas
-                const container = document.getElementById('maze-container');
-                const rect = container.getBoundingClientRect();
-                mazeCanvas.width = rect.width;
-                mazeCanvas.height = rect.height;
+        // Init State Check
+        try {
+            currentState = GameState.decode();
+        } catch (e) { console.error("State Error:", e); }
 
-                // Calculate Cell Size
-                CELL_SIZE = Math.floor(Math.min(mazeCanvas.width / COLS, mazeCanvas.height / ROWS));
+        function initGame() {
+            startTime = Date.now();
+            isSolved = false;
+            overlay.style.display = 'none';
+            player = { x: 1, y: 1 };
 
-                generateMaze();
-                draw();
+            // Resize canvas
+            const container = document.getElementById('maze-container');
+            const rect = container.getBoundingClientRect();
+            mazeCanvas.width = rect.width;
+            mazeCanvas.height = rect.height;
+
+            // Calculate Cell Size
+            CELL_SIZE = Math.floor(Math.min(mazeCanvas.width / COLS, mazeCanvas.height / ROWS));
+
+            generateMaze();
+            draw();
+        }
+
+        function generateMaze() {
+            // Fill with walls
+            maze = Array(ROWS).fill().map(() => Array(COLS).fill(1));
+
+            // Recursive Backtracker
+            const stack = [];
+            const start = { x: 1, y: 1 };
+            maze[start.y][start.x] = 0;
+            stack.push(start);
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                const neighbors = getUnvisitedNeighbors(current.x, current.y);
+
+                if (neighbors.length > 0) {
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    // Remove wall between
+                    maze[(current.y + next.y) / 2][(current.x + next.x) / 2] = 0;
+                    maze[next.y][next.x] = 0;
+                    stack.push(next);
+                } else {
+                    stack.pop();
+                }
             }
 
-            function generateMaze() {
-                // Fill with walls
-                maze = Array(ROWS).fill().map(() => Array(COLS).fill(1));
+            // Ensure goal is accessible (should be by algorithm, but just in case)
+            goal = { x: COLS - 2, y: ROWS - 2 };
+            maze[goal.y][goal.x] = 0;
+        }
 
-                // Recursive Backtracker
-                const stack = [];
-                const start = { x: 1, y: 1 };
-                maze[start.y][start.x] = 0;
-                stack.push(start);
+        function getUnvisitedNeighbors(x, y) {
+            const neighbors = [];
+            const dirs = [
+                { x: 0, y: -2 }, // Up
+                { x: 2, y: 0 },  // Right
+                { x: 0, y: 2 },  // Down
+                { x: -2, y: 0 }  // Left
+            ];
 
-                while (stack.length > 0) {
-                    const current = stack[stack.length - 1];
-                    const neighbors = getUnvisitedNeighbors(current.x, current.y);
+            for (let d of dirs) {
+                const nx = x + d.x;
+                const ny = y + d.y;
+                if (nx > 0 && nx < COLS - 1 && ny > 0 && ny < ROWS - 1 && maze[ny][nx] === 1) {
+                    neighbors.push({ x: nx, y: ny });
+                }
+            }
+            return neighbors;
+        }
 
-                    if (neighbors.length > 0) {
-                        const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-                        // Remove wall between
-                        maze[(current.y + next.y) / 2][(current.x + next.x) / 2] = 0;
-                        maze[next.y][next.x] = 0;
-                        stack.push(next);
+        function draw() {
+            if (!mazeCtx) return;
+
+            // Clear
+            mazeCtx.fillStyle = '#111';
+            mazeCtx.fillRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+
+            // Center the maze
+            const offsetX = (mazeCanvas.width - COLS * CELL_SIZE) / 2;
+            const offsetY = (mazeCanvas.height - ROWS * CELL_SIZE) / 2;
+
+            // Draw Paths
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (maze[y][x] === 0) {
+                        mazeCtx.fillStyle = '#222'; // Floor
+                        mazeCtx.fillRect(offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE, CELL_SIZE + 1, CELL_SIZE + 1);
                     } else {
-                        stack.pop();
+                        // Wall (already black from clear, but let's add some style?)
+                        mazeCtx.fillStyle = '#334'; // Wall color
+                        mazeCtx.fillRect(offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     }
                 }
-
-                // Ensure goal is accessible (should be by algorithm, but just in case)
-                goal = { x: COLS - 2, y: ROWS - 2 };
-                maze[goal.y][goal.x] = 0;
             }
 
-            function getUnvisitedNeighbors(x, y) {
-                const neighbors = [];
-                const dirs = [
-                    { x: 0, y: -2 }, // Up
-                    { x: 2, y: 0 },  // Right
-                    { x: 0, y: 2 },  // Down
-                    { x: -2, y: 0 }  // Left
-                ];
+            // Draw Goal
+            mazeCtx.fillStyle = '#ff3333';
+            mazeCtx.beginPath();
+            mazeCtx.rect(offsetX + goal.x * CELL_SIZE + 4, offsetY + goal.y * CELL_SIZE + 4, CELL_SIZE - 8, CELL_SIZE - 8);
+            mazeCtx.fill();
+            mazeCtx.shadowBlur = 10;
+            mazeCtx.shadowColor = 'red';
+            mazeCtx.stroke();
+            mazeCtx.shadowBlur = 0;
 
-                for (let d of dirs) {
-                    const nx = x + d.x;
-                    const ny = y + d.y;
-                    if (nx > 0 && nx < COLS - 1 && ny > 0 && ny < ROWS - 1 && maze[ny][nx] === 1) {
-                        neighbors.push({ x: nx, y: ny });
-                    }
-                }
-                return neighbors;
+            // Draw Player
+            mazeCtx.fillStyle = '#00ccff';
+            mazeCtx.beginPath();
+            mazeCtx.arc(
+                offsetX + player.x * CELL_SIZE + CELL_SIZE / 2,
+                offsetY + player.y * CELL_SIZE + CELL_SIZE / 2,
+                CELL_SIZE / 2 - 2,
+                0, Math.PI * 2
+            );
+            mazeCtx.fill();
+            mazeCtx.strokeStyle = '#fff';
+            mazeCtx.stroke();
+        }
+
+        function movePlayer(dx, dy) {
+            if (isSolved) return;
+
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+
+            if (newX >= 0 && newX < COLS && newY >= 0 && newY < ROWS && maze[newY][newX] === 0) {
+                player.x = newX;
+                player.y = newY;
+                draw();
+                checkWin();
+                if (window.SoundManager) SoundManager.playClick();
             }
+        }
 
-            function draw() {
-                if (!mazeCtx) return;
-
-                // Clear
-                mazeCtx.fillStyle = '#111';
-                mazeCtx.fillRect(0, 0, mazeCanvas.width, mazeCanvas.height);
-
-                // Center the maze
-                const offsetX = (mazeCanvas.width - COLS * CELL_SIZE) / 2;
-                const offsetY = (mazeCanvas.height - ROWS * CELL_SIZE) / 2;
-
-                // Draw Paths
-                for (let y = 0; y < ROWS; y++) {
-                    for (let x = 0; x < COLS; x++) {
-                        if (maze[y][x] === 0) {
-                            mazeCtx.fillStyle = '#222'; // Floor
-                            mazeCtx.fillRect(offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE, CELL_SIZE + 1, CELL_SIZE + 1);
-                        } else {
-                            // Wall (already black from clear, but let's add some style?)
-                            mazeCtx.fillStyle = '#334'; // Wall color
-                            mazeCtx.fillRect(offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-                        }
-                    }
-                }
-
-                // Draw Goal
-                mazeCtx.fillStyle = '#ff3333';
-                mazeCtx.beginPath();
-                mazeCtx.rect(offsetX + goal.x * CELL_SIZE + 4, offsetY + goal.y * CELL_SIZE + 4, CELL_SIZE - 8, CELL_SIZE - 8);
-                mazeCtx.fill();
-                mazeCtx.shadowBlur = 10;
-                mazeCtx.shadowColor = 'red';
-                mazeCtx.stroke();
-                mazeCtx.shadowBlur = 0;
-
-                // Draw Player
-                mazeCtx.fillStyle = '#00ccff';
-                mazeCtx.beginPath();
-                mazeCtx.arc(
-                    offsetX + player.x * CELL_SIZE + CELL_SIZE / 2,
-                    offsetY + player.y * CELL_SIZE + CELL_SIZE / 2,
-                    CELL_SIZE / 2 - 2,
-                    0, Math.PI * 2
-                );
-                mazeCtx.fill();
-                mazeCtx.strokeStyle = '#fff';
-                mazeCtx.stroke();
+        function checkWin() {
+            if (player.x === goal.x && player.y === goal.y) {
+                isSolved = true;
+                if (window.SoundManager) SoundManager.playLevelUp();
+                overlay.style.display = 'flex';
+                document.getElementById('status-text').innerHTML = 'Status: <span class="status-stable">Entkommen!</span>';
             }
+        }
 
-            function movePlayer(dx, dy) {
-                if (isSolved) return;
+        function finishQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
+        }
 
-                const newX = player.x + dx;
-                const newY = player.y + dy;
+        // Keyboard Controls
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowUp', 'w', 'W'].includes(e.key)) { e.preventDefault(); movePlayer(0, -1); }
+            else if (['ArrowDown', 's', 'S'].includes(e.key)) { e.preventDefault(); movePlayer(0, 1); }
+            else if (['ArrowLeft', 'a', 'A'].includes(e.key)) { e.preventDefault(); movePlayer(-1, 0); }
+            else if (['ArrowRight', 'd', 'D'].includes(e.key)) { e.preventDefault(); movePlayer(1, 0); }
+        });
 
-                if (newX >= 0 && newX < COLS && newY >= 0 && newY < ROWS && maze[newY][newX] === 0) {
-                    player.x = newX;
-                    player.y = newY;
-                    draw();
-                    checkWin();
-                    if (window.SoundManager) SoundManager.playClick();
-                }
-            }
+        // Resize
+        window.addEventListener('resize', () => {
+            initGame(); // Simple re-init on resize to fix grid
+        });
 
-            function checkWin() {
-                if (player.x === goal.x && player.y === goal.y) {
-                    isSolved = true;
-                    if (window.SoundManager) SoundManager.playLevelUp();
-                    overlay.style.display = 'flex';
-                    document.getElementById('status-text').innerHTML = 'Status: <span class="status-stable">Entkommen!</span>';
-                }
-            }
+        // Start
+        window.addEventListener('load', initGame);
 
-            function finishQuiz() {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-                window.location.href = nextUrl;
-            }
-
-            // Keyboard Controls
-            window.addEventListener('keydown', (e) => {
-                if (['ArrowUp', 'w', 'W'].includes(e.key)) { e.preventDefault(); movePlayer(0, -1); }
-                else if (['ArrowDown', 's', 'S'].includes(e.key)) { e.preventDefault(); movePlayer(0, 1); }
-                else if (['ArrowLeft', 'a', 'A'].includes(e.key)) { e.preventDefault(); movePlayer(-1, 0); }
-                else if (['ArrowRight', 'd', 'D'].includes(e.key)) { e.preventDefault(); movePlayer(1, 0); }
-            });
-
-            // Resize
-            window.addEventListener('resize', () => {
-                initGame(); // Simple re-init on resize to fix grid
-            });
-
-            // Start
-            window.addEventListener('load', initGame);
-
-        </script>
+    </script>
 </body>
 
 </html>
