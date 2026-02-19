@@ -20,88 +20,31 @@
     </div>
 
     <main>
-        <main>
-            <div class="container quiz-container">
-                <h1 class="header-margin-bottom">Quest 15: Der finale Schlag</h1>
-
-                <div class="glass-panel card">
-                    <!-- Quest Giver: Thrall -->
-                    <div class="quest-giver-wrapper">
-                        <div class="quest-bubble">
-                            <div class="quest-speaker-name">Thrall</div>
-                            <p class="quest-italic">"Die Schatten sammeln sich für einen
-                                letzten Angriff. Wir dürfen nicht zögern!"</p>
-                            <p class="quest-instruction">Zerstöre die <strong>Leeren-Fragmente</strong>, bevor sie uns
-                                überwältigen. Sei schnell und
-                                präzise, Champion!</p>
-                            <p class="quest-caption-sub text-horde-red">Eliminiere 10 Ziele in 30
-                                Sekunden!</p>
-                        </div>
-                    </div>
-
-                    <!-- Game Area -->
-                    <!-- Game Area -->
-                    <div id="game-area">
-                        <div id="start-overlay" class="game-overlay overlay-start flex-display">
-                            <button class="btn-primary" onclick="startGame()">Kampf beginnen</button>
-                        </div>
-
-                        <div id="win-overlay" class="game-overlay overlay-win">
-                            <h2 class="overlay-title">Sieg!</h2>
-                            <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
-                        </div>
-
-                        <div id="loss-overlay" class="game-overlay overlay-loss">
-                            <h2 class="overlay-title-loss">Zu langsam!</h2>
-                            <button class="btn-secondary" onclick="resetGame()">Nochmal versuchen</button>
-                        </div>
-                    </div>
-
-                    <!-- Footer / Status -->
-                    <!-- Footer / Status -->
-                    <div class="status-bar">
-                        <span id="score-text" class="score-display">Ziele: 0 / 10</span>
-                        <span id="time-text" class="score-display">Zeit: 30s</span>
-                        <button id="skip-btn" class="btn-secondary btn-small" onclick="skipQuiz('quiz15')">Skip
-                            ⏩</button>
-                    </div>
-                </div>
+        <span class="hud-value name">...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
+                ...</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
+        </div>
+        <div class="xp-container hud-xp-container-tight">
+            <div class="xp-bar">
+                <div class="xp-fill"></div>
+                <div class="xp-text">...</div>
             </div>
-        </main>
-
-        <!-- Character Image -->
-        <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
-
-        <!-- Static HUD Skeleton -->
-        <div id="game-hud" class="glass-panel hud-static">
-            <div class="hud-row header">
-                <span class="hud-label">Held</span>
-                <span class="hud-value name">...</span>
+        </div>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-stats-grid">
+            <div class="stat-item completed"><span class="stat-label">Erledigt</span><span class="stat-val">...</span>
             </div>
-            <div class="hud-divider"></div>
-            <div class="hud-row-spread">
-                <span class="hud-accent hud-accent-text">Stufe
-                    ...</span>
-                <span class="hud-subtext hud-subtext-small">...%</span>
+            <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
             </div>
-            <div class="xp-container hud-xp-container-tight">
-                <div class="xp-bar">
-                    <div class="xp-fill"></div>
-                    <div class="xp-text">...</div>
-                </div>
-            </div>
-            <div class="hud-total-row">
-                <span class="hud-muted hud-text-muted">Total: ...</span>
-            </div>
-            <div class="hud-divider"></div>
-            <div class="hud-stats-grid">
-                <div class="stat-item completed"><span class="stat-label">Erledigt</span><span
-                        class="stat-val">...</span>
-                </div>
-                <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
-                </div>
-                <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
-            </div>
+            <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
+        </div>
         </div>
 
         <script src="campfire.js"></script>
