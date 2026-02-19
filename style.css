@@ -797,22 +797,105 @@ label {
 /* Tech Button */
 /* [Legacy Tech Button Block Fully Removed] */
 
-.btn-secondary {
+
+/* Gallery Grid for Quiz 4 */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.gallery-item {
     position: relative;
-    padding: 1rem 2rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    /* Neutral */
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /* Subtle Border */
+    border: 2px solid var(--wow-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 4/3;
+    /* Enforce consistent ratio */
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Crop to fit */
     cursor: pointer;
-    overflow: visible;
-    transition: all 0.3s ease;
-    z-index: 1;
-    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-img {
+    transform: scale(1.05);
+}
+
+.gallery-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px);
+}
+
+/* Locked State */
+.gallery-item.locked .gallery-img {
+    filter: blur(15px) grayscale(100%);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    /* Hidden by default, shown when locked */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.gallery-item.locked .lock-overlay {
+    display: flex;
+}
+
+.lock-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.timer-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--wow-gold);
+    text-shadow: 0 2px 4px black;
+}
+
+position: relative;
+padding: 1rem 2rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(--text-muted);
+/* Neutral */
+background: transparent;
+border: 1px solid rgba(255, 255, 255, 0.1);
+/* Subtle Border */
+cursor: pointer;
+overflow: visible;
+transition: all 0.3s ease;
+z-index: 1;
+border-radius: 4px;
 }
 
 .btn-secondary:hover {
