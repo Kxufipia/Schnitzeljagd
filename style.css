@@ -550,6 +550,7 @@ header {
     /* Default */
     cursor: crosshair;
     transition: all 0.5s ease;
+    -webkit-user-select: none;
     user-select: none;
     line-height: 0.8;
     pointer-events: auto;
