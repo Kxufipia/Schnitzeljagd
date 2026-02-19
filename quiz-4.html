@@ -64,12 +64,16 @@
                     style="margin-top: 2.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
                     <label for="code-input" style="display: block; margin-bottom: 0.5rem; color: var(--wow-gold);">Was
                         ist das Codewort?</label>
-                    <input type="text" id="code-input" class="glass-input" placeholder="Algari-..." autocomplete="off">
+                    <input type="text" id="code-input" class="glass-input" placeholder="..." autocomplete="off">
                 </div>
 
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
                     <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
                         <span>Überprüfen</span>
+                    </button>
+                    <!-- Added Skip Btn for consistency -->
+                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz4')">
+                        <span>Überspringen</span>
                     </button>
                 </div>
                 <!-- Error msg -->
@@ -81,11 +85,17 @@
         </div>
     </main>
 
-    <!-- Background Character (Optional, reusing Jaina or Paladin or none) -->
     <!-- Background Character: Jaina -->
     <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
 
-    <!-- Static HUD Skeleton -->
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" onclick="toggleZoom(event)">
+        <div id="lightbox-caption"></div>
+    </div>
+
+    <!-- HUD ... -->
     <div id="game-hud" class="glass-panel"
         style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
         <div class="hud-row header">
@@ -117,24 +127,6 @@
         </div>
     </div>
 
-    <!-- Styles -->
-    <style>
-        /* Local overrides if needed, mostly handled by style.css now */
-        .glass-input {
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-    </style>
-
-
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-        <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" onclick="toggleZoom(event)">
-        <div id="lightbox-caption"></div>
-    </div>
-
     <script src="campfire.js"></script>
     <script src="stars.js"></script>
     <script src="settings.js"></script>
@@ -146,7 +138,7 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz4';
-        const SECRET_CODE = 'Algari-Angler2024';
+        const SECRET_CODE = 'Midnight-Angler2026';
         let startTime = Date.now();
         let currentState = null;
 
