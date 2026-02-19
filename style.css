@@ -315,6 +315,34 @@ label {
     /* Neutral Shadow */
 }
 
+/* Button Secondary / Outline / Skip */
+.btn-secondary,
+.btn-outline,
+.skip-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover,
+.btn-outline:hover,
+.skip-btn:hover {
+    border-color: var(--text-main);
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
 /* Button Primary - Glass Core */
 .btn-primary {
     background: rgba(255, 255, 255, 0.05);
