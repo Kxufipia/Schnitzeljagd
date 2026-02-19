@@ -308,3 +308,31 @@ document.addEventListener('DOMContentLoaded', () => {
         loggedInSection.classList.add('animate-enter');
     }
 });
+
+// Global Skip Function (Used by inline buttons)
+window.skipQuiz = function (quizId) {
+    if (!confirm("Willst du diese Quest wirklich überspringen? (0 Punkte)")) return;
+
+    if (typeof GameState !== 'undefined') {
+        try {
+            const state = GameState.decode();
+            if (!state) {
+                alert("Fehler: Spielstand nicht gefunden.");
+                return;
+            }
+
+            // Update State (Skip)
+            const nextStateEncoded = GameState.skip(state, quizId);
+
+            // Navigate
+            let nextUrl = GameState.getNextQuizUrl(state, quizId);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
+        } catch (e) {
+            console.error("Skip Error:", e);
+            alert("Fehler beim Überspringen.");
+        }
+    } else {
+        alert("Fehler: GameState nicht geladen.");
+    }
+};
