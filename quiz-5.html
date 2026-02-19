@@ -14,337 +14,347 @@
     </div>
 
     <!-- Theme Control -->
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <!-- Theme Control -->
+    <!-- Styles moved to style.css -->
+    <div id="theme-controls" class="glass-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <main>
-        <div class="container" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 5: Blingtrons Schaltkreis</h1>
+        <main>
+            <div class="container quiz-container">
+                <h1 class="header-margin-bottom">Quest 5: Blingtrons Schaltkreis</h1>
 
-            <div class="glass-panel card">
-                <!-- Instruction / Narrative -->
-                <div class="quest-giver-wrapper">
-                    <div class="quest-bubble">
-                        <div class="quest-speaker-name">Thrall</div>
-                        <p style="font-style: italic; margin-bottom: 0.5rem;">"Diese Goblin-Technologie ist mir ein
-                            Rätsel. Das Gerät blockiert unseren Weg und schreit nach Reparatur."</p>
-                        <p>Bringt die Schaltkreise in Ordnung! Entwirrt die Leitungen, damit wir weiterziehen können.
-                            <br>Ziehe die Knotenpunkte so, dass sich <strong>keine Linien überschneiden</strong>.
-                        </p>
-                        <p style="font-size: 0.85rem; color: var(--wow-blue);">Blaue Linien = Stabil | Rote Linien =
-                            Kurzschluss</p>
+                <div class="glass-panel card">
+                    <!-- Instruction / Narrative -->
+                    <div class="quest-giver-wrapper">
+                        <div class="quest-bubble">
+                            <div class="quest-speaker-name">Thrall</div>
+                            <p class="quest-italic">"Diese Goblin-Technologie ist mir ein
+                                Rätsel. Das Gerät blockiert unseren Weg und schreit nach Reparatur."</p>
+                            <p class="quest-instruction">Bringt die Schaltkreise in Ordnung! Entwirrt die Leitungen,
+                                damit wir weiterziehen können.
+                                <br>Ziehe die Knotenpunkte so, dass sich <strong>keine Linien überschneiden</strong>.
+                            </p>
+                            <p class="quest-caption-sub text-wow-blue">Blaue Linien = Stabil | Rote
+                                Linien =
+                                Kurzschluss</p>
+                        </div>
+                    </div>
+
+                    <!-- Game Canvas Container -->
+                    <!-- DEBUG: Red background to see if container exists -->
+                    <!-- Game Canvas Container -->
+                    <div id="circuit-container" class="game-container-frame circuit-container">
+                        <canvas id="circuit-canvas" class="game-canvas"></canvas>
+                        <div id="win-overlay" class="game-overlay overlay-win">
+                            <h2 class="overlay-title">System repariert!</h2>
+                            <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
+                        </div>
+                    </div>
+
+                    <!-- Footer / Status -->
+                    <!-- Footer / Status -->
+                    <div class="status-bar">
+                        <span id="status-text" class="status-label">Status: <span
+                                class="status-critical">Kritisch</span></span>
+                        <button id="reset-btn" class="btn-secondary btn-small" onclick="initGame()">Reset</button>
+                        <button id="skip-btn" class="btn-secondary btn-small" onclick="skipQuiz('quiz5')">Skip
+                            ⏩</button>
                     </div>
                 </div>
+            </div>
+        </main>
 
-                <!-- Game Canvas Container -->
-                <!-- DEBUG: Red background to see if container exists -->
-                <div id="circuit-container"
-                    style="position: relative; width: 100%; height: 500px; background: rgba(50, 0, 0, 0.5); border: 2px solid var(--wow-border); border-radius: 8px; margin-top: 1rem; overflow: hidden; touch-action: none;">
-                    <canvas id="circuit-canvas" style="display: block; width: 100%; height: 100%;"></canvas>
-                    <div id="win-overlay"
-                        style="display: none; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
-                        <h2
-                            style="color: var(--wow-gold); font-size: 2rem; margin-bottom: 1rem; text-shadow: 0 0 10px gold;">
-                            System repariert!</h2>
-                        <button class="btn-primary" onclick="finishQuiz()">Weiter</button>
-                    </div>
-                </div>
+        <!-- Character Image -->
+        <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
 
-                <!-- Footer / Status -->
-                <div
-                    style="display: flex; gap: 1rem; justify-content: space-between; margin-top: 1rem; align-items: center;">
-                    <span id="status-text" style="font-size: 0.9rem; color: #aaa;">Status: <span
-                            style="color: var(--horde-red);">Kritisch</span></span>
-                    <button id="reset-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;"
-                        onclick="initGame()">Reset</button>
-                    <button id="skip-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;"
-                        onclick="skipQuiz('quiz5')">Skip ⏩</button>
+        <!-- Static HUD Skeleton -->
+        <div id="game-hud" class="glass-panel hud-static">
+            <div class="hud-row header">
+                <span class="hud-label">Held</span>
+                <span class="hud-value name">...</span>
+            </div>
+            <div class="hud-divider"></div>
+            <div class="hud-row-spread">
+                <span class="hud-accent hud-accent-text">Stufe
+                    ...</span>
+                <span class="hud-subtext hud-subtext-small">...%</span>
+            </div>
+            <div class="xp-container hud-xp-container-tight">
+                <div class="xp-bar">
+                    <div class="xp-fill"></div>
+                    <div class="xp-text">...</div>
                 </div>
             </div>
-        </div>
-    </main>
-
-    <!-- Character Image -->
-    <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
-
-    <!-- Static HUD Skeleton -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
-        <div class="hud-row header">
-            <span class="hud-label">Held</span>
-            <span class="hud-value name">...</span>
-        </div>
-        <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
-                ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
-        </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
-            <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
-                <div class="xp-text">...</div>
+            <div class="hud-total-row">
+                <span class="hud-muted hud-text-muted">Total: ...</span>
+            </div>
+            <div class="hud-divider"></div>
+            <div class="hud-stats-grid">
+                <div class="stat-item completed"><span class="stat-label">Erledigt</span><span
+                        class="stat-val">...</span>
+                </div>
+                <div class="stat-item skipped"><span class="stat-label">Skipped</span><span class="stat-val">...</span>
+                </div>
+                <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
             </div>
         </div>
-    </div>
 
-    <script src="campfire.js"></script>
-    <script src="stars.js"></script>
-    <script src="settings.js"></script>
-    <script src="gamestate.js"></script>
-    <script src="sidebar.js"></script>
-    <script src="sounds.js"></script>
-    <script src="toast.js"></script>
-    <script src="gamehud.js"></script>
-    <script src="script.js"></script>
-    <script>
-        const QUIZ_ID = 'quiz5';
-        let startTime = Date.now();
-        let currentState = null;
+        <script src="campfire.js"></script>
+        <script src="stars.js"></script>
+        <script src="settings.js"></script>
+        <script src="gamestate.js"></script>
+        <script src="sidebar.js"></script>
+        <script src="sounds.js"></script>
+        <script src="toast.js"></script>
+        <script src="gamehud.js"></script>
+        <script src="script.js"></script>
+        <script>
+            const QUIZ_ID = 'quiz5';
+            let startTime = Date.now();
+            let currentState = null;
 
-        // --- Game Logic ---
-        // Renaming variables to avoid global scope collisions (e.g. with campfire.js)
-        const circuitCanvas = document.getElementById('circuit-canvas');
-        const circuitCtx = circuitCanvas.getContext('2d');
-        const circuitContainer = document.getElementById('circuit-container');
+            // --- Game Logic ---
+            // Renaming variables to avoid global scope collisions (e.g. with campfire.js)
+            const circuitCanvas = document.getElementById('circuit-canvas');
+            const circuitCtx = circuitCanvas.getContext('2d');
+            const circuitContainer = document.getElementById('circuit-container');
 
-        // Debug
-        console.log("Quiz 5 Script Loaded. Canvas:", circuitCanvas);
+            // Debug
+            console.log("Quiz 5 Script Loaded. Canvas:", circuitCanvas);
 
-        const NODE_RADIUS = 15;
-        // const SNAP_DIST = 30; // Unused 
+            const NODE_RADIUS = 15;
+            // const SNAP_DIST = 30; // Unused 
 
-        let nodes = [];
-        let edges = [
-            [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], // Spokes
-            [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]  // Rim
-        ];
+            let nodes = [];
+            let edges = [
+                [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], // Spokes
+                [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]  // Rim
+            ];
 
-        let draggedNode = null;
-        let isSolved = false;
+            let draggedNode = null;
+            let isSolved = false;
 
-        // Init State Check
-        try {
-            currentState = GameState.decode();
-        } catch (e) { console.error("State Error:", e); }
+            // Init State Check
+            try {
+                currentState = GameState.decode();
+            } catch (e) { console.error("State Error:", e); }
 
-        function resizeCircuitCanvas() {
-            const rect = circuitContainer.getBoundingClientRect();
-            console.log("Resizing Canvas. Container Rect:", rect);
+            function resizeCircuitCanvas() {
+                const rect = circuitContainer.getBoundingClientRect();
+                console.log("Resizing Canvas. Container Rect:", rect);
 
-            // Set internal resolution
-            circuitCanvas.width = rect.width;
-            circuitCanvas.height = rect.height;
+                // Set internal resolution
+                circuitCanvas.width = rect.width;
+                circuitCanvas.height = rect.height;
 
-            if (circuitCanvas.width === 0 || circuitCanvas.height === 0) {
-                console.warn("Canvas has 0 size. Defaulting to 800x600");
-                circuitCanvas.width = 800;
-                circuitCanvas.height = 600;
-            }
-
-            // Reposition nodes if they exist to keep them on screen
-            if (nodes.length > 0) {
-                const padding = 20;
-                nodes.forEach(n => {
-                    n.x = Math.max(padding, Math.min(circuitCanvas.width - padding, n.x));
-                    n.y = Math.max(padding, Math.min(circuitCanvas.height - padding, n.y));
-                });
-            }
-            drawCircuit();
-        }
-        window.addEventListener('resize', resizeCircuitCanvas);
-
-        function initGame() {
-            console.log("Initializing Game...");
-            isSolved = false;
-            document.getElementById('win-overlay').style.display = 'none';
-            document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch</span>';
-
-            // Ensure we have size
-            resizeCircuitCanvas();
-
-            const padding = 50;
-            const w = circuitCanvas.width - padding * 2;
-            const h = circuitCanvas.height - padding * 2;
-
-            nodes = [];
-            // Create 7 nodes at random positions
-            for (let i = 0; i < 7; i++) {
-                nodes.push({
-                    id: i,
-                    x: padding + Math.random() * Math.max(100, w),
-                    y: padding + Math.random() * Math.max(100, h)
-                });
-            }
-            console.log("Nodes created:", nodes.length);
-            drawCircuit();
-        }
-
-        function getMousePos(evt) {
-            const rect = circuitCanvas.getBoundingClientRect();
-            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function onDown(evt) {
-            if (isSolved) return;
-            const pos = getMousePos(evt);
-            draggedNode = null;
-            // Find clicked node (reverse order to pick top one)
-            for (let i = nodes.length - 1; i >= 0; i--) {
-                const n = nodes[i];
-                const dx = pos.x - n.x;
-                const dy = pos.y - n.y;
-                if (dx * dx + dy * dy <= (NODE_RADIUS + 15) ** 2) {
-                    draggedNode = n;
-                    break;
+                if (circuitCanvas.width === 0 || circuitCanvas.height === 0) {
+                    console.warn("Canvas has 0 size. Defaulting to 800x600");
+                    circuitCanvas.width = 800;
+                    circuitCanvas.height = 600;
                 }
-            }
-            if (draggedNode) {
-                evt.preventDefault();
-                document.addEventListener('mousemove', onMove);
-                document.addEventListener('mouseup', onUp);
-                document.addEventListener('touchmove', onMove, { passive: false });
-                document.addEventListener('touchend', onUp);
-            }
-        }
 
-        function onMove(evt) {
-            if (!draggedNode) return;
-            evt.preventDefault();
-            const pos = getMousePos(evt);
-            circuitCanvas.style.cursor = 'grabbing';
-            draggedNode.x = Math.max(NODE_RADIUS, Math.min(circuitCanvas.width - NODE_RADIUS, pos.x));
-            draggedNode.y = Math.max(NODE_RADIUS, Math.min(circuitCanvas.height - NODE_RADIUS, pos.y));
-            drawCircuit();
-        }
-
-        function onUp(evt) {
-            draggedNode = null;
-            circuitCanvas.style.cursor = 'grab';
-            document.removeEventListener('mousemove', onMove);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-            checkWin();
-        }
-
-        circuitCanvas.addEventListener('mousedown', onDown);
-        circuitCanvas.addEventListener('touchstart', onDown, { passive: false });
-        circuitCanvas.style.cursor = 'grab';
-
-        function ccw(A, B, C) {
-            return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
-        }
-
-        function intersect(A, B, C, D) {
-            if (A.id === C.id || A.id === D.id || B.id === C.id || B.id === D.id) return false;
-            return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
-        }
-
-        function drawCircuit() {
-            if (!circuitCtx) { console.error("No Context!"); return; }
-            if (nodes.length === 0) return; // Prevent crash during init before nodes exist
-
-            // Fill background to verify canvas is rendering
-            // circuitCtx.fillStyle = 'rgba(20, 20, 30, 0.8)';
-            // circuitCtx.fillRect(0, 0, circuitCanvas.width, circuitCanvas.height);
-            circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height);
-
-            // Draw Edges
-            const badEdges = new Set();
-            for (let i = 0; i < edges.length; i++) {
-                const u1 = nodes[edges[i][0]];
-                const v1 = nodes[edges[i][1]];
-                for (let j = i + 1; j < edges.length; j++) {
-                    const u2 = nodes[edges[j][0]];
-                    const v2 = nodes[edges[j][1]];
-                    if (intersect(u1, v1, u2, v2)) {
-                        badEdges.add(i);
-                        badEdges.add(j);
-                    }
+                // Reposition nodes if they exist to keep them on screen
+                if (nodes.length > 0) {
+                    const padding = 20;
+                    nodes.forEach(n => {
+                        n.x = Math.max(padding, Math.min(circuitCanvas.width - padding, n.x));
+                        n.y = Math.max(padding, Math.min(circuitCanvas.height - padding, n.y));
+                    });
                 }
-            }
-
-            circuitCtx.lineWidth = 3;
-            for (let i = 0; i < edges.length; i++) {
-                const n1 = nodes[edges[i][0]];
-                const n2 = nodes[edges[i][1]];
-
-                circuitCtx.beginPath();
-                circuitCtx.moveTo(n1.x, n1.y);
-                circuitCtx.lineTo(n2.x, n2.y);
-                circuitCtx.strokeStyle = badEdges.has(i) ? '#ff3333' : '#33ccff';
-                circuitCtx.stroke();
-            }
-
-            // Draw Nodes
-            for (let i = 0; i < nodes.length; i++) {
-                const n = nodes[i];
-                circuitCtx.beginPath();
-                circuitCtx.arc(n.x, n.y, NODE_RADIUS, 0, 2 * Math.PI);
-                circuitCtx.fillStyle = '#222';
-                circuitCtx.fill();
-                circuitCtx.lineWidth = 2;
-                circuitCtx.strokeStyle = '#ffcc00';
-                circuitCtx.stroke();
-
-                circuitCtx.beginPath();
-                circuitCtx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
-                circuitCtx.fillStyle = '#00ffcc';
-                circuitCtx.fill();
-            }
-
-            if (badEdges.size === 0 && !draggedNode && startTime > 0) {
-                document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--wow-green);">Stabil</span>';
-            } else {
-                document.getElementById('status-text').innerHTML = 'Status: <span style="color: var(--horde-red);">Kritisch (' + (badEdges.size) + ' Fehler)</span>';
-            }
-        }
-
-        function checkWin() {
-            let crossCount = 0;
-            for (let i = 0; i < edges.length; i++) {
-                for (let j = i + 1; j < edges.length; j++) {
-                    const u1 = nodes[edges[i][0]];
-                    const v1 = nodes[edges[i][1]];
-                    const u2 = nodes[edges[j][0]];
-                    const v2 = nodes[edges[j][1]];
-                    if (intersect(u1, v1, u2, v2)) crossCount++;
-                }
-            }
-
-            if (crossCount === 0) {
-                isSolved = true;
-                if (window.SoundManager) SoundManager.playLevelUp();
-                document.getElementById('win-overlay').style.display = 'flex';
                 drawCircuit();
             }
-        }
+            window.addEventListener('resize', resizeCircuitCanvas);
 
-        function finishQuiz() {
-            const timeTaken = (Date.now() - startTime) / 1000;
-            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-            window.location.href = nextUrl;
-        }
+            function initGame() {
+                console.log("Initializing Game...");
+                isSolved = false;
+                document.getElementById('win-overlay').style.display = 'none';
+                document.getElementById('status-text').innerHTML = 'Status: <span class="status-critical">Kritisch</span>';
 
-        // Wait for connection
-        window.addEventListener('load', () => {
-            setTimeout(initGame, 100);
-        });
-        // Fallback
-        setTimeout(initGame, 500);
+                // Ensure we have size
+                resizeCircuitCanvas();
 
-    </script>
+                const padding = 50;
+                const w = circuitCanvas.width - padding * 2;
+                const h = circuitCanvas.height - padding * 2;
+
+                nodes = [];
+                // Create 7 nodes at random positions
+                for (let i = 0; i < 7; i++) {
+                    nodes.push({
+                        id: i,
+                        x: padding + Math.random() * Math.max(100, w),
+                        y: padding + Math.random() * Math.max(100, h)
+                    });
+                }
+                console.log("Nodes created:", nodes.length);
+                drawCircuit();
+            }
+
+            function getMousePos(evt) {
+                const rect = circuitCanvas.getBoundingClientRect();
+                const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function onDown(evt) {
+                if (isSolved) return;
+                const pos = getMousePos(evt);
+                draggedNode = null;
+                // Find clicked node (reverse order to pick top one)
+                for (let i = nodes.length - 1; i >= 0; i--) {
+                    const n = nodes[i];
+                    const dx = pos.x - n.x;
+                    const dy = pos.y - n.y;
+                    if (dx * dx + dy * dy <= (NODE_RADIUS + 15) ** 2) {
+                        draggedNode = n;
+                        break;
+                    }
+                }
+                if (draggedNode) {
+                    evt.preventDefault();
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                    document.addEventListener('touchmove', onMove, { passive: false });
+                    document.addEventListener('touchend', onUp);
+                }
+            }
+
+            function onMove(evt) {
+                if (!draggedNode) return;
+                evt.preventDefault();
+                const pos = getMousePos(evt);
+                circuitCanvas.style.cursor = 'grabbing';
+                draggedNode.x = Math.max(NODE_RADIUS, Math.min(circuitCanvas.width - NODE_RADIUS, pos.x));
+                draggedNode.y = Math.max(NODE_RADIUS, Math.min(circuitCanvas.height - NODE_RADIUS, pos.y));
+                drawCircuit();
+            }
+
+            function onUp(evt) {
+                draggedNode = null;
+                circuitCanvas.style.cursor = 'grab';
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onUp);
+                checkWin();
+            }
+
+            circuitCanvas.addEventListener('mousedown', onDown);
+            circuitCanvas.addEventListener('touchstart', onDown, { passive: false });
+            circuitCanvas.style.cursor = 'grab';
+
+            function ccw(A, B, C) {
+                return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+            }
+
+            function intersect(A, B, C, D) {
+                if (A.id === C.id || A.id === D.id || B.id === C.id || B.id === D.id) return false;
+                return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
+            }
+
+            function drawCircuit() {
+                if (!circuitCtx) { console.error("No Context!"); return; }
+                if (nodes.length === 0) return; // Prevent crash during init before nodes exist
+
+                // Fill background to verify canvas is rendering
+                // circuitCtx.fillStyle = 'rgba(20, 20, 30, 0.8)';
+                // circuitCtx.fillRect(0, 0, circuitCanvas.width, circuitCanvas.height);
+                circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height);
+
+                // Draw Edges
+                const badEdges = new Set();
+                for (let i = 0; i < edges.length; i++) {
+                    const u1 = nodes[edges[i][0]];
+                    const v1 = nodes[edges[i][1]];
+                    for (let j = i + 1; j < edges.length; j++) {
+                        const u2 = nodes[edges[j][0]];
+                        const v2 = nodes[edges[j][1]];
+                        if (intersect(u1, v1, u2, v2)) {
+                            badEdges.add(i);
+                            badEdges.add(j);
+                        }
+                    }
+                }
+
+                circuitCtx.lineWidth = 3;
+                for (let i = 0; i < edges.length; i++) {
+                    const n1 = nodes[edges[i][0]];
+                    const n2 = nodes[edges[i][1]];
+
+                    circuitCtx.beginPath();
+                    circuitCtx.moveTo(n1.x, n1.y);
+                    circuitCtx.lineTo(n2.x, n2.y);
+                    circuitCtx.strokeStyle = badEdges.has(i) ? '#ff3333' : '#33ccff';
+                    circuitCtx.stroke();
+                }
+
+                // Draw Nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    circuitCtx.beginPath();
+                    circuitCtx.arc(n.x, n.y, NODE_RADIUS, 0, 2 * Math.PI);
+                    circuitCtx.fillStyle = '#222';
+                    circuitCtx.fill();
+                    circuitCtx.lineWidth = 2;
+                    circuitCtx.strokeStyle = '#ffcc00';
+                    circuitCtx.stroke();
+
+                    circuitCtx.beginPath();
+                    circuitCtx.arc(n.x, n.y, NODE_RADIUS / 2, 0, 2 * Math.PI);
+                    circuitCtx.fillStyle = '#00ffcc';
+                    circuitCtx.fill();
+                }
+
+                if (badEdges.size === 0 && !draggedNode && startTime > 0) {
+                    document.getElementById('status-text').innerHTML = 'Status: <span class="status-stable">Stabil</span>';
+                } else {
+                    document.getElementById('status-text').innerHTML = 'Status: <span class="status-critical">Kritisch (' + (badEdges.size) + ' Fehler)</span>';
+                }
+            }
+
+            function checkWin() {
+                let crossCount = 0;
+                for (let i = 0; i < edges.length; i++) {
+                    for (let j = i + 1; j < edges.length; j++) {
+                        const u1 = nodes[edges[i][0]];
+                        const v1 = nodes[edges[i][1]];
+                        const u2 = nodes[edges[j][0]];
+                        const v2 = nodes[edges[j][1]];
+                        if (intersect(u1, v1, u2, v2)) crossCount++;
+                    }
+                }
+
+                if (crossCount === 0) {
+                    isSolved = true;
+                    if (window.SoundManager) SoundManager.playLevelUp();
+                    document.getElementById('win-overlay').style.display = 'flex';
+                    drawCircuit();
+                }
+            }
+
+            function finishQuiz() {
+                const timeTaken = (Date.now() - startTime) / 1000;
+                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+                window.location.href = nextUrl;
+            }
+
+            // Wait for connection
+            window.addEventListener('load', () => {
+                setTimeout(initGame, 100);
+            });
+            // Fallback
+            setTimeout(initGame, 500);
+
+        </script>
 </body>
 
 </html>

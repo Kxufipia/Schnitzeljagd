@@ -6,46 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSB Schnitzeljagd 2.0 - Quest 1</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .puzzle-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            border: 1px solid #333;
-            background: black;
-        }
-
-        .puzzle-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            /* Start invisible except very center */
-            mask-image: radial-gradient(circle at center, black 0%, transparent 0%);
-            -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 0%);
-            mask-repeat: no-repeat;
-            -webkit-mask-repeat: no-repeat;
-            transition: mask-image 1s linear, -webkit-mask-image 1s linear;
-        }
-
-        .input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .wow-input {
-            width: 100%;
-            text-align: center;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-        }
-    </style>
+    <!-- Styles moved to style.css -->
 </head>
 
 <body>
@@ -53,41 +14,33 @@
         <canvas id="campfire"></canvas>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <div id="theme-controls" class="theme-controls-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <!-- Header Removed for Starry Sky -->
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 0.5rem;">Ein Blick durch den Nebel</h1>
+        <div class="container quiz-container">
+            <h1 class="title-main">Ein Blick durch den Nebel</h1>
 
-            <div class="glass-panel card" style="padding-bottom: 1rem;">
-                <style>
-                    #error-msg:empty {
-                        display: none;
-                        margin: 0;
-                        height: 0;
-                    }
-                </style>
-                <div class="puzzle-container" style="margin-bottom: 1rem;">
+            <div class="glass-panel card">
+
+                <div class="puzzle-container">
                     <img id="reveal-img" src="images/Puzzle-LoginScreen.jpg" alt="Quest Bild" class="puzzle-image">
                 </div>
 
                 <div class="input-section">
                     <!-- Quest Giver: Thrall -->
-                    <div class="quest-giver-wrapper" style="margin-bottom: 0;">
-                        <div class="quest-bubble" style="margin-bottom: 0; padding: 1.25rem;">
+                    <div class="quest-giver-wrapper">
+                        <div class="quest-bubble quest-bubble-tight">
                             <div class="quest-speaker-name">Thrall</div>
-                            <label for="puzz-answer" style="display:block;">Zu welchem Addon gehoert dieser
+                            <label for="puzz-answer" class="input-label">Zu welchem Addon gehoert dieser
                                 LoginScreen?</label>
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                    <div class="form-group form-group-tight">
                         <div class="input-wrapper">
                             <input type="text" id="puzz-answer" class="wow-input" placeholder="Addon Name..."
                                 autocomplete="off">
@@ -95,8 +48,8 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 0;">
-                        <button id="confirm-btn" class="btn-primary" style="flex: 2;">
+                    <div class="action-row">
+                        <button id="confirm-btn" class="btn-primary btn-flex-grow">
                             <span>Zug Zug!</span>
                         </button>
                         <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz1')">
@@ -104,8 +57,7 @@
                         </button>
                     </div>
 
-                    <p id="error-msg"
-                        style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
+                    <p id="error-msg" class="error-message start-hidden">
                     </p>
                 </div>
             </div>
@@ -116,26 +68,25 @@
     <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
 
     <!-- Static HUD Skeleton (Prevents View Transition Blink) -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+    <div id="game-hud" class="glass-panel hud-static">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
         </div>
         <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
                 ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
         </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+        <div class="xp-container hud-xp-container-tight">
             <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-fill"></div>
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
         </div>
         <div class="hud-divider"></div>
         <div class="hud-stats-grid">
@@ -193,8 +144,8 @@
             // Using pixels or percentage? Percentage is easier for responsiveness.
             // But circle radius in % is relative to box.
             const gradient = `radial-gradient(circle at center, black ${radius}%, transparent ${radius}%)`;
-            revealImg.style.maskImage = gradient;
             revealImg.style.webkitMaskImage = gradient;
+            revealImg.style.maskImage = gradient;
         }
 
         // Init State

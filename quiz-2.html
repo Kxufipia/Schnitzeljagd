@@ -23,7 +23,7 @@
         <div class="container animate-enter quiz-container">
             <h1 class="quiz-header">Quest 2: Das Gedächtnis der Ahnen</h1>
 
-            <div class="glass-panel card" style="text-align: center;">
+            <div class="glass-panel card text-center">
                 <p class="quiz-instruction">Finde alle Paare, um den Weg freizumachen.</p>
 
                 <div id="memory-board">
@@ -56,25 +56,25 @@
 
     <!-- Static HUD Skeleton -->
     <!-- z-index and view-transition-name moved to style.css. transition: none kept to prevent jumpiness on load? -->
-    <div id="game-hud" class="glass-panel" style="transition: none;">
+    <div id="game-hud" class="glass-panel hud-static">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
         </div>
         <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
                 ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
         </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+        <div class="xp-container hud-xp-container-tight">
             <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-fill"></div>
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
         </div>
         <div class="hud-divider"></div>
         <div class="hud-stats-grid">

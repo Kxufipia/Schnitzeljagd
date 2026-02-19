@@ -14,18 +14,16 @@
         <canvas id="campfire"></canvas>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <div id="theme-controls" class="glass-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 60vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 4: Der geheime Ort</h1>
+        <div class="container animate-enter quiz-container quiz-container-wide">
+            <h1 class="header-margin-bottom">Quest 4: Der geheime Ort</h1>
 
             <div class="glass-panel card">
-                <p style="margin-bottom: 1.5rem; text-align: center;">
+                <p class="quiz-instruction text-center">
                     Sucht Kuxu an diesem Ort. Die Bilder offenbaren sich langsam...
                 </p>
 
@@ -34,7 +32,7 @@
                     <div class="gallery-item visible" id="img1-container">
                         <img src="images/Quiz4/image1.jpg" alt="Hinweis 1" class="gallery-img"
                             onclick="openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 1 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                        <div class="gallery-caption">Hinweis 1 <br><span class="gallery-caption-sub">(Klicken
                                 zum Vergrößern)</span></div>
                     </div>
                     <div class="gallery-item locked" id="img2-container">
@@ -44,7 +42,7 @@
                         </div>
                         <img src="images/Quiz4/image2.jpg" alt="Hinweis 2" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 2 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                        <div class="gallery-caption">Hinweis 2 <br><span class="gallery-caption-sub">(Klicken
                                 zum Vergrößern)</span></div>
                     </div>
                     <div class="gallery-item locked" id="img3-container">
@@ -54,21 +52,20 @@
                         </div>
                         <img src="images/Quiz4/image3.png" alt="Hinweis 3" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 3 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                        <div class="gallery-caption">Hinweis 3 <br><span class="gallery-caption-sub">(Klicken
                                 zum Vergrößern)</span></div>
                     </div>
                 </div>
 
                 <!-- Input Section (Same as Quiz 3 was) -->
-                <div class="input-group"
-                    style="margin-top: 2.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
-                    <label for="code-input" style="display: block; margin-bottom: 0.5rem; color: var(--wow-gold);">Was
+                <div class="input-group input-group-centered">
+                    <label for="code-input" class="input-label">Was
                         ist das Codewort?</label>
                     <input type="text" id="code-input" class="glass-input" placeholder="..." autocomplete="off">
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
+                <div class="action-buttons">
+                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
                         <span>Überprüfen</span>
                     </button>
                     <!-- Added Skip Btn for consistency -->
@@ -77,8 +74,7 @@
                     </button>
                 </div>
                 <!-- Error msg -->
-                <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.9rem; min-height: 1.5rem; text-align: center; margin-top: 1rem;">
+                <p id="error-msg" class="error-message">
                 </p>
 
             </div>
@@ -91,31 +87,30 @@
     <!-- Lightbox Modal -->
     <div id="lightbox" class="lightbox" onclick="closeLightbox()">
         <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" onclick="toggleZoom(event)">
+        <img class="lightbox-content" id="lightbox-img" alt="Lightbox view" onclick="toggleZoom(event)">
         <div id="lightbox-caption"></div>
     </div>
 
     <!-- HUD ... -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+    <div id="game-hud" class="glass-panel hud-static">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
         </div>
         <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
                 ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
         </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+        <div class="xp-container hud-xp-container-tight">
             <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-fill"></div>
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
         </div>
         <div class="hud-divider"></div>
         <div class="hud-stats-grid">

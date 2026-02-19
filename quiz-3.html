@@ -14,33 +14,31 @@
         <canvas id="campfire"></canvas>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <div id="theme-controls" class="glass-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 3: Der Fang des Tages</h1>
+        <div class="container animate-enter quiz-container">
+            <h1 class="header-margin-bottom">Quest 3: Der Fang des Tages</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Thrall (Ref: Midnight/Fishing) -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Thrall</div>
-                        <p style="font-style: italic; margin-bottom: 1rem;">"Die Vorräte schwinden, Champion. Ich
+                        <p class="quest-italic">"Die Vorräte schwinden, Champion. Ich
                             weiß, dass du dich mit der Jagd auskennst."</p>
-                        <p style="margin-bottom: 1rem;">Wir brauchen Nahrung für den Trupp. Beweis dein Geschick an der
+                        <p class="quest-instruction">Wir brauchen Nahrung für den Trupp. Beweis dein Geschick an der
                             Angel und beschaffe <strong>5 Fische</strong> aus den Gewässern von Midnight. Sucht
                             anschließend den Händler <strong>Kuxu</strong> auf.</p>
-                        <p style="font-weight: bold;">Ich werde euch nun Bilder zeigen, die euch zu ihm führen. Merkt
+                        <p class="quest-bold">Ich werde euch nun Bilder zeigen, die euch zu ihm führen. Merkt
                             sie euch gut!"</p>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="finishQuiz()">
+                <div class="action-buttons">
+                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="finishQuiz()">
                         <span>Auf die Suche! (Weiter)</span>
                     </button>
                     <!-- Skip enabled for consistency -->
@@ -56,26 +54,25 @@
     <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
 
     <!-- Static HUD Skeleton -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+    <div id="game-hud" class="glass-panel hud-static">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
         </div>
         <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
                 ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
         </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+        <div class="xp-container hud-xp-container-tight">
             <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-fill"></div>
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
         </div>
         <div class="hud-divider"></div>
         <div class="hud-stats-grid">
@@ -88,25 +85,7 @@
     </div>
 
     <!-- Styles for Input -->
-    <style>
-        .glass-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.75rem;
-            border-radius: 4px;
-            width: 80%;
-            max-width: 300px;
-            font-size: 1rem;
-            text-align: center;
-        }
-
-        .glass-input:focus {
-            outline: none;
-            border-color: var(--wow-gold);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-    </style>
+    <!-- Styles for Input moved to style.css -->
 
     <script src="campfire.js"></script>
     <script src="stars.js"></script>

@@ -15,12 +15,11 @@
         <div class="orb orb-2"></div>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <a href="leaderboard.html"
-            style="text-decoration: none; color: inherit; border-bottom: 1px dashed currentColor; margin-right: 0.5rem;">Bestenliste</a>
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <!-- Theme Controls -->
+    <!-- Styles moved to style.css -->
+    <div id="theme-controls" class="glass-panel">
+        <a href="leaderboard.html" class="footer-link mr-sm">Bestenliste</a>
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <!-- Header Removed for Starry Sky -->
@@ -30,7 +29,7 @@
             <!-- Hero Text Removed -->
 
             <!-- Login Form Section -->
-            <div id="login-section" class="glass-panel card delay-100 animate-enter">
+            <div id="login-section" class="glass-panel card delay-100 animate-enter login-card">
                 <div class="card-glow-bar"></div>
                 <form id="login-form">
                     <div class="form-group">
@@ -40,73 +39,73 @@
                         <!-- New Class Scroll Banner System -->
                         <div class="class-scroll-container">
                             <!-- Warriors -->
-                            <div class="class-banner selected" data-value="warrior" style="--banner-color: #C79C6E;">
+                            <div class="class-banner selected" data-value="warrior">
                                 <img src="images/Warrior.png" alt="Warrior" class="class-banner-icon">
                                 <div class="class-banner-name">Warrior</div>
                             </div>
                             <!-- Paladin -->
-                            <div class="class-banner" data-value="paladin" style="--banner-color: #F58CBA;">
+                            <div class="class-banner" data-value="paladin">
                                 <img src="images/Paladin.png" alt="Paladin" class="class-banner-icon">
                                 <div class="class-banner-name">Paladin</div>
                             </div>
                             <!-- Hunter -->
-                            <div class="class-banner" data-value="hunter" style="--banner-color: #ABD473;">
+                            <div class="class-banner" data-value="hunter">
                                 <img src="images/Hunter.png" alt="Hunter" class="class-banner-icon">
                                 <div class="class-banner-name">Hunter</div>
                             </div>
                             <!-- Rogue -->
-                            <div class="class-banner" data-value="rogue" style="--banner-color: #FFF569;">
+                            <div class="class-banner" data-value="rogue">
                                 <img src="images/Rogue.png" alt="Rogue" class="class-banner-icon">
                                 <div class="class-banner-name">Rogue</div>
                             </div>
                             <!-- Priest -->
-                            <div class="class-banner" data-value="priest" style="--banner-color: #FFFFFF;">
+                            <div class="class-banner" data-value="priest">
                                 <img src="images/Priest.png" alt="Priest" class="class-banner-icon">
                                 <div class="class-banner-name">Priest</div>
                             </div>
                             <!-- DK -->
-                            <div class="class-banner" data-value="deathknight" style="--banner-color: #C41F3B;">
+                            <div class="class-banner" data-value="deathknight">
                                 <img src="images/DeathKnight.png" alt="DK" class="class-banner-icon">
                                 <div class="class-banner-name">Death Knight</div>
                             </div>
                             <!-- Shaman -->
-                            <div class="class-banner" data-value="shaman" style="--banner-color: #0070DE;">
+                            <div class="class-banner" data-value="shaman">
                                 <img src="images/Shaman.png" alt="Shaman" class="class-banner-icon">
                                 <div class="class-banner-name">Shaman</div>
                             </div>
                             <!-- Mage -->
-                            <div class="class-banner" data-value="mage" style="--banner-color: #40C7EB;">
+                            <div class="class-banner" data-value="mage">
                                 <img src="images/Mage.png" alt="Mage" class="class-banner-icon">
                                 <div class="class-banner-name">Mage</div>
                             </div>
                             <!-- Warlock -->
-                            <div class="class-banner" data-value="warlock" style="--banner-color: #8787ED;">
+                            <div class="class-banner" data-value="warlock">
                                 <img src="images/Warlock.png" alt="Warlock" class="class-banner-icon">
                                 <div class="class-banner-name">Warlock</div>
                             </div>
                             <!-- Monk -->
-                            <div class="class-banner" data-value="monk" style="--banner-color: #00FF96;">
+                            <div class="class-banner" data-value="monk">
                                 <img src="images/Monk.png" alt="Monk" class="class-banner-icon">
                                 <div class="class-banner-name">Monk</div>
                             </div>
                             <!-- Druid -->
-                            <div class="class-banner" data-value="druid" style="--banner-color: #FF7D0A;">
+                            <div class="class-banner" data-value="druid">
                                 <img src="images/Druid.png" alt="Druid" class="class-banner-icon">
                                 <div class="class-banner-name">Druid</div>
                             </div>
                             <!-- DH -->
-                            <div class="class-banner" data-value="demonhunter" style="--banner-color: #A330C9;">
+                            <div class="class-banner" data-value="demonhunter">
                                 <img src="images/DemonHunter.png" alt="DH" class="class-banner-icon">
                                 <div class="class-banner-name">Demon Hunter</div>
                             </div>
                             <!-- Evoker -->
-                            <div class="class-banner" data-value="evoker" style="--banner-color: #33937F;">
+                            <div class="class-banner" data-value="evoker">
                                 <img src="images/Evoker.png" alt="Evoker" class="class-banner-icon">
                                 <div class="class-banner-name">Evoker</div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" style="margin-top: 1.5rem;">
+                    <div class="form-group mt-md">
                         <label for="charName">Charakter Name</label>
                         <div class="input-wrapper">
                             <input type="text" id="charName" class="wow-input" placeholder="Name deines Helden" required
@@ -121,22 +120,19 @@
             </div>
 
             <!-- Maintenance Countdown Section (Hidden by default) -->
-            <div id="maintenance-section" class="glass-panel card animate-enter"
-                style="display: none; text-align: center;">
-                <h1 style="color: var(--wow-gold); font-size: 2rem; margin-bottom: 1rem;">DAS PORTAL IST NOCH
-                    GESCHLOSSEN</h1>
-                <p style="color: #ccc; margin-bottom: 2rem;">Die Jagd beginnt erst am <span
-                        style="color: white; font-weight: bold;">08.03.2026 um 20:00 Uhr</span>.</p>
+            <div id="maintenance-section" class="glass-panel card animate-enter maintenance-card">
+                <h1 class="maintenance-title">DAS PORTAL IST NOCH GESCHLOSSEN</h1>
+                <p class="maintenance-text">Die Jagd beginnt erst am <span class="maintenance-date">08.03.2026 um 20:00
+                        Uhr</span>.</p>
 
-                <div id="countdown-timer"
-                    style="display: flex; justify-content: center; gap: 1.5rem; font-size: 2.5rem; font-weight: bold; font-family: monospace; color: white;">
-                    <div><span id="d">00</span><br><span style="font-size: 0.8rem; opacity: 0.7;">TAGE</span></div>
+                <div id="countdown-timer" class="countdown-wrapper">
+                    <div><span id="d">00</span><br><span class="countdown-label">TAGE</span></div>
                     <div>:</div>
-                    <div><span id="h">00</span><br><span style="font-size: 0.8rem; opacity: 0.7;">STD</span></div>
+                    <div><span id="h">00</span><br><span class="countdown-label">STD</span></div>
                     <div>:</div>
-                    <div><span id="m">00</span><br><span style="font-size: 0.8rem; opacity: 0.7;">MIN</span></div>
+                    <div><span id="m">00</span><br><span class="countdown-label">MIN</span></div>
                     <div>:</div>
-                    <div><span id="s">00</span><br><span style="font-size: 0.8rem; opacity: 0.7;">SEK</span></div>
+                    <div><span id="s">00</span><br><span class="countdown-label">SEK</span></div>
                 </div>
             </div>
 
@@ -145,9 +141,8 @@
     </main>
 
     <footer>
-        <div style="margin-bottom: 0.5rem;"></div>Lok'tar Ogar!</div>
-        <a href="leaderboard.html"
-            style="color: #6b7280; font-size: 0.8rem; text-decoration: none; border-bottom: 1px dashed #6b7280;">Bestenliste</a>
+        <div class="mb-sm">Lok'tar Ogar!</div>
+        <a href="leaderboard.html" class="footer-link">Bestenliste</a>
     </footer>
 
     <script src="campfire.js"></script>

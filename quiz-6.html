@@ -14,15 +14,13 @@
         <canvas id="campfire"></canvas>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <div id="theme-controls" class="theme-controls-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 6</h1>
+        <div class="container quiz-container animate-enter">
+            <h1 class="title-main">Quest 6</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Jaina -->
@@ -39,16 +37,15 @@
                     <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                    <button id="confirm-btn" class="btn-primary" style="flex: 2;" onclick="checkAnswer()">
+                <div class="action-row">
+                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
                         <span>Zug Zug!</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz6')">
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
                 </div>
-                <p id="error-msg"
-                    style="color: var(--horde-red); font-size: 0.8rem; height: 1.2rem; text-align: center; margin-top: 0.5rem;">
+                <p id="error-msg" class="error-message">
                 </p>
             </div>
         </div>
@@ -58,26 +55,25 @@
     <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
 
     <!-- Static HUD Skeleton -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+    <div id="game-hud" class="glass-panel hud-static">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
         </div>
         <div class="hud-divider"></div>
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline;">
-            <span class="hud-accent" style="font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Stufe
+        <div class="hud-row-spread">
+            <span class="hud-accent hud-accent-text">Stufe
                 ...</span>
-            <span class="hud-subtext" style="font-size: 0.75rem;">...%</span>
+            <span class="hud-subtext hud-subtext-small">...%</span>
         </div>
-        <div class="xp-container" style="margin-top: 0.25rem; margin-bottom: 0.25rem;">
+        <div class="xp-container hud-xp-container-tight">
             <div class="xp-bar">
-                <div class="xp-fill" style="width: 0%"></div>
+                <div class="xp-fill"></div>
                 <div class="xp-text">...</div>
             </div>
         </div>
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span class="hud-muted" style="font-size: 0.8rem;">Total: ...</span>
+        <div class="hud-total-row">
+            <span class="hud-muted hud-text-muted">Total: ...</span>
         </div>
         <div class="hud-divider"></div>
         <div class="hud-stats-grid">
