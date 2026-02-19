@@ -218,7 +218,6 @@ label {
 }
 
 /* Light Mode Sidebars (Left & Right) */
-/* Light Mode Sidebars (Left & Right) */
 [data-theme="light"] .sidebar,
 [data-theme="light"] #game-hud {
     background: var(--wow-glass) !important;
@@ -965,22 +964,7 @@ label {
     text-shadow: 0 2px 4px black;
 }
 
-position: relative;
-padding: 1rem 2rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: var(--text-muted);
-/* Neutral */
-background: transparent;
-border: 1px solid rgba(255, 255, 255, 0.1);
-/* Subtle Border */
-cursor: pointer;
-overflow: visible;
-transition: all 0.3s ease;
-z-index: 1;
-border-radius: 4px;
-}
+
 
 .btn-secondary:hover {
     color: white;
