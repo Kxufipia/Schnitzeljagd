@@ -801,9 +801,12 @@ label {
 /* Gallery Grid for Quiz 4 */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    /* Full width stack */
+    gap: 2rem;
+    /* Larger gap for vertical spacing */
     margin-top: 1rem;
+    width: 100%;
 }
 
 .gallery-item {
