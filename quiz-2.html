@@ -14,32 +14,30 @@
         <canvas id="campfire"></canvas>
     </div>
 
-    <div id="theme-controls" class="glass-panel"
-        style="position: fixed; top: 1rem; right: 1rem; z-index: 50; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; display:flex; gap: 0.5rem; color: #ccc;">
-        <span id="btn-dark" style="cursor: pointer;">Dark</span> / <span id="btn-light"
-            style="cursor: pointer;">Light</span>
+    <!-- Theme Controls (Styles moved to style.css) -->
+    <div id="theme-controls" class="glass-panel">
+        <span id="btn-dark">Dark</span> / <span id="btn-light">Light</span>
     </div>
 
     <main>
-        <div class="container animate-enter" style="margin-left: 17vw; max-width: 45vw; margin-right: auto;">
-            <h1 style="margin-bottom: 1.5rem;">Quest 2: Das Gedächtnis der Ahnen</h1>
+        <div class="container animate-enter quiz-container">
+            <h1 class="quiz-header">Quest 2: Das Gedächtnis der Ahnen</h1>
 
             <div class="glass-panel card" style="text-align: center;">
-                <p style="margin-bottom: 1rem; color: #ccc;">Finde alle Paare, um den Weg freizumachen.</p>
+                <p class="quiz-instruction">Finde alle Paare, um den Weg freizumachen.</p>
 
-                <div id="memory-board"
-                    style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; perspective: 1000px; margin-bottom: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <div id="memory-board">
                     <!-- Cards injected by JS -->
                 </div>
 
-                <div id="victory-message" style="display: none; margin-top: 2rem;">
-                    <h2 style="color: var(--wow-gold);">Das Wissen ist dein!</h2>
+                <div id="victory-message">
+                    <h2 class="victory-title">Das Wissen ist dein!</h2>
                     <button id="next-btn" class="btn-primary" onclick="finishQuiz()">
                         <span>Weiter zur nächsten Prüfung</span>
                     </button>
                 </div>
 
-                <div style="margin-top: 2rem;">
+                <div class="skip-section">
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz2')">
                         <span>Überspringen</span>
                     </button>
@@ -49,7 +47,7 @@
     </main>
 
     <!-- Preload Card Back -->
-    <div style="display: none;">
+    <div class="preload-hidden">
         <!-- Using a default card back, maybe the Jaina image or a generic WOW logo if available, otherwise CSS styled -->
     </div>
 
@@ -57,8 +55,8 @@
     <img src="images/Jaina.png" class="quest-portrait animate-enter" alt="Jaina">
 
     <!-- Static HUD Skeleton -->
-    <div id="game-hud" class="glass-panel"
-        style="z-index: 9999; view-transition-name: persistent-hud; transition: none;">
+    <!-- z-index and view-transition-name moved to style.css. transition: none kept to prevent jumpiness on load? -->
+    <div id="game-hud" class="glass-panel" style="transition: none;">
         <div class="hud-row header">
             <span class="hud-label">Held</span>
             <span class="hud-value name">...</span>
@@ -87,80 +85,6 @@
             <div class="stat-item open"><span class="stat-label">Offen</span><span class="stat-val">...</span></div>
         </div>
     </div>
-
-    <style>
-        .memory-card {
-            background-color: transparent;
-            width: 100%;
-            aspect-ratio: 2/3;
-            /* Standard card ratio */
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .memory-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-
-        .memory-card.flipped .memory-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .memory-card.solved {
-            visibility: hidden;
-            pointer-events: none;
-            transition: visibility 0s 0.5s;
-            /* Wait for flip back if any */
-        }
-
-        /* Fade out animation for solved cards */
-        .memory-card.dissolve .memory-card-inner {
-            opacity: 0;
-            transform: scale(1.5);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-
-        .memory-card-front,
-        .memory-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            border: 2px solid var(--wow-border);
-        }
-
-        .memory-card-front {
-            background-color: #222;
-            color: white;
-            transform: rotateY(180deg);
-            /* background-size: cover; removed */
-            /* background-position: center; removed */
-        }
-
-        .memory-card-back {
-            background: linear-gradient(135deg, #444 0%, #111 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Placeholder pattern */
-            background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 10px, transparent 10px, transparent 20px);
-        }
-
-        .memory-card-back::after {
-            content: "?";
-            font-size: 2rem;
-            color: var(--wow-gold);
-            font-weight: bold;
-        }
-    </style>
 
     <script src="campfire.js"></script>
     <script src="stars.js"></script>
@@ -239,15 +163,11 @@
 
                 // Use IMG tag for better control and error handling
                 const imgResult = document.createElement('img');
-                // Manually encode only spaces to be safe, or use encodeURI if path allows
-                // encodeURIComponent encodes / which we don't want if full path.
-                // Here we only have filename. 
                 const encodedImg = encodeURIComponent(img).replace(/'/g, "%27");
                 imgResult.src = `images/Memory/${encodedImg}`;
-                imgResult.style.width = '100%';
-                imgResult.style.height = '100%';
-                imgResult.style.objectFit = 'cover';
-                imgResult.style.borderRadius = '8px';
+
+                // Use class for styling instead of inline assignments
+                imgResult.classList.add('memory-card-img');
 
                 // Debugging: If error, show red background
                 imgResult.onerror = function () {
