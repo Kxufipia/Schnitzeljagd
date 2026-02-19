@@ -226,6 +226,7 @@ label {
     /* Neutral Border */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
     color: var(--text-main) !important;
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
 }
 
@@ -329,6 +330,7 @@ label {
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 }
 
@@ -842,6 +844,7 @@ label {
     font-family: inherit;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -924,6 +927,7 @@ label {
     padding: 0.5rem;
     text-align: center;
     font-size: 0.9rem;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 }
 
@@ -1644,6 +1648,7 @@ label {
     position: relative;
     margin-bottom: 2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     z-index: 10;
     /* Ensure on top of image */
