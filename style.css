@@ -25,6 +25,59 @@
 
 /* ... existing light theme block ... */
 
+/* Lightbox Modal */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border: 2px solid var(--wow-border);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    transition: transform 0.25s ease;
+    cursor: zoom-in;
+}
+
+.lightbox-content.zoomed {
+    cursor: zoom-out;
+    /* Positioning logic handled by transform scale in JS, but might need overflow alignment */
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 10001;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: var(--wow-gold);
+    text-decoration: none;
+    cursor: pointer;
+}
+
 /* Update Glass Panel to respond to theme */
 .glass-panel {
     background: rgba(22, 22, 24, 0.6);

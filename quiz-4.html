@@ -34,7 +34,8 @@
                     <div class="gallery-item visible" id="img1-container">
                         <img src="images/Quiz4/image1.jpg" alt="Hinweis 1" class="gallery-img"
                             onclick="openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 1</div>
+                        <div class="gallery-caption">Hinweis 1 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                                zum Vergrößern)</span></div>
                     </div>
                     <div class="gallery-item locked" id="img2-container">
                         <div class="lock-overlay">
@@ -43,7 +44,8 @@
                         </div>
                         <img src="images/Quiz4/image2.jpg" alt="Hinweis 2" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 2</div>
+                        <div class="gallery-caption">Hinweis 2 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                                zum Vergrößern)</span></div>
                     </div>
                     <div class="gallery-item locked" id="img3-container">
                         <div class="lock-overlay">
@@ -52,7 +54,8 @@
                         </div>
                         <img src="images/Quiz4/image3.png" alt="Hinweis 3" class="gallery-img"
                             onclick="if(!this.parentElement.classList.contains('locked')) openLightbox(this.src)">
-                        <div class="gallery-caption">Hinweis 3</div>
+                        <div class="gallery-caption">Hinweis 3 <br><span style="font-size:0.7em; color:#ccc;">(Klicken
+                                zum Vergrößern)</span></div>
                     </div>
                 </div>
 
@@ -124,6 +127,14 @@
         }
     </style>
 
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" onclick="toggleZoom(event)">
+        <div id="lightbox-caption"></div>
+    </div>
+
     <script src="campfire.js"></script>
     <script src="stars.js"></script>
     <script src="settings.js"></script>
@@ -147,6 +158,39 @@
             console.error(e);
             alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
             window.location.href = window.appendThemeParam('index.html');
+        }
+
+        // Lightbox Logic
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const captionText = document.getElementById('lightbox-caption');
+
+            lightbox.style.display = "flex";
+            lightboxImg.src = src;
+            lightboxImg.style.transform = "scale(1)"; // Reset zoom
+            lightboxImg.classList.remove('zoomed');
+
+            // captionText.innerHTML = ""; // Optional caption logic
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = "none";
+        }
+
+        function toggleZoom(event) {
+            event.stopPropagation(); // Prevent closing lightbox
+            const img = document.getElementById('lightbox-img');
+
+            if (img.classList.contains('zoomed')) {
+                img.style.transform = "scale(1)";
+                img.classList.remove('zoomed');
+                img.style.cursor = "zoom-in";
+            } else {
+                img.style.transform = "scale(2.5)"; // Zoom level
+                img.classList.add('zoomed');
+                img.style.cursor = "zoom-out";
+            }
         }
 
         // Image Reveal Logic
