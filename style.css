@@ -2512,3 +2512,40 @@ label {
     max-width: 800px;
     padding: 2rem;
 }
+
+/* --- MISSING UTILITY CLASSES (Restored) --- */
+
+.btn-flex-grow {
+    flex: 2;
+}
+
+.hud-row-spread {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.hud-xp-container-tight {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.hud-total-row {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.hud-accent-text {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.hud-subtext-small {
+    font-size: 0.75rem;
+}
+
+.hud-text-muted {
+    font-size: 0.8rem;
+}
