@@ -311,8 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Global Skip Function (Used by inline buttons)
 window.skipQuiz = function (quizId) {
-    if (!confirm("Willst du diese Quest wirklich überspringen? (0 Punkte)")) return;
-
     if (typeof GameState !== 'undefined') {
         try {
             const state = GameState.decode();
