@@ -253,8 +253,9 @@
             errorMsg.textContent = "";
 
             const timeTaken = (Date.now() - startTime) / 1000;
-            // Update State with Extra Link
-            GameState.update(currentState, QUIZ_ID, timeTaken, imgurInput);
+            // Update State with Extra Link and Expansion
+            const extraData = imgurInput + "|" + selectedExpansion.name;
+            GameState.update(currentState, QUIZ_ID, timeTaken, extraData);
 
             let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
             if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
