@@ -20,26 +20,46 @@
 
     <main>
         <div class="container quiz-container animate-enter">
-            <h1 class="title-main">Quest 11</h1>
+            <h1 class="title-main">Quest 11: Die Schließkassette</h1>
 
             <div class="glass-panel card">
-                <!-- Quest Giver: Thrall -->
+                <!-- Quest Giver: Valeera or generic Rogue -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
-                        <div class="quest-speaker-name">Thrall</div>
-                        <h2>Placeholder Question for Quest 11?</h2>
+                        <div class="quest-speaker-name">Schurke</div>
+                        <h2>Ein verschlossenes Geheimnis!</h2>
+                        <p class="quest-instruction">Ein unvorsichtiger Schurke hat diese schwere Plunderkiste fallen
+                            gelassen. Der nächste Hinweis ist darin eingeschlossen!</p>
+                        <p class="quest-instruction">Nutze dein Diebeswerkzeug: Klicke auf <strong>"Knacken!"</strong>,
+                            genau in dem Moment, in dem die rote Nadel den <span class="text-wow-green">grünen
+                                Bereich</span> passiert. Du musst drei Schlösser in Folge knacken!</p>
+                        <p class="quest-caption-sub text-horde-red mt-sm">Vorsicht: Bei einem Fehler schnappen alle
+                            Schlösser wieder zu!</p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="lock-container mt-md relative" id="lock-container">
+                    <canvas id="lock-canvas" width="300" height="160"></canvas>
+                    <div class="lock-status">
+                        <span class="lock-dot" id="dot-1"></span>
+                        <span class="lock-dot" id="dot-2"></span>
+                        <span class="lock-dot" id="dot-3"></span>
+                    </div>
+
+                    <!-- Win Overlay -->
+                    <div id="opened-overlay" class="game-overlay overlay-win flex-display flex-center"
+                        style="display: none; position: absolute; top:0; left:0; right:0; bottom:0; padding: 20px;">
+                        <div>
+                            <h2 class="overlay-title">Geöffnet!</h2>
+                            <p class="mb-sm">Du hast die Kiste geknackt!</p>
+                            <button class="btn-primary" onclick="winQuiz()">Den Hinweis nehmen</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="action-row">
-                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
+                <div class="action-row mt-md">
+                    <button id="pick-btn" class="btn-primary btn-flex-grow" onclick="tryPick()">
+                        <span>Knacken!</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz11')">
                         <span>Ich bin OOM! (Skip)</span>
@@ -52,7 +72,8 @@
     </main>
 
     <!-- Background Character -->
-    <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
+    <img src="images/Valeera.png" class="quest-portrait animate-enter" alt="Valeera"
+        onerror="this.src='images/Thrall.png'">
 
     <!-- Static HUD Skeleton -->
     <div id="game-hud" class="glass-panel hud-static">
@@ -96,8 +117,6 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz11';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
 
@@ -111,33 +130,145 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        // Lockpicking Game Logic
+        const canvas = document.getElementById('lock-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let locksPicked = 0;
+        const totalLocks = 3;
+
+        let needleAngle = 0; // 0 to 180 degrees
+        let needleSpeed = 2; // degrees per frame
+        let needleDirection = 1; // 1 for right, -1 for left
+
+        let zoneStart = 0;
+        let zoneWidth = 30; // degrees
+
+        let isGameRunning = true;
+        let animationId;
+
+        function randomizeZone() {
+            // Zone must fit within 0 to 180
+            zoneWidth = 40 - (locksPicked * 12); // Shrinks from 40 -> 28 -> 16
+            const minStart = 10;
+            const maxStart = 170 - zoneWidth;
+            zoneStart = Math.random() * (maxStart - minStart) + minStart;
+
+            needleSpeed = 2 + (locksPicked * 2.5); // Gets much faster: 2 -> 4.5 -> 7
         }
 
-        function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
-                return;
+        function update() {
+            if (!isGameRunning) return;
+
+            needleAngle += needleSpeed * needleDirection;
+            if (needleAngle >= 180) {
+                needleAngle = 180;
+                needleDirection = -1;
+            } else if (needleAngle <= 0) {
+                needleAngle = 0;
+                needleDirection = 1;
             }
+        }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2;
+            const cy = canvas.height - 15; // Bottom center
+            const r = 120; // Radius
 
-                window.location.href = nextUrl;
+            // Background arc (0 to 180 is Math.PI to 2*Math.PI in canvas)
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#333';
+            ctx.stroke();
+
+            // Sweet spot (Green)
+            const startRad = Math.PI + (zoneStart * Math.PI / 180);
+            const endRad = startRad + (zoneWidth * Math.PI / 180);
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, startRad, endRad);
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#2ea12e'; // WoW Green
+            ctx.stroke();
+
+            // Needle (Red)
+            const needleRad = Math.PI + (needleAngle * Math.PI / 180);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + (r + 15) * Math.cos(needleRad), cy + (r + 15) * Math.sin(needleRad));
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#cc0000'; // Horde Red
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        function loop() {
+            update();
+            draw();
+            if (isGameRunning) {
+                animationId = requestAnimationFrame(loop);
+            }
+        }
+
+        function updateDots() {
+            for (let i = 1; i <= totalLocks; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i <= locksPicked) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            }
+        }
+
+        function tryPick() {
+            if (!isGameRunning) return;
+
+            // Check if needle is within the sweet spot
+            // Allowing a tiny 2 degree margin of error for fairness
+            if (needleAngle >= (zoneStart - 2) && needleAngle <= (zoneStart + zoneWidth + 2)) {
+                // Success
+                locksPicked++;
+                updateDots();
+
+                if (window.SoundManager) window.SoundManager.playClick();
+
+                if (locksPicked >= totalLocks) {
+                    // Win!
+                    isGameRunning = false;
+                    document.getElementById('opened-overlay').style.display = 'flex';
+                    document.getElementById('pick-btn').disabled = true;
+                    if (window.SoundManager) window.SoundManager.playLevelUp();
+                } else {
+                    randomizeZone();
+                }
             } else {
-                showErrorToast("Das ist leider falsch.");
+                // Fail
+                locksPicked = 0;
+                updateDots();
+
+                if (window.SoundManager) window.SoundManager.playError();
+
+                const container = document.getElementById('lock-container');
+                container.classList.remove('shake');
+                void container.offsetWidth; // trigger reflow
+                container.classList.add('shake');
+
+                randomizeZone();
             }
+        }
+
+        // Start game
+        randomizeZone();
+        loop();
+
+        function winQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
         }
     </script>
 </body>

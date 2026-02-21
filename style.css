@@ -2068,6 +2068,75 @@ label {
     background: linear-gradient(to bottom, #d24cff, #8000cc);
 }
 
+/* Lockpicking Styles (Quest 11) */
+.lock-container {
+    background: #1a1a1a;
+    border: 3px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 350px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+#lock-canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+.lock-status {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.lock-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    border: 2px solid #555;
+    transition: all 0.3s ease;
+}
+
+.lock-dot.active {
+    background: var(--wow-gold);
+    border-color: #fff;
+    box-shadow: 0 0 10px var(--wow-gold);
+}
+
+.shake {
+    animation: shakeAnim 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shakeAnim {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
 .imgur-input:focus {
     outline: none;
     border-color: var(--wow-blue);
