@@ -20,26 +20,31 @@
 
     <main>
         <div class="container quiz-container animate-enter">
-            <h1 class="title-main">Quest 8</h1>
+            <h1 class="title-main">Quest 8: Die magische Formel</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Jaina -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Jaina</div>
-                        <h2>Placeholder Question for Quest 8?</h2>
+                        <h2>Entschlüssele den Preis!</h2>
+                        <p class="quest-instruction">Ausgangswert (Quest 7 Preis): <strong class="text-wow-gold"
+                                id="display-price">0</strong> Kupfer.</p>
+                        <p class="quest-instruction" id="display-instruction"
+                            style="font-weight: bold; color: var(--text-main);">
+                            [Platzhalter für die Rechenaufgabe]
+                        </p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="input-container mt-md" style="text-align: center;">
+                    <input type="text" id="answer-input" class="imgur-input" placeholder="Lösung eingeben..."
+                        style="text-align: center; max-width: 300px; margin: 0 auto; display: block;" />
                 </div>
 
-                <div class="action-row">
+                <div class="action-row mt-md">
                     <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
+                        <span>Bestätigen</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz8')">
                         <span>Ich bin OOM! (Skip)</span>
@@ -96,47 +101,82 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz8';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        // --- PLACEHOLDER DATA: Fill these out when known ---
+        const calcData = {
+            "Classic": { instruction: "Teile den Kupferpreis durch [Zahl X]. Die ersten beiden Ziffern sind die X-, die letzten beiden die Y-Koordinate in [Zone]. Welche NPC wartet dort?", answer: ["Lösung"] },
+            "Burning Crusade": { instruction: "[TBC Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Wrath of the Lich King": { instruction: "[WotLK Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Cataclysm": { instruction: "[Cata Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Mists of Pandaria": { instruction: "[MoP Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Warlords of Draenor": { instruction: "[WoD Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Legion": { instruction: "[Legion Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Battle for Azeroth": { instruction: "[BfA Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Shadowlands": { instruction: "[SL Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "Dragonflight": { instruction: "[DF Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
+            "The War Within": { instruction: "[TWW Rechenaufgabe hier einfügen]", answer: ["Lösung"] }
+        };
+
+        let currentExpansion = "Classic"; // Fallback
+        let currentPrice = 0;
+        let currentPuzzle = calcData["Classic"];
 
         // Init State Check
         try {
             currentState = GameState.decode();
             if (!currentState) throw new Error("No state");
+
+            // Extract the expansion & price from Quiz 7 (ExpansionName|Price)
+            if (currentState.scores && currentState.scores['quiz7'] && currentState.scores['quiz7'].extra) {
+                const q7Extra = currentState.scores['quiz7'].extra;
+                const parts = q7Extra.split('|');
+                if (parts.length > 1 && calcData[parts[0]]) {
+                    currentExpansion = parts[0];
+                    currentPrice = parseInt(parts[1], 10) || 0;
+                }
+            }
+
+            currentPuzzle = calcData[currentExpansion];
+
+            // Populate UI
+            document.getElementById('display-price').innerText = currentPrice;
+            document.getElementById('display-instruction').innerText = currentPuzzle.instruction;
+
         } catch (e) {
             console.error(e);
             alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
-        }
-
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const inputVal = document.getElementById('answer-input').value.trim().toLowerCase();
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!inputVal) {
+                showErrorToast("Bitte gib eine Lösung ein.");
+                errorMsg.textContent = "Das Feld darf nicht leer sein.";
                 return;
             }
 
-            if (selected === CORRECT) {
+            // Check against array of valid answers (lowercase)
+            const validAnswers = currentPuzzle.answer.map(a => a.toLowerCase());
+            const isCorrect = validAnswers.some(ans => inputVal.includes(ans));
+
+            if (isCorrect) {
+                errorMsg.textContent = "";
                 const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
+
                 const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
+
                 let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
                 if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
 
                 window.location.href = nextUrl;
             } else {
-                showErrorToast("Das ist leider falsch.");
+                showErrorToast("Das ist leider nicht die richtige Antwort.");
+                errorMsg.textContent = "Falsche Antwort. Überprüfe deine Rechnung.";
             }
         }
     </script>

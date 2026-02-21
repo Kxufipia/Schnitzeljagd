@@ -20,26 +20,33 @@
 
     <main>
         <div class="container quiz-container animate-enter">
-            <h1 class="title-main">Quest 7</h1>
+            <h1 class="title-main">Quest 7: Der Preis des Handels</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Thrall -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Thrall</div>
-                        <h2>Placeholder Question for Quest 7?</h2>
+                        <h2>Finde den neutralen Händler!</h2>
+                        <p class="quest-instruction">Du bist in der Hauptstadt der <span id="display-expansion"
+                                class="text-wow-blue">Erweiterung</span>. Finde den neutralen Händler <strong
+                                id="display-npc" class="text-wow-gold">NPC</strong>.</p>
+                        <p class="quest-instruction">Wie viel Kupfer verlangt er/sie für den Gegenstand: <strong
+                                id="display-item" class="text-horde-red">Gegenstand</strong>?</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">(Beispiel: Wenn der Preis 1 Gold, 50
+                            Silber, 0 Kupfer ist, rechne alles in Kupfer um: 10000 + 5000 = 15000. Gib nur die Zahl
+                            ein.)</p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="input-container mt-md" style="text-align: center;">
+                    <input type="number" id="price-input" class="imgur-input" placeholder="Preis in Kupfer..."
+                        style="text-align: center; font-size: 1.5rem; max-width: 250px; margin: 0 auto; display: block;" />
                 </div>
 
-                <div class="action-row">
+                <div class="action-row mt-md">
                     <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
+                        <span>Preis bestätigen</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz7')">
                         <span>Ich bin OOM! (Skip)</span>
@@ -96,47 +103,80 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz7';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        // --- PLACEHOLDER DATA: Fill these out when known ---
+        const vendorData = {
+            "Classic": { npc: "[Neutraler NPC Classic]", item: "[Item Classic]", price: 15000 },
+            "Burning Crusade": { npc: "[Neutraler NPC TBC]", item: "[Item TBC]", price: 20000 },
+            "Wrath of the Lich King": { npc: "[Neutraler NPC WotLK]", item: "[Item WotLK]", price: 50000 },
+            "Cataclysm": { npc: "[Neutraler NPC Cata]", item: "[Item Cata]", price: 10000 },
+            "Mists of Pandaria": { npc: "[Neutraler NPC MoP]", item: "[Item MoP]", price: 100000 },
+            "Warlords of Draenor": { npc: "[Neutraler NPC WoD]", item: "[Item WoD]", price: 25000 },
+            "Legion": { npc: "[Neutraler NPC Legion]", item: "[Item Legion]", price: 250000000 },
+            "Battle for Azeroth": { npc: "[Neutraler NPC BfA]", item: "[Item BfA]", price: 30000 },
+            "Shadowlands": { npc: "[Neutraler NPC SL]", item: "[Item SL]", price: 500000 },
+            "Dragonflight": { npc: "[Neutraler NPC DF]", item: "[Item DF]", price: 80000 },
+            "The War Within": { npc: "[Neutraler NPC TWW]", item: "[Item TWW]", price: 90000 }
+        };
+
+        let currentExpansion = "Classic"; // Fallback
+        let currentVendor = vendorData["Classic"];
 
         // Init State Check
         try {
             currentState = GameState.decode();
             if (!currentState) throw new Error("No state");
+
+            // Extract the expansion from Quiz 6 (imgurUrl|ExpansionName)
+            if (currentState.scores && currentState.scores['quiz6'] && currentState.scores['quiz6'].extra) {
+                const q6Extra = currentState.scores['quiz6'].extra;
+                const parts = q6Extra.split('|');
+                if (parts.length > 1 && vendorData[parts[1]]) {
+                    currentExpansion = parts[1];
+                }
+            }
+
+            currentVendor = vendorData[currentExpansion];
+
+            // Populate UI
+            document.getElementById('display-expansion').innerText = currentExpansion;
+            document.getElementById('display-npc').innerText = currentVendor.npc;
+            document.getElementById('display-item').innerText = currentVendor.item;
+
         } catch (e) {
             console.error(e);
             alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
-        }
-
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const inputVal = document.getElementById('price-input').value.trim();
+            const parsedInput = parseInt(inputVal, 10);
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!inputVal || isNaN(parsedInput)) {
+                showErrorToast("Bitte gib eine gültige Zahl ein.");
+                errorMsg.textContent = "Bitte gib den Preis als Zahl ein.";
                 return;
             }
 
-            if (selected === CORRECT) {
+            if (parsedInput === currentVendor.price) {
+                errorMsg.textContent = "";
                 const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
+
+                // Save the correctly answered price explicitly to quiz 7 state
+                const extraData = currentExpansion + "|" + currentVendor.price;
+                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken, extraData);
+
                 let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
                 if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
 
                 window.location.href = nextUrl;
             } else {
-                showErrorToast("Das ist leider falsch.");
+                showErrorToast("Falscher Preis. Hast du dich verrechnet?");
+                errorMsg.textContent = "Falscher Preis. 1 Gold = 10000 Kupfer, 1 Silber = 100 Kupfer.";
             }
         }
     </script>
