@@ -44,6 +44,7 @@
                             <th>Champion</th>
                             <th>Class</th>
                             <th>Score</th>
+                            <th>Gallery</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-body">
@@ -94,11 +95,17 @@
                             const json = decodeURIComponent(atob(code));
                             const data = JSON.parse(json);
                             if (data && data.player && data.totalScore !== undefined) {
+                                let extraLink = '';
+                                if (data.scores && data.scores.quiz6 && data.scores.quiz6.extra) {
+                                    extraLink = data.scores.quiz6.extra;
+                                }
+
                                 entries.push({
                                     name: data.player,
                                     class: data.charClass || 'warrior',
                                     score: parseInt(data.totalScore) || 0,
-                                    time: 0 // logic simplified
+                                    time: 0, // logic simplified
+                                    link: extraLink
                                 });
                             }
                         } catch (e) {
@@ -137,7 +144,7 @@
                 }
 
                 if (entries.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No heroes found yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No heroes found yet.</td></tr>`;
                     return;
                 }
 

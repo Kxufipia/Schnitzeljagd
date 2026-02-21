@@ -5,7 +5,7 @@ window.QUIZ_CONFIG = [
     { id: 'quiz3', file: 'quiz-3.html', title: 'Quest 3', maxPoints: 700 },
     { id: 'quiz4', file: 'quiz-4.html', title: 'Quest 4', maxPoints: 800 },
     { id: 'quiz5', file: 'quiz-5.html', title: 'Quest 5', maxPoints: 1000 },
-    { id: 'quiz6', file: 'quiz-6.html', title: 'Quest 6', maxPoints: 1000 },
+    { id: 'quiz6', file: 'quiz-6.html', title: 'Quest 6: Rad des Schicksals', maxPoints: 1000 },
     { id: 'quiz7', file: 'quiz-7.html', title: 'Quest 7', maxPoints: 1000 },
     { id: 'quiz8', file: 'quiz-8.html', title: 'Quest 8', maxPoints: 1200 },
     { id: 'quiz9', file: 'quiz-9.html', title: 'Quest 9', maxPoints: 1200 },

@@ -57,7 +57,7 @@ const GameState = {
     },
 
     // Mark as completed with score
-    update(currentState, quizId, timeTaken) {
+    update(currentState, quizId, timeTaken, extra = null) {
         const score = this.calculateScore(quizId, timeTaken);
 
         currentState.scores[quizId] = {
@@ -65,6 +65,10 @@ const GameState = {
             points: score,
             status: 'completed'
         };
+
+        if (extra !== null) {
+            currentState.scores[quizId].extra = extra;
+        }
 
         this._updateTotal(currentState);
         this._unlockNext(currentState, quizId);

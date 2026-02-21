@@ -20,33 +20,50 @@
 
     <main>
         <div class="container quiz-container animate-enter">
-            <h1 class="title-main">Quest 6</h1>
+            <h1 class="title-main">Quest 6: Rad des Schicksals</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Jaina -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Jaina</div>
-                        <h2>Placeholder Question for Quest 6?</h2>
+                        <h2>Drehe das Rad der Erweiterungen!</h2>
+                        <p class="quest-instruction">Das Rad zeigt dir eine WoW-Erweiterung. Reise in die Hauptstadt
+                            dieser Erweiterung, mache einen Screenshot und lade ihn hoch!</p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <!-- Spinning Wheel -->
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel">
+                        <canvas id="wheel-canvas" width="300" height="300"></canvas>
+                    </div>
                 </div>
 
-                <div class="action-row">
-                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
-                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz6')">
-                        <span>Ich bin OOM! (Skip)</span>
-                    </button>
+                <div class="spin-btn-container">
+                    <button id="spin-btn" class="btn-primary" onclick="spinWheel()">Rad drehen!</button>
                 </div>
-                <p id="error-msg" class="error-message">
-                </p>
+
+                <!-- Result & Upload Form -->
+                <div id="wheel-result" class="wheel-result">
+                    <h3 id="result-expansion" style="color: var(--wow-gold); margin-bottom: 0.5rem;">Erweiterung</h3>
+                    <p>Mache einen Screenshot in:<br><strong id="result-landmark"
+                            style="color: var(--wow-blue); font-size: 1.1rem;">Landmark</strong></p>
+
+                    <input type="text" id="imgur-url" class="imgur-input"
+                        placeholder="Imgur-Link hier einfügen (z.B. https://i.imgur.com/...)" />
+
+                    <div class="action-row" style="margin-top: 1rem;">
+                        <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
+                            <span>Quest abschließen</span>
+                        </button>
+                        <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz6')">
+                            <span>Skip</span>
+                        </button>
+                    </div>
+                    <p id="error-msg" class="error-message"></p>
+                </div>
             </div>
         </div>
     </main>
@@ -96,8 +113,6 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz6';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
 
@@ -111,33 +126,140 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        const expansions = [
+            { name: "Classic", landmark: "Orgrimmar / Stormwind", color: "#6b4a3a" },
+            { name: "Burning Crusade", landmark: "Shattrath", color: "#196619" },
+            { name: "Wrath of the Lich King", landmark: "Dalaran (Nordend)", color: "#1c5b8a" },
+            { name: "Cataclysm", landmark: "Thron (OG) / Burg (SW)", color: "#a83232" },
+            { name: "Mists of Pandaria", landmark: "Schrein (Pandaria)", color: "#166e48" },
+            { name: "Warlords of Draenor", landmark: "Kriegsspeer / Sturmschild", color: "#613e15" },
+            { name: "Legion", landmark: "Dalaran (Verheerte Inseln)", color: "#2ea12e" },
+            { name: "Battle for Azeroth", landmark: "Dazar'alor / Boralus", color: "#103c73" },
+            { name: "Shadowlands", landmark: "Oribos", color: "#4f7da8" },
+            { name: "Dragonflight", landmark: "Valdrakken", color: "#9c3b27" },
+            { name: "The War Within", landmark: "Dornogal", color: "#504176" }
+        ];
+
+        let selectedExpansion = null;
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        // Draw Wheel
+        function drawWheel() {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = centerX;
+            const sliceAngle = (2 * Math.PI) / expansions.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            expansions.forEach((exp, i) => {
+                const startAngle = i * sliceAngle - Math.PI / 2;
+                const endAngle = startAngle + sliceAngle;
+
+                // Slice
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = exp.color;
+                ctx.fill();
+                ctx.strokeStyle = "#222";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 12px sans-serif";
+                ctx.shadowColor = "rgba(0,0,0,0.8)";
+                ctx.shadowBlur = 2;
+                // Add a small abbreviation or short name if it's too long
+                let shortName = exp.name;
+                if (shortName === "Wrath of the Lich King") shortName = "WotLK";
+                if (shortName === "Burning Crusade") shortName = "TBC";
+                if (shortName === "Mists of Pandaria") shortName = "MoP";
+                if (shortName === "Warlords of Draenor") shortName = "WoD";
+                if (shortName === "Battle for Azeroth") shortName = "BfA";
+                if (shortName === "The War Within") shortName = "TWW";
+
+                ctx.fillText(shortName, radius - 10, 4);
+                ctx.restore();
+            });
+        }
+
+        window.onload = drawWheel;
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const wheel = document.getElementById('wheel');
+            const resultBox = document.getElementById('wheel-result');
+            const spinBtn = document.getElementById('spin-btn');
+
+            resultBox.style.display = 'none';
+            spinBtn.disabled = true;
+
+            // SFX
+            if (window.SoundManager) SoundManager.playClick();
+
+            // Randomize
+            const selectedIdx = Math.floor(Math.random() * expansions.length);
+            selectedExpansion = expansions[selectedIdx];
+
+            // Calculate rotation
+            // The pointer is at the TOP (which is -90 deg or 0 on our drawing if we offset)
+            // Our slices start at -90 deg.
+            const sliceAngleDeg = 360 / expansions.length;
+            const stopAngle = (selectedIdx * sliceAngleDeg) + (sliceAngleDeg / 2);
+            // Spin 5 extra full times, plus the offset needed to put the chosen slice at the top pointer
+            const totalRotation = currentRotation + (360 * 5) + (360 - stopAngle);
+
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            currentRotation = totalRotation;
+
+            setTimeout(() => {
+                isSpinning = false;
+                if (window.SoundManager) SoundManager.playLevelUp();
+
+                document.getElementById('result-expansion').innerText = selectedExpansion.name;
+                document.getElementById('result-landmark').innerText = selectedExpansion.landmark;
+                resultBox.style.display = 'block';
+
+            }, 4000); // 4s matches CSS transition
         }
 
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const imgurInput = document.getElementById('imgur-url').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!imgurInput) {
+                errorMsg.textContent = "Bitte gib einen Link ein.";
                 return;
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-
-                window.location.href = nextUrl;
-            } else {
-                showErrorToast("Das ist leider falsch.");
+            // Basic validation for imgur or generic links (could be flexible)
+            if (!imgurInput.includes('imgur.com') && !imgurInput.includes('http')) {
+                errorMsg.textContent = "Der Link sieht ungültig aus.";
+                return;
             }
+
+            errorMsg.textContent = "";
+
+            const timeTaken = (Date.now() - startTime) / 1000;
+            // Update State with Extra Link
+            GameState.update(currentState, QUIZ_ID, timeTaken, imgurInput);
+
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+
+            window.location.href = nextUrl;
         }
     </script>
 </body>
