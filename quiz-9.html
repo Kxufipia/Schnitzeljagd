@@ -20,28 +20,66 @@
 
     <main>
         <div class="container quiz-container animate-enter">
-            <h1 class="title-main">Quest 9</h1>
+            <h1 class="title-main">Quest 9: Die Manabombe</h1>
 
             <div class="glass-panel card">
                 <!-- Quest Giver: Thrall -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
-                        <div class="quest-speaker-name">Thrall</div>
-                        <h2>Placeholder Question for Quest 9?</h2>
+                        <div class="quest-speaker-name">Gazlowe</div>
+                        <h2>Zeit zu entschärfen!</h2>
+                        <p class="quest-instruction">Jemand hat hier eine Manabombe platziert! Lies das Handbuch
+                            sorgfältig und durchtrenne die <strong>drei richtigen Kabel</strong> in der korrekten
+                            Reihenfolge, sonst fliegen wir in die Luft!</p>
+                        <ul class="quest-instruction text-left"
+                            style="font-size: 0.9rem; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 5px; list-style-position: inside;">
+                            <li><strong>Regel 1:</strong> Ist deine Erweiterung (aus Quest 6) "Burning Crusade",
+                                "Legion" oder "Shadowlands", durchtrenne zuerst das <span
+                                    class="text-wow-green">grüne</span> Kabel. Ist es "Classic", "Cataclysm" oder
+                                "Battle for Azeroth", durchtrenne das <span class="text-horde-red">rote</span> Kabel.
+                                Ansonsten das <span class="text-wow-blue">blaue</span> Kabel.</li>
+                            <li><strong>Regel 2:</strong> Durchtrenne als zweites <em>immer</em> das <span
+                                    class="text-wow-gold">gelbe</span> Kabel.</li>
+                            <li><strong>Regel 3:</strong> Wenn das erste Kabel grün war, durchtrenne als letztes das
+                                <span style="color:#d24cff;">lilafarbene</span> Kabel. Ansonsten durchtrenne das <span
+                                    class="text-horde-red">rote</span> Kabel.</li>
+                        </ul>
+                        <p class="quest-caption-sub text-wow-blue mt-sm">Deine Erweiterung: <strong
+                                id="display-expansion" class="text-wow-gold">Unbekannt</strong></p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="bomb-container mt-md relative">
+                    <div id="bomb-timer" class="digital-timer">01:00</div>
+
+                    <div class="wires-panel" id="wires-container">
+                        <!-- Wires injected via JS -->
+                    </div>
+
+                    <!-- Explosion Overlay -->
+                    <div id="explosion-overlay" class="game-overlay overlay-loss flex-display flex-center"
+                        style="display: none; position: absolute; top:0; left:0; right:0; bottom:0; padding: 20px;">
+                        <div>
+                            <h2 class="overlay-title-loss">BUMM!</h2>
+                            <p class="mb-sm">Falsches Kabel oder Zeit abgelaufen!</p>
+                            <button class="btn-secondary" onclick="resetBomb()">Handbuch nochmal lesen und
+                                neustarten</button>
+                        </div>
+                    </div>
+
+                    <!-- Win Overlay -->
+                    <div id="defused-overlay" class="game-overlay overlay-win flex-display flex-center"
+                        style="display: none; position: absolute; top:0; left:0; right:0; bottom:0; padding: 20px;">
+                        <div>
+                            <h2 class="overlay-title">Entschärft!</h2>
+                            <p class="mb-sm">Gute Arbeit, Boss!</p>
+                            <button class="btn-primary" onclick="winQuiz()">Weiter</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="action-row">
-                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
-                    <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz9')">
+                <div class="action-row mt-md">
+                    <button id="skip-btn" class="btn-secondary btn-flex-grow" onclick="skipQuiz('quiz9')">
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
                 </div>
@@ -52,7 +90,8 @@
     </main>
 
     <!-- Background Character -->
-    <img src="images/Thrall.png" class="quest-portrait animate-enter" alt="Thrall">
+    <img src="images/Gazlowe.png" class="quest-portrait animate-enter" alt="Gazlowe"
+        onerror="this.src='images/Thrall.png'">
 
     <!-- Static HUD Skeleton -->
     <div id="game-hud" class="glass-panel hud-static">
@@ -96,48 +135,172 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz9';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+        let currentExpansion = "Classic";
+
+        let bombTimer = 60; // 60 seconds
+        let timerInterval = null;
+        let isExploded = false;
+        let isDefused = false;
+
+        const allWires = ['red', 'blue', 'green', 'yellow', 'purple'];
+        let correctSequence = [];
+        let currentCutIndex = 0;
 
         // Init State Check
         try {
             currentState = GameState.decode();
             if (!currentState) throw new Error("No state");
+
+            // Extract the expansion from Quiz 7 (ExpansionName|Price)
+            if (currentState.scores && currentState.scores['quiz7'] && currentState.scores['quiz7'].extra) {
+                const q7Extra = currentState.scores['quiz7'].extra;
+                const parts = q7Extra.split('|');
+                if (parts.length > 0 && parts[0]) {
+                    currentExpansion = parts[0];
+                }
+            }
+
+            document.getElementById('display-expansion').innerText = currentExpansion;
+
+            calculateSequence();
+            renderWires();
+            startTimer();
+
         } catch (e) {
             console.error(e);
             alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
+        function calculateSequence() {
+            correctSequence = [];
+
+            // Regel 1
+            if (['Burning Crusade', 'Legion', 'Shadowlands'].includes(currentExpansion)) {
+                correctSequence.push('green');
+            } else if (['Classic', 'Cataclysm', 'Battle for Azeroth'].includes(currentExpansion)) {
+                correctSequence.push('red');
+            } else {
+                correctSequence.push('blue');
+            }
+
+            // Regel 2
+            correctSequence.push('yellow');
+
+            // Regel 3
+            if (correctSequence[0] === 'green') {
+                correctSequence.push('purple');
+            } else {
+                correctSequence.push('red');
+            }
         }
 
-        function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
-                return;
-            }
+        function renderWires() {
+            const container = document.getElementById('wires-container');
+            container.innerHTML = '';
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            // Randomize wire display order visually once
+            const displayWires = [...allWires].sort(() => Math.random() - 0.5);
 
-                window.location.href = nextUrl;
+            displayWires.forEach(color => {
+                const w = document.createElement('div');
+                w.className = `bomb-wire wire-${color}`;
+                w.id = `wire-${color}`;
+                w.onclick = () => cutWire(color);
+                container.appendChild(w);
+            });
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            const timerEl = document.getElementById('bomb-timer');
+            timerEl.classList.remove('warning');
+
+            timerInterval = setInterval(() => {
+                if (isExploded || isDefused) return;
+
+                bombTimer--;
+                updateTimerDisplay();
+
+                if (bombTimer <= 10) {
+                    timerEl.classList.add('warning');
+                }
+
+                if (bombTimer <= 0) {
+                    explodeBomb();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('bomb-timer');
+            const mins = Math.floor(bombTimer / 60).toString().padStart(2, '0');
+            const secs = (bombTimer % 60).toString().padStart(2, '0');
+            timerEl.innerText = `${mins}:${secs}`;
+        }
+
+        function cutWire(color) {
+            if (isExploded || isDefused) return;
+
+            const wireEl = document.getElementById(`wire-${color}`);
+            if (wireEl.classList.contains('cut')) return; // Already cut
+
+            // Visually cut
+            wireEl.classList.add('cut');
+
+            if (window.SoundManager) window.SoundManager.playClick(); // Or a snipping sound
+
+            // Logic check
+            if (color === correctSequence[currentCutIndex]) {
+                currentCutIndex++;
+
+                if (currentCutIndex >= correctSequence.length) {
+                    defuseBomb();
+                }
             } else {
-                showErrorToast("Das ist leider falsch.");
+                // Wrong wire cut! BOOM!
+                explodeBomb();
             }
+        }
+
+        function explodeBomb() {
+            isExploded = true;
+            clearInterval(timerInterval);
+
+            if (window.SoundManager) window.SoundManager.playError();
+            document.getElementById('explosion-overlay').style.display = 'flex';
+        }
+
+        function defuseBomb() {
+            isDefused = true;
+            clearInterval(timerInterval);
+
+            if (window.SoundManager) window.SoundManager.playLevelUp();
+            document.getElementById('defused-overlay').style.display = 'flex';
+        }
+
+        function resetBomb() {
+            isExploded = false;
+            isDefused = false;
+            bombTimer = 60;
+            currentCutIndex = 0;
+
+            document.getElementById('explosion-overlay').style.display = 'none';
+            document.getElementById('defused-overlay').style.display = 'none';
+
+            renderWires();
+            startTimer();
+        }
+
+        function winQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
         }
     </script>
 </body>
