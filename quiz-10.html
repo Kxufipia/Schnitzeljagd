@@ -22,25 +22,43 @@
         <div class="container quiz-container animate-enter">
             <h1 class="title-main">Quest 10</h1>
 
-            <div class="glass-panel card">
+            <div class="glass-panel card relative q10-card-wrapper">
                 <!-- Quest Giver: Jaina -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
-                        <div class="quest-speaker-name">Jaina</div>
-                        <h2>Placeholder Question for Quest 10?</h2>
+                        <div class="quest-speaker-name q10-speaker-header">
+                            <span>Jaina Prachtmeer</span>
+                            <span id="quiz-progress" class="text-wow-blue q10-progress">Frage 1 / 10</span>
+                        </div>
+                        <h2 id="question-text" class="q10-question-text">Lade Frage...</h2>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="option-grid q10-options-grid" id="options-container">
+                    <!-- Options injected via JS -->
                 </div>
 
-                <div class="action-row">
-                    <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
-                    </button>
+                <!-- Win Overlay -->
+                <div id="win-overlay"
+                    class="game-overlay overlay-win flex-display flex-center animate-enter overlay-absolute-hidden"
+                    style="z-index: 10; text-align: center; flex-direction: column;">
+                    <h2 class="overlay-title">Wissen ist Macht!</h2>
+                    <p class="mb-sm">Du hast genug Fragen richtig beantwortet (<span id="final-score-win"></span>/10).
+                    </p>
+                    <button class="btn-primary" onclick="winQuiz()">Weiter</button>
+                </div>
+
+                <!-- Fail Overlay -->
+                <div id="fail-overlay"
+                    class="game-overlay overlay-absolute-hidden flex-display flex-center animate-enter q10-overlay-fail"
+                    style="z-index: 10; text-align: center; flex-direction: column;">
+                    <h2 class="overlay-title text-horde-red">Zu viele Fehler!</h2>
+                    <p class="mb-sm">Das war nicht gut genug (<span id="final-score-fail"></span>/10). Mindestens 7
+                        richtige Antworten sind erforderlich.</p>
+                    <button class="btn-primary" onclick="resetQuiz()">Erneut Versuchen</button>
+                </div>
+
+                <div class="action-row mt-md q10-action-row">
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz10')">
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
@@ -96,10 +114,65 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz10';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        const questions = [
+            {
+                text: "Wer war de facto der erste Lichkönig (dessen Geist in die Rüstung eingeschlossen wurde)?",
+                options: ["Arthas Menethil", "Ner'zhul", "Bolvar Fordragon", "Sylvanas Windläufer"],
+                correct: 1
+            },
+            {
+                text: "Wie heißt die Hauptstadt der Blutelfen?",
+                options: ["Exodar", "Darnassus", "Silbermond", "Suramar"],
+                correct: 2
+            },
+            {
+                text: "Welcher Drachenaspekt war verantwortlich für den Kataklysmus?",
+                options: ["Malygos", "Nozdormu", "Ysera", "Todesschwinge (Neltharion)"],
+                correct: 3
+            },
+            {
+                text: "Welches Max-Level gab es im ursprünglichen World of Warcraft (Vanilla)?",
+                options: ["50", "60", "70", "80"],
+                correct: 1
+            },
+            {
+                text: "Wie heißt der Zwergenkönig, der in einen Diamanten verwandelt wurde?",
+                options: ["Muradin Bronzebart", "Kurdran Wildhammer", "Gelbin Mekkadrill", "Magni Bronzebart"],
+                correct: 3
+            },
+            {
+                text: "Welche Fraktion baut in der Boreanischen Tundra die Kriegshymnenfeste?",
+                options: ["Allianz", "Argentumkreuzzug", "Horde", "Schwarze Klinge"],
+                correct: 2
+            },
+            {
+                text: "Welcher der folgenden alten Götter befand sich tief im Gefängnis von Ulduar?",
+                options: ["C'Thun", "Yogg-Saron", "Y'Shaarj", "N'Zoth"],
+                correct: 1
+            },
+            {
+                text: "Wo residierte der Anführer der Verlassenen, Sylvanas Windläufer, ursprünglich?",
+                options: ["Orgrimmar", "Die Schreckensöde", "Donnerfels", "Unterstadt"],
+                correct: 3
+            },
+            {
+                text: "Wer zerschmetterte den Helm der Herrschaft und öffnete das Portal in die Schattenlande?",
+                options: ["Sylvanas Windläufer", "Der Kerkermeister", "Illidan Sturmgrimm", "Kael'thas Sonnenwanderer"],
+                correct: 0
+            },
+            {
+                text: "Welcher Raid-Boss prägte den berühmten Satz: \"Ihr seid nicht vorbereitet!\"?",
+                options: ["Archimonde", "Kil'jaeden", "Illidan Sturmgrimm", "Ragnaros"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let isTransitioning = false;
 
         // Init State Check
         try {
@@ -107,38 +180,97 @@
             if (!currentState) throw new Error("No state");
         } catch (e) {
             console.error(e);
-            alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
-            window.location.href = window.appendThemeParam('index.html');
+            // Default state for local testing if needed, though strictly it should fail back to index
+            currentState = { scores: {} };
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
-        }
-
-        function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+        function renderQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResult();
                 return;
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            const q = questions[currentQuestionIndex];
+            document.getElementById('quiz-progress').textContent = `Frage ${currentQuestionIndex + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = q.text;
 
-                window.location.href = nextUrl;
+            const container = document.getElementById('options-container');
+            container.innerHTML = ''; // Clear old
+
+            q.options.forEach((optText, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                btn.textContent = optText;
+                btn.onclick = () => selectAnswer(btn, index);
+                container.appendChild(btn);
+            });
+
+            isTransitioning = false;
+        }
+
+        function selectAnswer(btn, clickedIndex) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const q = questions[currentQuestionIndex];
+            const isCorrect = (clickedIndex === q.correct);
+
+            // Highlight chosen button
+            if (isCorrect) {
+                btn.classList.add('correct');
+                correctAnswers++;
+                if (window.SoundManager) SoundManager.playClick(); // Success tick
             } else {
-                showErrorToast("Das ist leider falsch.");
+                btn.classList.add('wrong');
+                if (window.SoundManager) SoundManager.playError(); // Error sound
+
+                // Show the actual correct one too
+                const allBtns = document.getElementById('options-container').children;
+                if (allBtns[q.correct]) {
+                    allBtns[q.correct].classList.add('correct-hint');
+                }
+            }
+
+            // Wait 1.5s then next
+            setTimeout(() => {
+                currentQuestionIndex++;
+                renderQuestion();
+            }, 1000);
+        }
+
+        function showResult() {
+            document.getElementById('options-container').style.display = 'none';
+            document.querySelector('.quest-bubble').style.display = 'none';
+
+            if (correctAnswers >= 7) {
+                document.getElementById('final-score-win').textContent = correctAnswers;
+                document.getElementById('win-overlay').style.display = 'flex';
+                if (window.SoundManager) SoundManager.playLevelUp();
+            } else {
+                document.getElementById('final-score-fail').textContent = correctAnswers;
+                document.getElementById('fail-overlay').style.display = 'flex';
             }
         }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            document.getElementById('options-container').style.display = 'grid';
+            document.querySelector('.quest-bubble').style.display = 'block';
+            document.getElementById('fail-overlay').style.display = 'none';
+            renderQuestion();
+        }
+
+        function winQuiz() {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            window.location.href = nextUrl;
+        }
+
+        // Start
+        document.addEventListener('DOMContentLoaded', renderQuestion);
     </script>
 </body>
 

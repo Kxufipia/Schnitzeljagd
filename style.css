@@ -2826,3 +2826,45 @@ label {
     bottom: 0;
     padding: 20px;
 }
+
+/* Quiz 10 (Trivia) Styles */
+.q10-card-wrapper {
+    overflow: hidden;
+}
+
+.q10-speaker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.q10-progress {
+    font-size: 0.9em;
+}
+
+.q10-question-text {
+    min-height: 60px;
+    margin-top: 10px;
+}
+
+.q10-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.q10-overlay-fail {
+    background: rgba(20, 0, 0, 0.9);
+}
+
+.q10-action-row {
+    justify-content: flex-end;
+}
+
+.correct-hint {
+    border-color: var(--wow-green) !important;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: var(--wow-green) !important;
+    box-shadow: inset 0 0 15px rgba(34, 197, 94, 0.3);
+}
