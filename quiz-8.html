@@ -104,19 +104,19 @@
         let startTime = Date.now();
         let currentState = null;
 
-        // --- PLACEHOLDER DATA: Fill these out when known ---
+        // WoW Trivia Math formulas based on actual copper price in the game and their target max levels.
         const calcData = {
-            "Classic": { instruction: "Teile den Kupferpreis durch [Zahl X]. Die ersten beiden Ziffern sind die X-, die letzten beiden die Y-Koordinate in [Zone]. Welche NPC wartet dort?", answer: ["Lösung"] },
-            "Burning Crusade": { instruction: "[TBC Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Wrath of the Lich King": { instruction: "[WotLK Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Cataclysm": { instruction: "[Cata Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Mists of Pandaria": { instruction: "[MoP Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Warlords of Draenor": { instruction: "[WoD Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Legion": { instruction: "[Legion Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Battle for Azeroth": { instruction: "[BfA Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Shadowlands": { instruction: "[SL Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "Dragonflight": { instruction: "[DF Rechenaufgabe hier einfügen]", answer: ["Lösung"] },
-            "The War Within": { instruction: "[TWW Rechenaufgabe hier einfügen]", answer: ["Lösung"] }
+            "Classic": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das maximale Charakterlevel (Max-Level) zu Zeiten von Classic WoW.", answer: ["180"] },
+            "Burning Crusade": { instruction: "Teile den Kupfer-Preis durch 100.000. Addiere dann das Max-Level der Erweiterung The Burning Crusade.", answer: ["190"] },
+            "Wrath of the Lich King": { instruction: "Teile den Kupfer-Preis durch 1.000.000. Addiere dann das Max-Level der Erweiterung Wrath of the Lich King.", answer: ["280"] },
+            "Cataclysm": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das Max-Level der Erweiterung Cataclysm.", answer: ["185"] },
+            "Mists of Pandaria": { instruction: "Teile den Kupfer-Preis durch 10.000.000. Addiere dann das Max-Level der Erweiterung Mists of Pandaria.", answer: ["210"] },
+            "Warlords of Draenor": { instruction: "Teile den Kupfer-Preis durch 10.000. Addiere dann das Max-Level der Erweiterung Warlords of Draenor.", answer: ["200"] },
+            "Legion": { instruction: "Teile den Kupfer-Preis durch 10.000.000. Addiere dann das Max-Level der Erweiterung Legion.", answer: ["360"] },
+            "Battle for Azeroth": { instruction: "Teile den Kupfer-Preis durch 100.000.000. Addiere dann das Max-Level der Erweiterung Battle for Azeroth.", answer: ["620"] },
+            "Shadowlands": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das durch den 'Level Squish' resultierende neue Max-Level von Shadowlands.", answer: ["110"] },
+            "Dragonflight": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das Max-Level der Erweiterung Dragonflight.", answer: ["270"] },
+            "The War Within": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das derzeitige Max-Level von The War Within.", answer: ["580"] }
         };
 
         let currentExpansion = "Classic"; // Fallback

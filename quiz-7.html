@@ -106,19 +106,19 @@
         let startTime = Date.now();
         let currentState = null;
 
-        // --- PLACEHOLDER DATA: Fill these out when known ---
+        // authentic WoW data
         const vendorData = {
-            "Classic": { npc: "[Neutraler NPC Classic]", item: "[Item Classic]", price: 15000 },
-            "Burning Crusade": { npc: "[Neutraler NPC TBC]", item: "[Item TBC]", price: 20000 },
-            "Wrath of the Lich King": { npc: "[Neutraler NPC WotLK]", item: "[Item WotLK]", price: 50000 },
-            "Cataclysm": { npc: "[Neutraler NPC Cata]", item: "[Item Cata]", price: 10000 },
-            "Mists of Pandaria": { npc: "[Neutraler NPC MoP]", item: "[Item MoP]", price: 100000 },
-            "Warlords of Draenor": { npc: "[Neutraler NPC WoD]", item: "[Item WoD]", price: 25000 },
-            "Legion": { npc: "[Neutraler NPC Legion]", item: "[Item Legion]", price: 250000000 },
-            "Battle for Azeroth": { npc: "[Neutraler NPC BfA]", item: "[Item BfA]", price: 30000 },
-            "Shadowlands": { npc: "[Neutraler NPC SL]", item: "[Item SL]", price: 500000 },
-            "Dragonflight": { npc: "[Neutraler NPC DF]", item: "[Item DF]", price: 80000 },
-            "The War Within": { npc: "[Neutraler NPC TWW]", item: "[Item TWW]", price: 90000 }
+            "Classic": { npc: "Qia (Ewige Warte / Winterquell)", item: "Muster: Runenstofftasche", price: 12000 },
+            "Burning Crusade": { npc: "Haris Pilton (Shattrath)", item: "\"Gigantique\" - Tasche mit 22 Plätzen", price: 12000000 },
+            "Wrath of the Lich King": { npc: "Mei Francis (Dalaran)", item: "Zügel des Tundramammuts des Reisenden", price: 200000000 },
+            "Cataclysm": { npc: "Schmied Abasi (Ramkahen, Uldum)", item: "Wappenrock von Ramkahen", price: 10000 },
+            "Mists of Pandaria": { npc: "Onkel Dickhose (Kun-Lai-Gipfel)", item: "Zügel des Großen Expeditionsyaks", price: 1200000000 },
+            "Warlords of Draenor": { npc: "Zzixx (Nagrand)", item: "Wappenrock der Dampfdruckerhaltungsgesellschaft", price: 1000000 },
+            "Legion": { npc: "Der Verrückte Händler (Dalaran)", item: "Prismatisches Schaustück", price: 2500000000 },
+            "Battle for Azeroth": { npc: "Tricky Nick / Talutu (Boralus / Dazar'alor)", item: "Zügel des mächtigen Karawanenbrutosaurus", price: 50000000000 },
+            "Shadowlands": { npc: "Gastwirt Ta'ran (Oribos)", item: "Gefiltertes Anima (1 Stück)", price: 5000 },
+            "Dragonflight": { npc: "Gastwirtin Tethal (Valdrakken)", item: "Drachenquellwasser (1 Stück)", price: 20000 },
+            "The War Within": { npc: "Gastwirt Freya (Dornogal)", item: "Irdener Pilzeintopf (1 Stück)", price: 50000 }
         };
 
         let currentExpansion = "Classic"; // Fallback
