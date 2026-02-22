@@ -27,19 +27,25 @@
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Thrall</div>
-                        <h2>Placeholder Question for Quest 13?</h2>
+                        <h2>Reise an diesen mystischen Ort und bringe mir ein Bild als Beweis! Vergiss ekki, deinen
+                            Charakter im Bild zu zeigen.</h2>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="target-location-box q13-location-box">
+                    <h3 class="text-wow-blue q13-location-label">Dein Reiseziel:</h3>
+                    <p id="location-display" class="q13-location-value">Lade Ort...</p>
                 </div>
 
-                <div class="action-row">
+                <div class="input-container mt-md">
+                    <label class="form-label">Zum Beweis: Link zum Imgur-Screenshot</label>
+                    <input type="url" id="quiz-input" class="form-input" placeholder="https://imgur.com..."
+                        autocomplete="off">
+                </div>
+
+                <div class="action-row mt-md">
                     <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
+                        <span>Beweis Einreichen!</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz13')">
                         <span>Ich bin OOM! (Skip)</span>
@@ -96,10 +102,21 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz13';
-        const CORRECT = 'B';
-        let selected = null;
         let startTime = Date.now();
         let currentState = null;
+
+        const LOCATIONS = [
+            "Waldgebiet: Im Schatten der riesigen Bäume im Jadewald (Pandaria).",
+            "Wüste: Bei den riesigen Knochen-Skeletten in der Wüste von Vol'dun (BfA).",
+            "Wasserfall: Vor dem gigantischen Doppel-Wasserfall im Heulenden Fjord (WotLK).",
+            "Mystisch: Sitzend auf (oder unter) einem gigantischen leuchtenden Pilz in den Zangarmarschen (TBC).",
+            "Episch: Auf der Spitze von Sargeras' gewaltigem Schwert in Silithus (Legion).",
+            "Aussicht: Ganz oben auf der Brüstung des Wyrmruhtempels in der Drachenöde (WotLK).",
+            "Unter Wasser: In der tiefen, überfluteten Schlucht von Tausend Nadeln (Cataclysm).",
+            "Düster: Direkt vor dem magisch verschlossenen Portal von Karazhan (Classic/TBC).",
+            "Kosmisch: Auf der Plattform 'Sitz der Aspekte' in Valdrakken mit weitem Blick (Dragonflight).",
+            "Unterirdisch: In der leuchtend schimmernden Grotte von Heilsturz (Hallowfall) unter dem Kristall (TWW)."
+        ];
 
         // Init State Check
         try {
@@ -111,33 +128,52 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
-        }
+        let assignedLocation = "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if player already rolled a location for Q13 in local storage to prevent rerolling
+            const storageKey = `schnitzeljagd_${QUIZ_ID}_location`;
+            const savedLocation = localStorage.getItem(storageKey);
+
+            if (savedLocation && LOCATIONS.includes(savedLocation)) {
+                assignedLocation = savedLocation;
+            } else {
+                // Pick a random location
+                const randomIndex = Math.floor(Math.random() * LOCATIONS.length);
+                assignedLocation = LOCATIONS[randomIndex];
+                localStorage.setItem(storageKey, assignedLocation);
+            }
+
+            document.getElementById('location-display').textContent = assignedLocation;
+        });
 
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const val = document.getElementById('quiz-input').value.trim();
+
+            if (!val) {
+                showErrorToast("Bitte gib einen Link ein!");
+                return;
+            }
+            if (!val.toLowerCase().includes("imgur.com")) {
+                showErrorToast("Das sieht nicht nach einem gültigen Imgur-Link aus.");
+                document.getElementById('quiz-input').classList.add('error-shake');
+                setTimeout(() => document.getElementById('quiz-input').classList.remove('error-shake'), 600);
                 return;
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+            const timeTaken = (Date.now() - startTime) / 1000;
 
-                window.location.href = nextUrl;
-            } else {
-                showErrorToast("Das ist leider falsch.");
-            }
+            // Save the imgur link AND the rolled location so the admin can cross-reference
+            const submissionData = `Location: ${assignedLocation} | Link: ${val}`;
+
+            // Update State with extra argument string
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken, submissionData);
+
+            // Get Next URL
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+
+            window.location.href = nextUrl;
         }
     </script>
 </body>

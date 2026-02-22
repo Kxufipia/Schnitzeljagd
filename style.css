@@ -2868,3 +2868,24 @@ label {
     color: var(--wow-green) !important;
     box-shadow: inset 0 0 15px rgba(34, 197, 94, 0.3);
 }
+
+/* Quiz 13 (Random Location) Styles */
+.q13-location-box {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--wow-blue);
+    margin-top: 15px;
+    text-align: center;
+}
+
+.q13-location-label {
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.q13-location-value {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #fff;
+}
