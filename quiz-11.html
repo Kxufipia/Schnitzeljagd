@@ -126,26 +126,43 @@
             if (!currentState) throw new Error("No state");
         } catch (e) {
             console.error(e);
-            alert("Fehler: Spielstand nicht gefunden. Zurück zum Start.");
-            window.location.href = window.appendThemeParam('index.html');
+            // Default state for local testing if gamestate fails
+            currentState = { scores: {} };
         }
 
         // Lockpicking Game Logic
-        const canvas = document.getElementById('lock-canvas');
-        const ctx = canvas.getContext('2d');
-
+        let canvas, ctx;
         let locksPicked = 0;
         const totalLocks = 3;
-
         let needleAngle = 0; // 0 to 180 degrees
         let needleSpeed = 2; // degrees per frame
         let needleDirection = 1; // 1 for right, -1 for left
-
         let zoneStart = 0;
         let zoneWidth = 30; // degrees
-
         let isGameRunning = true;
         let animationId;
+
+        function initCanvas() {
+            canvas = document.getElementById('lock-canvas');
+            if (canvas && !animationId) {
+                // Ensure correct internal sizing
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width || 300;
+                canvas.height = rect.height || 160;
+
+                ctx = canvas.getContext('2d');
+                randomizeZone();
+                loop();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCanvas);
+        } else {
+            initCanvas();
+        }
+
+
 
         function randomizeZone() {
             // Zone must fit within 0 to 180
@@ -171,12 +188,13 @@
         }
 
         function draw() {
+            if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const cx = canvas.width / 2;
             const cy = canvas.height - 15; // Bottom center
             const r = 120; // Radius
 
-            // Background arc (0 to 180 is Math.PI to 2*Math.PI in canvas)
+            // Background arc (top semi-circle, Math.PI to 2*Math.PI)
             ctx.beginPath();
             ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
             ctx.lineWidth = 20;
@@ -184,8 +202,10 @@
             ctx.stroke();
 
             // Sweet spot (Green)
+            // Map 0-180 to Math.PI - 2*Math.PI
             const startRad = Math.PI + (zoneStart * Math.PI / 180);
-            const endRad = startRad + (zoneWidth * Math.PI / 180);
+            const endRad = Math.PI + ((zoneStart + zoneWidth) * Math.PI / 180);
+
             ctx.beginPath();
             ctx.arc(cx, cy, r, startRad, endRad);
             ctx.lineWidth = 20;
@@ -259,9 +279,7 @@
             }
         }
 
-        // Start game
-        randomizeZone();
-        loop();
+        // Start game handlers are inside DOMContentLoaded
 
         function winQuiz() {
             const timeTaken = (Date.now() - startTime) / 1000;
