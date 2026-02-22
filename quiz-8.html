@@ -26,12 +26,12 @@
                 <!-- Quest Giver: Jaina -->
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
-                        <div class="quest-speaker-name">Jaina</div>
-                        <h2>Entschlüssele den Preis!</h2>
-                        <p class="quest-instruction">Ausgangswert (Quest 7 Preis): <strong class="text-wow-gold"
-                                id="display-price">0</strong> Kupfer.</p>
+                        <div class="quest-speaker-name">Chronormu (Chromie)</div>
+                        <h2>Entschlüssele die Formel!</h2>
+                        <p class="quest-instruction">Ausgangswert (Release-Jahr): <strong class="text-wow-gold"
+                                id="display-price">0</strong>.</p>
                         <p class="quest-instruction" id="display-instruction"
-                            style="font-weight: bold; color: var(--text-main);">
+                            style="font-weight: bold; color: var(--wow-blue);">
                             [Platzhalter für die Rechenaufgabe]
                         </p>
                     </div>
@@ -104,23 +104,23 @@
         let startTime = Date.now();
         let currentState = null;
 
-        // WoW Trivia Math formulas based on actual copper price in the game and their target max levels.
+        // WoW Trivia Math formulas based on Release Year and their target max levels.
         const calcData = {
-            "Classic": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das maximale Charakterlevel (Max-Level) zu Zeiten von Classic WoW.", answer: ["180"] },
-            "Burning Crusade": { instruction: "Teile den Kupfer-Preis durch 100.000. Addiere dann das Max-Level der Erweiterung The Burning Crusade.", answer: ["190"] },
-            "Wrath of the Lich King": { instruction: "Teile den Kupfer-Preis durch 1.000.000. Addiere dann das Max-Level der Erweiterung Wrath of the Lich King.", answer: ["280"] },
-            "Cataclysm": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das Max-Level der Erweiterung Cataclysm.", answer: ["185"] },
-            "Mists of Pandaria": { instruction: "Teile den Kupfer-Preis durch 10.000.000. Addiere dann das Max-Level der Erweiterung Mists of Pandaria.", answer: ["210"] },
-            "Warlords of Draenor": { instruction: "Teile den Kupfer-Preis durch 10.000. Addiere dann das Max-Level der Erweiterung Warlords of Draenor.", answer: ["200"] },
-            "Legion": { instruction: "Teile den Kupfer-Preis durch 10.000.000. Addiere dann das Max-Level der Erweiterung Legion.", answer: ["360"] },
-            "Battle for Azeroth": { instruction: "Teile den Kupfer-Preis durch 100.000.000. Addiere dann das Max-Level der Erweiterung Battle for Azeroth.", answer: ["620"] },
-            "Shadowlands": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das durch den 'Level Squish' resultierende neue Max-Level von Shadowlands.", answer: ["110"] },
-            "Dragonflight": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das Max-Level der Erweiterung Dragonflight.", answer: ["270"] },
-            "The War Within": { instruction: "Teile den Kupfer-Preis durch 100. Addiere dann das derzeitige Max-Level von The War Within.", answer: ["580"] }
+            "Classic": { instruction: "Nimm das Release-Jahr und addiere das maximale Charakterlevel (Max-Level) zu Zeiten von Classic WoW.", answer: ["2064"] }, // 2004 + 60
+            "Burning Crusade": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung The Burning Crusade.", answer: ["2077"] }, // 2007 + 70
+            "Wrath of the Lich King": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Wrath of the Lich King.", answer: ["2088"] }, // 2008 + 80
+            "Cataclysm": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Cataclysm.", answer: ["2095"] }, // 2010 + 85
+            "Mists of Pandaria": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Mists of Pandaria.", answer: ["2102"] }, // 2012 + 90
+            "Warlords of Draenor": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Warlords of Draenor.", answer: ["2114"] }, // 2014 + 100
+            "Legion": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Legion.", answer: ["2126"] }, // 2016 + 110
+            "Battle for Azeroth": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Battle for Azeroth.", answer: ["2138"] }, // 2018 + 120
+            "Shadowlands": { instruction: "Nimm das Release-Jahr und addiere das durch den 'Level Squish' resultierende neue Max-Level von Shadowlands.", answer: ["2080"] }, // 2020 + 60
+            "Dragonflight": { instruction: "Nimm das Release-Jahr und addiere das Max-Level der Erweiterung Dragonflight.", answer: ["2092"] }, // 2022 + 70
+            "The War Within": { instruction: "Nimm das Release-Jahr und addiere das derzeitige Max-Level von The War Within.", answer: ["2104"] } // 2024 + 80
         };
 
         let currentExpansion = "Classic"; // Fallback
-        let currentPrice = 0;
+        let currentYear = 2004;
         let currentPuzzle = calcData["Classic"];
 
         // Init State Check
@@ -128,20 +128,20 @@
             currentState = GameState.decode();
             if (!currentState) throw new Error("No state");
 
-            // Extract the expansion & price from Quiz 7 (ExpansionName|Price)
+            // Extract the expansion & year from Quiz 7 (ExpansionName|Year)
             if (currentState.scores && currentState.scores['quiz7'] && currentState.scores['quiz7'].extra) {
                 const q7Extra = currentState.scores['quiz7'].extra;
                 const parts = q7Extra.split('|');
                 if (parts.length > 1 && calcData[parts[0]]) {
                     currentExpansion = parts[0];
-                    currentPrice = parseInt(parts[1], 10) || 0;
+                    currentYear = parseInt(parts[1], 10) || 0;
                 }
             }
 
             currentPuzzle = calcData[currentExpansion];
 
             // Populate UI
-            document.getElementById('display-price').innerText = currentPrice;
+            document.getElementById('display-price').innerText = currentYear;
             document.getElementById('display-instruction').innerText = currentPuzzle.instruction;
 
         } catch (e) {
