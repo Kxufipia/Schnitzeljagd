@@ -31,8 +31,7 @@
                         <p class="quest-instruction">Jemand hat hier eine Manabombe platziert! Lies das Handbuch
                             sorgfältig und durchtrenne die <strong>drei richtigen Kabel</strong> in der korrekten
                             Reihenfolge, sonst fliegen wir in die Luft!</p>
-                        <ul class="quest-instruction text-left"
-                            style="font-size: 0.9rem; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 5px; list-style-position: inside;">
+                        <ul class="quest-instruction text-left bomb-manual-list">
                             <li><strong>Regel 1:</strong> Ist deine Erweiterung (aus Quest 6) "Burning Crusade",
                                 "Legion" oder "Shadowlands", durchtrenne zuerst das <span
                                     class="text-wow-green">grüne</span> Kabel. Ist es "Classic", "Cataclysm" oder
@@ -40,9 +39,13 @@
                                 Ansonsten das <span class="text-wow-blue">blaue</span> Kabel.</li>
                             <li><strong>Regel 2:</strong> Durchtrenne als zweites <em>immer</em> das <span
                                     class="text-wow-gold">gelbe</span> Kabel.</li>
-                            <li><strong>Regel 3:</strong> Wenn das erste Kabel grün war, durchtrenne als letztes das
-                                <span style="color:#d24cff;">lilafarbene</span> Kabel. Ansonsten durchtrenne das <span
-                                    class="text-horde-red">rote</span> Kabel.</li>
+                            <li><strong>Regel 3:</strong> Das letzte Kabel hängt vom ersten ab: War das erste Kabel
+                                <span class="text-wow-green">grün</span>, durchtrenne das <span
+                                    class="text-wow-purple">lilafarbene</span> Kabel. War das erste Kabel <span
+                                    class="text-horde-red">rot</span>, durchtrenne das <span
+                                    class="text-wow-blue">blaue</span> Kabel. In allen anderen Fällen durchtrenne das
+                                <span class="text-wow-purple">lilafarbene</span> Kabel.
+                            </li>
                         </ul>
                         <p class="quest-caption-sub text-wow-blue mt-sm">Deine Erweiterung: <strong
                                 id="display-expansion" class="text-wow-gold">Unbekannt</strong></p>
@@ -57,8 +60,8 @@
                     </div>
 
                     <!-- Explosion Overlay -->
-                    <div id="explosion-overlay" class="game-overlay overlay-loss flex-display flex-center"
-                        style="display: none; position: absolute; top:0; left:0; right:0; bottom:0; padding: 20px;">
+                    <div id="explosion-overlay"
+                        class="game-overlay overlay-loss flex-display flex-center overlay-absolute-hidden">
                         <div>
                             <h2 class="overlay-title-loss">BUMM!</h2>
                             <p class="mb-sm">Falsches Kabel oder Zeit abgelaufen!</p>
@@ -68,8 +71,8 @@
                     </div>
 
                     <!-- Win Overlay -->
-                    <div id="defused-overlay" class="game-overlay overlay-win flex-display flex-center"
-                        style="display: none; position: absolute; top:0; left:0; right:0; bottom:0; padding: 20px;">
+                    <div id="defused-overlay"
+                        class="game-overlay overlay-win flex-display flex-center overlay-absolute-hidden">
                         <div>
                             <h2 class="overlay-title">Entschärft!</h2>
                             <p class="mb-sm">Gute Arbeit, Boss!</p>
@@ -177,7 +180,7 @@
         function calculateSequence() {
             correctSequence = [];
 
-            // Regel 1
+            // Regel 1: Das erste Kabel
             if (['Burning Crusade', 'Legion', 'Shadowlands'].includes(currentExpansion)) {
                 correctSequence.push('green');
             } else if (['Classic', 'Cataclysm', 'Battle for Azeroth'].includes(currentExpansion)) {
@@ -186,14 +189,16 @@
                 correctSequence.push('blue');
             }
 
-            // Regel 2
+            // Regel 2: Das zweite Kabel ist IMMER gelb
             correctSequence.push('yellow');
 
-            // Regel 3
+            // Regel 3: Abhängig vom ersten Kabel, füge ein drittes (einzigartiges) Kabel hinzu
             if (correctSequence[0] === 'green') {
                 correctSequence.push('purple');
+            } else if (correctSequence[0] === 'red') {
+                correctSequence.push('blue'); // Was 'red' before, causing a duplicate
             } else {
-                correctSequence.push('red');
+                correctSequence.push('purple'); // Was implicitly 'red', which is fine, but purple is safer for uniqueness
             }
         }
 
