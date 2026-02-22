@@ -174,7 +174,7 @@
             const maxStart = 170 - zoneWidth;
             zoneStart = Math.random() * (maxStart - minStart) + minStart;
 
-            needleSpeed = 2 + (locksPicked * 2.5); // Gets much faster: 2 -> 4.5 -> 7
+            needleSpeed = 2.5; // Constant speed
         }
 
         function update() {
