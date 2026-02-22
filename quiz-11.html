@@ -143,12 +143,14 @@
         let animationId;
 
         function initCanvas() {
+            console.log("initCanvas called, animationId:", animationId);
             canvas = document.getElementById('lock-canvas');
             if (canvas && !animationId) {
                 // Ensure correct internal sizing
                 const rect = canvas.getBoundingClientRect();
                 canvas.width = rect.width || 300;
                 canvas.height = rect.height || 160;
+                console.log("Canvas initialized with width:", canvas.width, "height:", canvas.height);
 
                 ctx = canvas.getContext('2d');
                 randomizeZone();
@@ -159,6 +161,7 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initCanvas);
         } else {
+            console.log("Document ready, calling initCanvas directly");
             initCanvas();
         }
 

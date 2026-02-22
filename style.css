@@ -2801,3 +2801,28 @@ label {
 .hud-text-muted {
     font-size: 0.8rem;
 }
+
+/* --- Missing Quest Classes --- */
+
+.text-wow-purple {
+    color: #d24cff;
+}
+
+.bomb-manual-list {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 5px;
+    list-style-position: inside;
+}
+
+.overlay-absolute-hidden {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+}
