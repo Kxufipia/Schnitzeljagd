@@ -131,7 +131,7 @@
         }
 
         // Lockpicking Game Logic
-        let canvas, ctx;
+        let lockCanvas, lockCtx;
         let locksPicked = 0;
         const totalLocks = 3;
         let needleAngle = 0; // 0 to 180 degrees
@@ -144,15 +144,15 @@
 
         function initCanvas() {
             console.log("initCanvas called, animationId:", animationId);
-            canvas = document.getElementById('lock-canvas');
-            if (canvas && !animationId) {
+            lockCanvas = document.getElementById('lock-canvas');
+            if (lockCanvas && !animationId) {
                 // Ensure correct internal sizing
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = rect.width || 300;
-                canvas.height = rect.height || 160;
-                console.log("Canvas initialized with width:", canvas.width, "height:", canvas.height);
+                const rect = lockCanvas.getBoundingClientRect();
+                lockCanvas.width = rect.width || 300;
+                lockCanvas.height = rect.height || 160;
+                console.log("Canvas initialized with width:", lockCanvas.width, "height:", lockCanvas.height);
 
-                ctx = canvas.getContext('2d');
+                lockCtx = lockCanvas.getContext('2d');
                 randomizeZone();
                 loop();
             }
@@ -191,39 +191,39 @@
         }
 
         function draw() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const cx = canvas.width / 2;
-            const cy = canvas.height - 15; // Bottom center
+            if (!lockCtx) return;
+            lockCtx.clearRect(0, 0, lockCanvas.width, lockCanvas.height);
+            const cx = lockCanvas.width / 2;
+            const cy = lockCanvas.height - 15; // Bottom center
             const r = 120; // Radius
 
             // Background arc (top semi-circle, Math.PI to 2*Math.PI)
-            ctx.beginPath();
-            ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
-            ctx.lineWidth = 20;
-            ctx.strokeStyle = '#333';
-            ctx.stroke();
+            lockCtx.beginPath();
+            lockCtx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+            lockCtx.lineWidth = 20;
+            lockCtx.strokeStyle = '#333';
+            lockCtx.stroke();
 
             // Sweet spot (Green)
             // Map 0-180 to Math.PI - 2*Math.PI
             const startRad = Math.PI + (zoneStart * Math.PI / 180);
             const endRad = Math.PI + ((zoneStart + zoneWidth) * Math.PI / 180);
 
-            ctx.beginPath();
-            ctx.arc(cx, cy, r, startRad, endRad);
-            ctx.lineWidth = 20;
-            ctx.strokeStyle = '#2ea12e'; // WoW Green
-            ctx.stroke();
+            lockCtx.beginPath();
+            lockCtx.arc(cx, cy, r, startRad, endRad);
+            lockCtx.lineWidth = 20;
+            lockCtx.strokeStyle = '#2ea12e'; // WoW Green
+            lockCtx.stroke();
 
             // Needle (Red)
             const needleRad = Math.PI + (needleAngle * Math.PI / 180);
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + (r + 15) * Math.cos(needleRad), cy + (r + 15) * Math.sin(needleRad));
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = '#cc0000'; // Horde Red
-            ctx.lineCap = 'round';
-            ctx.stroke();
+            lockCtx.beginPath();
+            lockCtx.moveTo(cx, cy);
+            lockCtx.lineTo(cx + (r + 15) * Math.cos(needleRad), cy + (r + 15) * Math.sin(needleRad));
+            lockCtx.lineWidth = 4;
+            lockCtx.strokeStyle = '#cc0000'; // Horde Red
+            lockCtx.lineCap = 'round';
+            lockCtx.stroke();
         }
 
         function loop() {
