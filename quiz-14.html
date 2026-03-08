@@ -27,25 +27,42 @@
                 <div class="quest-giver-wrapper">
                     <div class="quest-bubble">
                         <div class="quest-speaker-name">Jaina</div>
-                        <h2>Placeholder Question for Quest 14?</h2>
+                        <h2>Die frostigen Hallen von Utgarde warten!</h2>
+                        <p class="quest-instruction">Reise tief nach Nordend, Held! Deine Aufgabe: Erledige <strong
+                                class="text-wow-blue">Prinz Keleseth</strong> in der Burg Utgarde und bringe mir ein
+                            Selfie als Beweis (Imgur-Link). Erbeute danach ein Item vom zweiten Boss-Duo (<strong
+                                class="text-horde-red">Skarvald & Dalronn</strong>) und zeige es mir (oder einem anderen
+                            Reisenden) im Handelsfenster. Du erhältst dann eine Geheimparole.</p>
                     </div>
                 </div>
 
-                <div class="option-grid" id="options-container">
-                    <div class="option-btn" onclick="selectOption(this, 'A')">Option A</div>
-                    <div class="option-btn" onclick="selectOption(this, 'B')">Option B (Correct)</div>
-                    <div class="option-btn" onclick="selectOption(this, 'C')">Option C</div>
+                <div class="form-group mt-md">
+                    <label for="imgur-input" class="input-label">Beweis 1: Imgur-Link (Selfie beim Prinz)</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="imgur-input" class="wow-input" placeholder="https://imgur.com/..."
+                            autocomplete="off">
+                        <div class="input-glow"></div>
+                    </div>
                 </div>
 
-                <div class="action-row">
+                <div class="form-group mt-sm">
+                    <label for="passphrase-input" class="input-label">Beweis 2: Geheimparole (Handel)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="passphrase-input" class="wow-input" placeholder="Parole eingeben..."
+                            autocomplete="off">
+                        <div class="input-glow"></div>
+                    </div>
+                </div>
+
+                <div class="action-row mt-md">
                     <button id="confirm-btn" class="btn-primary btn-flex-grow" onclick="checkAnswer()">
-                        <span>Zug Zug!</span>
+                        <span>Beweise Erbringen!</span>
                     </button>
                     <button id="skip-btn" class="btn-secondary" onclick="skipQuiz('quiz14')">
                         <span>Ich bin OOM! (Skip)</span>
                     </button>
                 </div>
-                <p id="error-msg" class="error-message">
+                <!-- Error messages are handled via Toast -->
                 </p>
             </div>
         </div>
@@ -96,8 +113,7 @@
     <script src="script.js"></script>
     <script>
         const QUIZ_ID = 'quiz14';
-        const CORRECT = 'B';
-        let selected = null;
+        const PASSPHRASE = 'NORDEND-FROST';
         let startTime = Date.now();
         let currentState = null;
 
@@ -111,33 +127,36 @@
             window.location.href = window.appendThemeParam('index.html');
         }
 
-        function selectOption(btn, val) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selected = val;
-            document.getElementById('error-msg').textContent = "";
-        }
-
         function checkAnswer() {
-            if (!selected) {
-                showErrorToast("Ich brauche ein Ziel!");
+            const imgurUrl = document.getElementById('imgur-input').value.trim();
+            const passPhraseInput = document.getElementById('passphrase-input').value.trim();
+
+            if (!imgurUrl || !passPhraseInput) {
+                showErrorToast("Bitte fülle beide Felder aus!");
                 return;
             }
 
-            if (selected === CORRECT) {
-                const timeTaken = (Date.now() - startTime) / 1000;
-                // Update State
-                const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken);
-                // Get Next URL
-                let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
-                // Ensure State is passed (getNextQuizUrl does this)
-                // Ensure Theme is passed
-                if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
-
-                window.location.href = nextUrl;
-            } else {
-                showErrorToast("Das ist leider falsch.");
+            if (!imgurUrl.toLowerCase().includes("imgur.com")) {
+                showErrorToast("Das sieht nicht nach einem gültigen Imgur-Link aus.");
+                return;
             }
+
+            if (passPhraseInput.toUpperCase() !== PASSPHRASE) {
+                showErrorToast("Die Geheimparole ist falsch! Frag nochmal nach.");
+                return;
+            }
+
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const submissionData = `Imgur: ${imgurUrl} | Parole: ${passPhraseInput}`;
+
+            // Update State
+            const nextStateEncoded = GameState.update(currentState, QUIZ_ID, timeTaken, submissionData);
+
+            // Get Next URL
+            let nextUrl = GameState.getNextQuizUrl(currentState, QUIZ_ID);
+            if (window.appendThemeParam) nextUrl = window.appendThemeParam(nextUrl);
+
+            window.location.href = nextUrl;
         }
     </script>
 </body>
