@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (name) {
                 // MAINTENANCE MODE CHECK
-                // Target Date: 08.03.2026 20:00
-                const targetDate = new Date("2026-03-08T20:00:00");
+                // Target Date: 08.03.2026 20:05
+                const targetDate = new Date("2026-03-08T20:05:00");
                 const now = new Date();
 
                 if (name !== 'Warchas1985' && now < targetDate) {
